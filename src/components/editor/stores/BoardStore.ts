@@ -1,8 +1,9 @@
 import { Over } from "@dnd-kit/core";
 import { useLocalStore } from "mobx-react-lite";
-import { forEach } from "lodash-es";
+import { forEach, remove } from "lodash-es";
 import { toJS } from "mobx";
-import { ComponentTypes, SchemaData } from "../types";
+import { SchemaData } from "../types";
+import { mock } from "./mock";
 
 export interface BoardState {
   overNode: Over | null;
@@ -12,58 +13,9 @@ export interface BoardState {
 
 export interface BoardAction {
   setOverNode(over: BoardState["overNode"]): void;
+  createNewNode(data: SchemaData, target: string): void;
+  moveNodeTo(from: string, to: string): void;
 }
-
-export const mock = [
-  {
-    type: ComponentTypes.PAGE,
-    id: "page-1",
-    data: {
-      style: {
-        width: "1280px",
-        height: "720px",
-        background: "#fff",
-      },
-    },
-    children: [
-      {
-        type: ComponentTypes.CONTAINER,
-        id: "container-1",
-        data: {
-          style: {
-            width: "400px",
-            height: "200px",
-            background: "green",
-          },
-        },
-        children: [
-          {
-            type: ComponentTypes.INPUT,
-            id: "input-1",
-            data: {
-              style: {
-                width: "100px",
-                height: "36px",
-              },
-              defaultValue: "撒打算大撒",
-            },
-          },
-        ],
-      },
-      {
-        type: ComponentTypes.INPUT,
-        id: "input-2",
-        data: {
-          style: {
-            width: "100px",
-            height: "36px",
-          },
-          placeholder: "我是谁",
-        },
-      },
-    ],
-  },
-];
 
 export type BoardStore = BoardState & BoardAction;
 
@@ -73,19 +25,48 @@ export const useBoardStore = () => {
     nodes: mock,
     get nodeMap() {
       const map: Record<string, SchemaData> = {};
-      const generateNodesMap = (nodes: SchemaData[]) => {
+      const generateNodesMap = (
+        nodes: SchemaData[],
+        parentId?: string | null
+      ) => {
         forEach(nodes, (value) => {
-          map[value.id] = value;
-          if (value.children) {
-            generateNodesMap(value.children);
+          map[value.id] = { ...value, parentId };
+          if (value.childNodes) {
+            generateNodesMap(value.childNodes, value.id);
           }
         });
       };
-      generateNodesMap(toJS(this.nodes));
+      generateNodesMap(this.nodes, null);
+      console.log("map", map);
       return map;
     },
     setOverNode(over: Over) {
       this.overNode = over;
+    },
+    createNewNode(data: SchemaData, targetId: string) {
+      const target = this.nodeMap[targetId];
+      if (target) {
+        if (!target.childNodes) {
+          target.childNodes = [data];
+        } else {
+          target.childNodes.push(data);
+        }
+      }
+    },
+    moveNodeTo(from: string, to: string) {
+      const origin = this.nodeMap[from];
+      const target = this.nodeMap[to];
+      if (origin.parentId) {
+        const childs = this.nodeMap[origin.parentId].childNodes;
+        if (childs && childs.length) {
+          const [removedNode] = remove(childs, (n) => n.id === origin.id);
+          if (!target.childNodes) {
+            target.childNodes = [toJS(removedNode)];
+          } else {
+            target.childNodes.push(toJS(removedNode));
+          }
+        }
+      }
     },
   }));
 };

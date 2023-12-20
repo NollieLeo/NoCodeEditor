@@ -2,17 +2,9 @@
   position: relative;
   width: fit-content;
   height: fit-content;
+  user-select: none;
   &.editor-dropzoom-isOver::before {
-    border: 1px solid red;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    margin: auto;
-    inset: 0;
-    content: "";
-  }
-  &:hover::before {
-    border: 1px solid blue;
+    border: 2px solid blue;
     position: absolute;
     width: 100%;
     height: 100%;

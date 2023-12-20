@@ -1,6 +1,6 @@
-import { FC } from "react";
+import { forwardRef } from "react";
 import { ComponentRenderData } from "../../../types/Components";
 
-export const Container: FC<ComponentRenderData> = (props) => {
-  return <div {...props} />;
-};
+export const Container = forwardRef<any, ComponentRenderData>((props, ref) => {
+  return <div {...props} ref={ref} />;
+});

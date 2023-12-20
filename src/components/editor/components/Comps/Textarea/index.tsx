@@ -1,6 +1,6 @@
-import { FC } from "react";
+import { forwardRef } from "react";
 import { ComponentRenderData } from "../../../types/Components";
 
-export const Textarea: FC<ComponentRenderData> = (props) => {
-  return <textarea {...props} />;
-};
+export const Textarea = forwardRef<any, ComponentRenderData>((props, ref) => {
+  return <textarea {...props} ref={ref} />;
+});

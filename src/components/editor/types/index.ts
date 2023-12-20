@@ -1,7 +1,8 @@
-import { CSSProperties } from "react";
+import { CSSProperties, ReactNode } from "react";
 
 export enum ComponentTypes {
   BUTTON = "button",
+  TEXT = "text",
   INPUT = "input",
   TEXTAREA = "textarea",
   CONTAINER = "container",
@@ -15,8 +16,10 @@ export interface SiderDragCompInfo {
 export interface SchemaData {
   id: string;
   type: ComponentTypes;
-  children?: SchemaData[];
+  parentId?: string | null;
+  childNodes?: SchemaData[];
   data: {
     style: CSSProperties;
+    children?: ReactNode;
   };
 }

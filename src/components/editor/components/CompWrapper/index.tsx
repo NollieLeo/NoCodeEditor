@@ -1,5 +1,5 @@
 import { useDraggable, useDroppable } from "@dnd-kit/core";
-import { FC, PropsWithChildren, memo } from "react";
+import { FC, ReactNode, memo } from "react";
 import classNames from "classnames";
 import "./index.scss";
 
@@ -7,43 +7,48 @@ export interface CompWrapperProps {
   droppable?: boolean;
   draggable?: boolean;
   id: string;
+  children: (params: any) => ReactNode;
 }
 
-export const CompWrapper: FC<PropsWithChildren<CompWrapperProps>> = memo(
-  (props) => {
-    const { children, droppable = true, draggable = true, id } = props;
+export const CompWrapper: FC<CompWrapperProps> = memo((props) => {
+  const { children, droppable = true, draggable = true, id } = props;
 
-    const { setNodeRef: setDropRef, isOver } = useDroppable({
+  const {
+    setNodeRef: setDragRef,
+    attributes,
+    listeners,
+    isDragging,
+  } = useDraggable({
+    id,
+    disabled: !draggable,
+    data: {
       id,
-      disabled: !droppable,
-    });
+    },
+  });
 
-    const {
-      setNodeRef: setDragRef,
-      attributes,
-      listeners,
-    } = useDraggable({
-      id,
-      disabled: !draggable,
-    });
+  const { setNodeRef: setDropRef, isOver } = useDroppable({
+    id,
+    disabled: !droppable || isDragging,
+  });
 
-    const dropZoomCls = classNames("editor-dropzoom", {
-      "editor-dropzoom-isOver": isOver,
-    });
+  const dropZoomCls = classNames("editor-dropzoom", {
+    "editor-dropzoom-isOver": isOver,
+  });
 
-    return (
-      <div
-        {...attributes}
-        {...listeners}
-        ref={(nodeRef) => {
-          setDropRef(nodeRef);
-          setDragRef(nodeRef);
-        }}
-        className={dropZoomCls}
-        id={id}
-      >
-        {children}
-      </div>
-    );
-  }
-);
+  const onClick = (e: Event) => {
+    e.stopPropagation();
+    console.log(e);
+  };
+
+  return children({
+    ...attributes,
+    ...listeners,
+    ref(nodeRef: any) {
+      setDragRef(nodeRef);
+      setDropRef(nodeRef);
+    },
+    onClick,
+    className: dropZoomCls,
+    id,
+  });
+});

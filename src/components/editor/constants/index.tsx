@@ -2,6 +2,7 @@ import { Button } from "../components/Comps/Button";
 import { Container } from "../components/Comps/Container";
 import { Input } from "../components/Comps/Input";
 import { Page } from "../components/Comps/Page";
+import { Text } from "../components/Comps/Text";
 import { Textarea } from "../components/Comps/Textarea";
 import { ComponentTypes } from "../types";
 
@@ -16,6 +17,15 @@ export const COMPONENTS_INFO = {
         height: 32,
       },
       children: "按钮",
+    },
+  },
+  [ComponentTypes.TEXT]: {
+    name: "文本",
+    type: ComponentTypes.TEXT,
+    render: Text,
+    defaultData: {
+      style: {},
+      children: "文本",
     },
   },
   [ComponentTypes.INPUT]: {
@@ -48,9 +58,10 @@ export const COMPONENTS_INFO = {
     type: ComponentTypes.CONTAINER,
     defaultData: {
       style: {
-        width: 400,
-        height: 150,
-        background: "red",
+        width: "100%",
+        minHeight: 50,
+        heigth: "fit-content",
+        background: "#666",
       },
     },
   },

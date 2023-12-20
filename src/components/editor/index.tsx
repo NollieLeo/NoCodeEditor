@@ -1,6 +1,15 @@
-import { FC, PropsWithChildren, useCallback, useMemo, useState } from "react";
-import { DndContext, DragStartEvent } from "@dnd-kit/core";
-import { map, cloneDeep } from "lodash-es";
+import {
+  CSSProperties,
+  FC,
+  PropsWithChildren,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
+import { DndContext, DragOverlay, DragStartEvent } from "@dnd-kit/core";
+import { snapCenterToCursor } from "@dnd-kit/modifiers";
+import { map } from "lodash-es";
+import { toJS } from "mobx";
 import { SchemaData, SiderDragCompInfo } from "./types";
 import { COMPONENTS_INFO } from "./constants";
 import { Pane } from "./components/Pane";
@@ -11,17 +20,27 @@ import { CompWrapper } from "./components/CompWrapper";
 import { SiderBarDragOverlay } from "./components/SiderBarDragOverlay";
 import { useBoardStore } from "./stores/BoardStore";
 import { BoardContext } from "./context/BoardContext";
-
-import "./index.scss";
 import { PanDragOverlay } from "./components/PanDragOverlay";
+import { observer } from "mobx-react-lite";
+import "./index.scss";
+import useBoardSensors from "./hooks/useBoardSensors";
 
-export const Editor: FC<PropsWithChildren> = () => {
+const dragOverlayStyle: CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: "fit-content",
+};
+
+export const Editor: FC<PropsWithChildren> = observer(() => {
   const [activeSidebarComp, setActiveSidebarComp] =
-    useState<SiderDragCompInfo>(); // only for fields from the sidebar
+    useState<SiderDragCompInfo>();
 
   const [activePanComp, setActivePanComp] = useState<string>();
 
   const boardStore = useBoardStore();
+
+  const sensors = useBoardSensors();
 
   const contextVal = useMemo(
     () => ({
@@ -35,14 +54,6 @@ export const Editor: FC<PropsWithChildren> = () => {
     const activeCompInfo = active.data.current as any;
     if (activeCompInfo && activeCompInfo.fromSidebar) {
       setActiveSidebarComp(activeCompInfo);
-      // Create a new field that'll be added to the fields array
-      // if we drag it over the canvas.
-      // currentDragFieldRef.current = {
-      //   id: active.id,
-      //   type,
-      //   name: `${type}${fields.length + 1}`,
-      //   parent: null,
-      // };
       return;
     }
     setActivePanComp(String(active.id));
@@ -51,7 +62,7 @@ export const Editor: FC<PropsWithChildren> = () => {
   const renderComps = useCallback(
     (nodes: SchemaData[]) =>
       map(nodes.slice(), (value) => {
-        const { type, id, children, data } = value;
+        const { type, id, childNodes, data } = value;
         const { render: Component } = COMPONENTS_INFO[type];
         return (
           <CompWrapper
@@ -62,37 +73,46 @@ export const Editor: FC<PropsWithChildren> = () => {
             )}
             draggable={type !== ComponentTypes.PAGE}
           >
-            <Component
-              {...data}
-              children={children ? renderComps(children) : undefined}
-            />
+            {(params) => (
+              <Component
+                {...data}
+                {...params}
+                children={
+                  childNodes?.length ? renderComps(childNodes) : data.children
+                }
+              />
+            )}
           </CompWrapper>
         );
       }),
     []
   );
 
-  const comps = useMemo(() => {
-    return renderComps(cloneDeep(boardStore.nodes));
-  }, [renderComps, boardStore.nodes]);
-
   return (
     <div className="editor-wrapper">
       <BoardContext.Provider value={contextVal}>
         <DndContext
           onDragStart={handleDragStart}
+          sensors={sensors}
           onDragEnd={() => {
             setActiveSidebarComp(undefined);
             setActivePanComp(undefined);
           }}
         >
           <Siderbar />
-          <Pane>{comps}</Pane>
+          <Pane>{renderComps(toJS(boardStore.nodes))}</Pane>
           <DndMonitor />
-          <SiderBarDragOverlay type={activeSidebarComp?.type} />
-          <PanDragOverlay id={activePanComp} />
+          <DragOverlay
+            dropAnimation={null}
+            adjustScale={false}
+            style={dragOverlayStyle}
+            modifiers={[snapCenterToCursor]}
+          >
+            <SiderBarDragOverlay type={activeSidebarComp?.type} />
+            <PanDragOverlay id={activePanComp} />
+          </DragOverlay>
         </DndContext>
       </BoardContext.Provider>
     </div>
   );
-};
+});
