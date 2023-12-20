@@ -3,6 +3,7 @@ import {
   FC,
   PropsWithChildren,
   useCallback,
+  useDeferredValue,
   useMemo,
   useState,
 } from "react";
@@ -17,13 +18,13 @@ import { Siderbar } from "./components/Siderbar";
 import { ComponentTypes } from "./types";
 import { DndMonitor } from "./components/DndMonitor";
 import { CompWrapper } from "./components/CompWrapper";
-import { SiderBarDragOverlay } from "./components/SiderBarDragOverlay";
+import { SiderBarDragOverlayComp } from "./components/SiderBarDragOverlayComp";
 import { useBoardStore } from "./stores/BoardStore";
 import { BoardContext } from "./context/BoardContext";
-import { PanDragOverlay } from "./components/PanDragOverlay";
+import { PanDragOverlayComp } from "./components/PanDragOverlayComp";
 import { observer } from "mobx-react-lite";
-import "./index.scss";
 import useBoardSensors from "./hooks/useBoardSensors";
+import "./index.scss";
 
 const dragOverlayStyle: CSSProperties = {
   display: "flex",
@@ -48,6 +49,8 @@ export const Editor: FC<PropsWithChildren> = observer(() => {
     }),
     [boardStore]
   );
+
+  const defferedNodes = useDeferredValue(toJS(boardStore.nodes));
 
   function handleDragStart(e: DragStartEvent) {
     const { active } = e;
@@ -100,7 +103,7 @@ export const Editor: FC<PropsWithChildren> = observer(() => {
           }}
         >
           <Siderbar />
-          <Pane>{renderComps(toJS(boardStore.nodes))}</Pane>
+          <Pane>{renderComps(defferedNodes)}</Pane>
           <DndMonitor />
           <DragOverlay
             dropAnimation={null}
@@ -108,8 +111,8 @@ export const Editor: FC<PropsWithChildren> = observer(() => {
             style={dragOverlayStyle}
             modifiers={[snapCenterToCursor]}
           >
-            <SiderBarDragOverlay type={activeSidebarComp?.type} />
-            <PanDragOverlay id={activePanComp} />
+            <SiderBarDragOverlayComp type={activeSidebarComp?.type} />
+            <PanDragOverlayComp id={activePanComp} />
           </DragOverlay>
         </DndContext>
       </BoardContext.Provider>

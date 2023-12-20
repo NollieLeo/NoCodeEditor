@@ -37,7 +37,6 @@ export const DndMonitor = observer(() => {
     onDragEnd({ active, over }) {
       const { id, data } = active;
       const overId = over?.id;
-
       if (overId) {
         console.log(
           `End: Draggable item ${id} was dropped over droppable area ${overId}`

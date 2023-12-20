@@ -5,8 +5,11 @@ import {
   ReactZoomPanPinchRef,
 } from "react-zoom-pan-pinch";
 import { useEventListener } from "ahooks";
+import { observer } from "mobx-react-lite";
+import { FC, PropsWithChildren, memo, useRef } from "react";
+import { Tools } from "../Tools";
 import "./index.scss";
-import { FC, PropsWithChildren, useRef } from "react";
+import { useBoardContext } from "../../hooks/useBoardContext";
 
 const DEFAULT_PANE_PROPS: ReactZoomPanPinchProps = {
   limitToBounds: false,
@@ -34,8 +37,9 @@ const DEFAULT_PANE_PROPS: ReactZoomPanPinchProps = {
   },
 };
 
-export const Pane: FC<PropsWithChildren> = (props) => {
+const PaneComp: FC<PropsWithChildren> = observer((props) => {
   const { children } = props;
+  const { boardStore } = useBoardContext();
 
   const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -50,13 +54,15 @@ export const Pane: FC<PropsWithChildren> = (props) => {
         },
         setTransform,
       } = transformComponentRef.current;
-      setTransform(
-        positionX - deltaX / scale,
-        positionY - deltaY / scale,
+      const newPosX = positionX - deltaX / scale;
+      const newPosY = positionY - deltaY / scale;
+      setTransform(newPosX, newPosY, scale, 10, "linear");
+      boardStore.setPanState({
+        positionX: newPosX,
+        positionY: newPosY,
+        previousScale: scale,
         scale,
-        10,
-        "linear"
-      );
+      });
     }
   }
 
@@ -70,8 +76,20 @@ export const Pane: FC<PropsWithChildren> = (props) => {
       className="editor-pane"
       ref={wrapperRef}
       onContextMenu={(e) => e.preventDefault()}
+      onClick={() => {
+        boardStore.cleanUpHelperNode();
+      }}
     >
-      <TransformWrapper {...DEFAULT_PANE_PROPS} ref={transformComponentRef}>
+      <TransformWrapper
+        {...DEFAULT_PANE_PROPS}
+        ref={transformComponentRef}
+        onInit={(ref) => {
+          boardStore.setPanState(ref.instance.transformState);
+        }}
+        onPanning={(e) => console.log(e)}
+        onZoom={(ref) => boardStore.setPanState(ref.instance.transformState)}
+      >
+        <Tools />
         <TransformComponent
           wrapperClass="editor-pane-wrapper"
           contentClass="editor-pane-content"
@@ -81,4 +99,6 @@ export const Pane: FC<PropsWithChildren> = (props) => {
       </TransformWrapper>
     </div>
   );
-};
+});
+
+export const Pane = memo(PaneComp);

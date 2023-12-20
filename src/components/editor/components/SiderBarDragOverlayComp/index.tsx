@@ -2,7 +2,7 @@ import { FC, memo, useMemo } from "react";
 import { ComponentTypes } from "../../types";
 import { COMPONENTS_INFO } from "../../constants";
 
-export const SiderBarDragOverlay: FC<{
+export const SiderBarDragOverlayComp: FC<{
   type?: ComponentTypes;
 }> = memo((props) => {
   const { type } = props;

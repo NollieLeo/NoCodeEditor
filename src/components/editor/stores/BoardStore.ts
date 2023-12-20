@@ -1,4 +1,5 @@
 import { Over } from "@dnd-kit/core";
+import { ReactZoomPanPinchState } from "react-zoom-pan-pinch";
 import { useLocalStore } from "mobx-react-lite";
 import { forEach, remove } from "lodash-es";
 import { toJS } from "mobx";
@@ -9,12 +10,19 @@ export interface BoardState {
   overNode: Over | null;
   nodes: SchemaData[];
   nodeMap: Record<string, SchemaData>;
+  activeNodeId: string | null;
+  hoveredNodeId: string | null;
+  panState: ReactZoomPanPinchState | null;
 }
 
 export interface BoardAction {
-  setOverNode(over: BoardState["overNode"]): void;
   createNewNode(data: SchemaData, target: string): void;
   moveNodeTo(from: string, to: string): void;
+  setOverNode(over: BoardState["overNode"]): void;
+  setActiveNodeId(id: BoardState["activeNodeId"]): void;
+  setHoverNodeId(id: BoardState["hoveredNodeId"]): void;
+  setPanState(panState: ReactZoomPanPinchState | null): void;
+  cleanUpHelperNode(): void;
 }
 
 export type BoardStore = BoardState & BoardAction;
@@ -22,6 +30,9 @@ export type BoardStore = BoardState & BoardAction;
 export const useBoardStore = () => {
   return useLocalStore<BoardStore>(() => ({
     overNode: null,
+    activeNodeId: null,
+    hoveredNodeId: null,
+    panState: null,
     nodes: mock,
     get nodeMap() {
       const map: Record<string, SchemaData> = {};
@@ -37,13 +48,26 @@ export const useBoardStore = () => {
         });
       };
       generateNodesMap(this.nodes, null);
-      console.log("map", map);
       return map;
     },
-    setOverNode(over: Over) {
+    setOverNode(over) {
       this.overNode = over;
     },
-    createNewNode(data: SchemaData, targetId: string) {
+    setActiveNodeId(id) {
+      this.activeNodeId = id;
+    },
+    setHoverNodeId(id) {
+      this.hoveredNodeId = id;
+    },
+    setPanState(state) {
+      this.panState = state;
+    },
+    cleanUpHelperNode() {
+      this.hoveredNodeId = null;
+      this.activeNodeId = null;
+      this.overNode = null;
+    },
+    createNewNode(data, targetId) {
       const target = this.nodeMap[targetId];
       if (target) {
         if (!target.childNodes) {

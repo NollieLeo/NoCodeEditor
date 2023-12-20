@@ -1,11 +1,11 @@
-import { FC, useMemo } from "react";
+import { FC, memo, useMemo } from "react";
 import { observer } from "mobx-react-lite";
 import { toJS } from "mobx";
 
 import { COMPONENTS_INFO } from "../../constants";
 import { useBoardContext } from "../../hooks/useBoardContext";
 
-export const PanDragOverlay: FC<{
+const PanDragOverlayTmpl: FC<{
   id?: string;
 }> = observer((props) => {
   const { id } = props;
@@ -25,3 +25,5 @@ export const PanDragOverlay: FC<{
 
   return activePanComp || <></>;
 });
+
+export const PanDragOverlayComp = memo(PanDragOverlayTmpl);

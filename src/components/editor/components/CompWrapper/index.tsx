@@ -1,7 +1,9 @@
 import { useDraggable, useDroppable } from "@dnd-kit/core";
-import { FC, ReactNode, memo } from "react";
+import { FC, ReactNode } from "react";
+import { observer } from "mobx-react-lite";
 import classNames from "classnames";
 import "./index.scss";
+import { useBoardContext } from "../../hooks/useBoardContext";
 
 export interface CompWrapperProps {
   droppable?: boolean;
@@ -10,8 +12,9 @@ export interface CompWrapperProps {
   children: (params: any) => ReactNode;
 }
 
-export const CompWrapper: FC<CompWrapperProps> = memo((props) => {
+export const CompWrapper: FC<CompWrapperProps> = observer((props) => {
   const { children, droppable = true, draggable = true, id } = props;
+  const { boardStore } = useBoardContext();
 
   const {
     setNodeRef: setDragRef,
@@ -26,18 +29,26 @@ export const CompWrapper: FC<CompWrapperProps> = memo((props) => {
     },
   });
 
-  const { setNodeRef: setDropRef, isOver } = useDroppable({
+  const { setNodeRef: setDropRef } = useDroppable({
     id,
     disabled: !droppable || isDragging,
   });
 
-  const dropZoomCls = classNames("editor-dropzoom", {
-    "editor-dropzoom-isOver": isOver,
-  });
+  const dropZoomCls = classNames("editor-dropzoom");
 
   const onClick = (e: Event) => {
     e.stopPropagation();
-    console.log(e);
+    boardStore.setActiveNodeId(id);
+  };
+
+  const onMouseOver = (e: Event) => {
+    e.stopPropagation();
+    boardStore.setHoverNodeId(id);
+  };
+
+  const onMouseLeave = (e: MouseEvent) => {
+    e.stopPropagation();
+    boardStore.setHoverNodeId(null);
   };
 
   return children({
@@ -48,6 +59,8 @@ export const CompWrapper: FC<CompWrapperProps> = memo((props) => {
       setDropRef(nodeRef);
     },
     onClick,
+    onMouseOver,
+    onMouseLeave,
     className: dropZoomCls,
     id,
   });
