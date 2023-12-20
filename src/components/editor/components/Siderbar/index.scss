@@ -1,0 +1,21 @@
+.editor-siderbar {
+  width: 200px;
+  padding: 10px;
+  border-right: 1px solid #666;
+  flex-shrink: 0;
+
+  .editor-siderbar-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 10px;
+    .editor-siderbar-item {
+      height: 100px;
+      background-color: #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
