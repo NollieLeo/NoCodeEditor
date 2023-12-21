@@ -1,7 +1,7 @@
 import { useDndMonitor } from "@dnd-kit/core";
 import { observer } from "mobx-react-lite";
 
-/** 用于检测各种拖拽事件，禁止在里头写操作or you will be fired */
+/** 用于检测各种拖拽事件，禁止在里头写操作 otherwise you will be fired */
 export const DndMonitor = observer(() => {
   useDndMonitor({
     onDragStart({ active }) {
