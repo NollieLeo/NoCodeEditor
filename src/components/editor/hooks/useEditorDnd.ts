@@ -31,9 +31,9 @@ export default function useEditorDnd() {
       },
       String(addTargetId)
     );
-    setTimeout(() => {
+    requestIdleCallback(() => {
       editorStore.setFocusedNodeId(newNodeId);
-    }, 10);
+    });
   };
 
   const onDragStart = ({ active }: DragStartEvent) => {
@@ -87,9 +87,7 @@ export default function useEditorDnd() {
   };
 
   const onDragOver = ({ over }: DragOverEvent) => {
-    if (over && over.id !== editorStore.overNodeId) {
-      editorStore.setOverNodeId(String(over.id));
-    }
+    editorStore.setOverNodeId(over ? String(over.id) : null);
   };
 
   return {

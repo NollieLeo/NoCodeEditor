@@ -8,21 +8,6 @@ export const DndMonitor = observer(() => {
       const { id } = active;
       console.log(`Start: Picked up draggable item ${id}.`);
     },
-    onDragMove({ active, over }) {
-      const { id } = active;
-      const overId = over?.id;
-
-      if (overId) {
-        console.log(
-          `Move: Draggable item ${id} was moved over droppable area ${overId}.`
-        );
-        return;
-      }
-
-      console.log(
-        `Move: Draggable item ${id} is no longer over a droppable area.`
-      );
-    },
     onDragCancel(id) {
       console.log(
         `Cancel: Dragging was cancelled. Draggable item ${id} was cancelled.`

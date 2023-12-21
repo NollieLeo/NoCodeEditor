@@ -16,8 +16,8 @@ const SiderBarDragOverlayTmpl: FC = observer(() => {
     }
     const { componentType } = editorStore.draggingNode;
     if (componentType) {
-      const { name } = COMPONENTS_INFO[componentType];
-      return <span>{name}</span>;
+      const { render: Component, defaultData } = COMPONENTS_INFO[componentType];
+      return <Component {...defaultData} />;
     }
   }, [editorStore.draggingNode]);
 
