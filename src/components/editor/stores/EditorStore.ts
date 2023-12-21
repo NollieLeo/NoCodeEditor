@@ -1,38 +1,45 @@
-import { Over } from "@dnd-kit/core";
 import { ReactZoomPanPinchState } from "react-zoom-pan-pinch";
 import { useLocalStore } from "mobx-react-lite";
 import { forEach, remove } from "lodash-es";
 import { toJS } from "mobx";
-import { SchemaData } from "../types";
+import { DragTarget, SchemaData } from "../types";
 import { mock } from "./mock";
 
-export interface BoardState {
-  overNode: Over | null;
+export interface EditorState {
+  /** 拖拽时候经过的元素id */
+  overNodeId: string | null;
+  /** 页面被点击激活的元素id */
+  focusedNodeId: string | null;
+  /** 页面上被hover的元素id */
+  hoveredNodeId: string | null;
+  /** 面板的信息，包括缩放大小/位移信息 */
+  panState: Omit<ReactZoomPanPinchState, "previousScale"> | null;
+  /** 被拖拽的元素信息 */
+  draggingNode: DragTarget | null;
   nodes: SchemaData[];
   nodeMap: Record<string, SchemaData>;
-  activeNodeId: string | null;
-  hoveredNodeId: string | null;
-  panState: Omit<ReactZoomPanPinchState, "previousScale"> | null;
 }
 
-export interface BoardAction {
+export interface EditorAction {
+  setOverNodeId(over: EditorState["overNodeId"]): void;
+  setFocusedNodeId(id: EditorState["focusedNodeId"]): void;
+  setHoverNodeId(id: EditorState["hoveredNodeId"]): void;
+  setPanState(panState: EditorState["panState"]): void;
+  setDraggingNode(node: EditorState["draggingNode"]): void;
   createNewNode(data: SchemaData, target: string): void;
   moveNodeTo(from: string, to: string): void;
-  setOverNode(over: BoardState["overNode"]): void;
-  setActiveNodeId(id: BoardState["activeNodeId"]): void;
-  setHoverNodeId(id: BoardState["hoveredNodeId"]): void;
-  setPanState(panState: BoardState["panState"]): void;
   cleanUpHelperNode(): void;
 }
 
-export type BoardStore = BoardState & BoardAction;
+export type EditorStore = EditorState & EditorAction;
 
-export const useBoardStore = () => {
-  return useLocalStore<BoardStore>(() => ({
-    overNode: null,
-    activeNodeId: null,
+export const useEditorStore = () =>
+  useLocalStore<EditorStore>(() => ({
+    overNodeId: null,
+    focusedNodeId: null,
     hoveredNodeId: null,
     panState: null,
+    draggingNode: null,
     nodes: mock,
     get nodeMap() {
       const map: Record<string, SchemaData> = {};
@@ -50,11 +57,11 @@ export const useBoardStore = () => {
       generateNodesMap(this.nodes, null);
       return map;
     },
-    setOverNode(over) {
-      this.overNode = over;
+    setOverNodeId(id) {
+      this.overNodeId = id;
     },
-    setActiveNodeId(id) {
-      this.activeNodeId = id;
+    setFocusedNodeId(id) {
+      this.focusedNodeId = id;
     },
     setHoverNodeId(id) {
       this.hoveredNodeId = id;
@@ -62,10 +69,13 @@ export const useBoardStore = () => {
     setPanState(state) {
       this.panState = state;
     },
+    setDraggingNode(node) {
+      this.draggingNode = node;
+    },
     cleanUpHelperNode() {
       this.hoveredNodeId = null;
-      this.activeNodeId = null;
-      this.overNode = null;
+      this.focusedNodeId = null;
+      this.overNodeId = null;
     },
     createNewNode(data, targetId) {
       const target = this.nodeMap[targetId];
@@ -93,4 +103,3 @@ export const useBoardStore = () => {
       }
     },
   }));
-};

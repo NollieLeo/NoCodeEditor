@@ -7,14 +7,14 @@ import { useEventListener } from "ahooks";
 import { observer } from "mobx-react-lite";
 import { FC, PropsWithChildren, memo, useRef } from "react";
 import { Tools } from "../Tools";
-import { useBoardContext } from "../../hooks/useBoardContext";
+import { useEditorContext } from "../../hooks/useEditorContext";
 import { DEFAULT_PANE_PROPS } from "./constants";
 
 import "./index.scss";
 
-const PaneComp: FC<PropsWithChildren> = observer((props) => {
+const ZoomPanComp: FC<PropsWithChildren> = observer((props) => {
   const { children } = props;
-  const { boardStore } = useBoardContext();
+  const { editorStore } = useEditorContext();
   const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -44,21 +44,20 @@ const PaneComp: FC<PropsWithChildren> = observer((props) => {
       ref={wrapperRef}
       onContextMenu={(e) => e.preventDefault()}
       onClick={() => {
-        boardStore.cleanUpHelperNode();
+        editorStore.cleanUpHelperNode();
       }}
     >
       <TransformWrapper
         {...DEFAULT_PANE_PROPS}
         ref={transformComponentRef}
         onInit={(ref) => {
-          boardStore.setPanState(ref.instance.transformState);
+          editorStore.setPanState(ref.instance.transformState);
         }}
-        onTransformed={(_, state) => boardStore.setPanState(state)}
+        onTransformed={(_, state) => editorStore.setPanState(state)}
       >
         {/* -------------- Helper Tools -------------- */}
         <Tools />
-
-        {/* -------------- Real Pan */}
+        {/* -------------- Real ZoomPan Transformer -------------- */}
         <TransformComponent
           wrapperClass="editor-pane-wrapper"
           contentClass="editor-pane-content"
@@ -70,4 +69,4 @@ const PaneComp: FC<PropsWithChildren> = observer((props) => {
   );
 });
 
-export const Pane = memo(PaneComp);
+export const ZoomPan = memo(ZoomPanComp);

@@ -6,7 +6,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 
-export default function useBoardSensors() {
+export default function useEditorDndSensors() {
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 4,

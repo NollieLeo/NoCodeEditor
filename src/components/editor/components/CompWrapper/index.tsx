@@ -3,7 +3,8 @@ import { FC, ReactNode } from "react";
 import { observer } from "mobx-react-lite";
 import classNames from "classnames";
 import "./index.scss";
-import { useBoardContext } from "../../hooks/useBoardContext";
+import { useEditorContext } from "../../hooks/useEditorContext";
+import { DragOrigin } from "../../types";
 
 export interface CompWrapperProps {
   droppable?: boolean;
@@ -14,7 +15,7 @@ export interface CompWrapperProps {
 
 export const CompWrapper: FC<CompWrapperProps> = observer((props) => {
   const { children, droppable = true, draggable = true, id } = props;
-  const { boardStore } = useBoardContext();
+  const { editorStore } = useEditorContext();
 
   const {
     setNodeRef: setDragRef,
@@ -25,7 +26,8 @@ export const CompWrapper: FC<CompWrapperProps> = observer((props) => {
     id,
     disabled: !draggable,
     data: {
-      id,
+      componentId: id,
+      from: DragOrigin.PAN,
     },
   });
 
@@ -38,17 +40,17 @@ export const CompWrapper: FC<CompWrapperProps> = observer((props) => {
 
   const onClick = (e: Event) => {
     e.stopPropagation();
-    boardStore.setActiveNodeId(id);
+    editorStore.setFocusedNodeId(id);
   };
 
   const onMouseOver = (e: Event) => {
     e.stopPropagation();
-    boardStore.setHoverNodeId(id);
+    editorStore.setHoverNodeId(id);
   };
 
   const onMouseLeave = (e: MouseEvent) => {
     e.stopPropagation();
-    boardStore.setHoverNodeId(null);
+    editorStore.setHoverNodeId(null);
   };
 
   return children({

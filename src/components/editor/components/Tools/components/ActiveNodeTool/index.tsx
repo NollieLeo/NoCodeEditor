@@ -1,19 +1,19 @@
 import { memo } from "react";
 import { BorderedRectangle } from "../BorderedRectangle";
 import { observer } from "mobx-react-lite";
-import { useBoardContext } from "@/components/editor/hooks/useBoardContext";
+import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { isNil } from "lodash-es";
 import useToolWrapperRect from "../../hooks/useToolWrapperRect";
 
 const ActiveNodeToolComp = observer(() => {
-  const { boardStore } = useBoardContext();
+  const { editorStore } = useEditorContext();
   const activeNodeDom = document.getElementById(
-    String(boardStore.activeNodeId)
+    String(editorStore.focusedNodeId)
   );
 
   const wrapperRect = useToolWrapperRect();
 
-  if (!activeNodeDom || !wrapperRect || isNil(boardStore.panState)) {
+  if (!activeNodeDom || !wrapperRect || isNil(editorStore.panState)) {
     return <></>;
   }
 

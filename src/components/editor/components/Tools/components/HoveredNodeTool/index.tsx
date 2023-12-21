@@ -1,4 +1,4 @@
-import { useBoardContext } from "@/components/editor/hooks/useBoardContext";
+import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { memo } from "react";
 import useToolWrapperRect from "../../hooks/useToolWrapperRect";
 import { isNil } from "lodash-es";
@@ -6,14 +6,14 @@ import { BorderedRectangle } from "../BorderedRectangle";
 import { observer } from "mobx-react-lite";
 
 const HoveredNodeToolComp = observer(() => {
-  const { boardStore } = useBoardContext();
+  const { editorStore } = useEditorContext();
   const wrapperRect = useToolWrapperRect();
 
   const hoveredNodeDom = document.getElementById(
-    String(boardStore.hoveredNodeId)
+    String(editorStore.hoveredNodeId)
   );
 
-  if (!hoveredNodeDom || !wrapperRect || isNil(boardStore.panState)) {
+  if (!hoveredNodeDom || !wrapperRect || isNil(editorStore.panState)) {
     return <></>;
   }
 

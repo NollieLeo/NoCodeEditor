@@ -1,13 +1,5 @@
 import { CSSProperties, ReactNode } from "react";
-
-export enum ComponentTypes {
-  BUTTON = "button",
-  TEXT = "text",
-  INPUT = "input",
-  TEXTAREA = "textarea",
-  CONTAINER = "container",
-  PAGE = "page",
-}
+import { ComponentTypes } from "./Components";
 
 export interface SiderDragCompInfo {
   type: ComponentTypes;
@@ -23,3 +15,6 @@ export interface SchemaData {
     children?: ReactNode;
   };
 }
+
+export * from "./Components";
+export * from "./Dnd";
