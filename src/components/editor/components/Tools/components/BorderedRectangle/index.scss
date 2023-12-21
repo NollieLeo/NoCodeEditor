@@ -1,4 +1,8 @@
 .border-drawing {
   position: absolute;
   pointer-events: none;
+  overflow: visible;
+  .bordered-drawing-ponit {
+    pointer-events: all;
+  }
 }

@@ -1,10 +1,5 @@
 import { CSSProperties, ReactNode } from "react";
 import { ComponentTypes } from "./Components";
-
-export interface SiderDragCompInfo {
-  type: ComponentTypes;
-}
-
 export interface SchemaData {
   id: string;
   type: ComponentTypes;

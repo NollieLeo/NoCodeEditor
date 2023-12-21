@@ -28,7 +28,7 @@ export const COMPONENTS_INFO = {
       style: {
         display: "block",
       },
-      children: "文本",
+      children: "Go fuck yourself",
     },
   },
   [ComponentTypes.INPUT]: {
@@ -63,9 +63,8 @@ export const COMPONENTS_INFO = {
     type: ComponentTypes.CONTAINER,
     defaultData: {
       style: {
-        width: "100%",
-        height: 50,
-        heigth: "fit-content",
+        width: 350,
+        height: 200,
         background: "#666",
         display: "block",
       },

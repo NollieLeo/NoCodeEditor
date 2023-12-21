@@ -1,9 +1,14 @@
-import { FC, useRef } from "react";
+import { FC, useMemo, useRef } from "react";
 import { COMPONENTS_INFO } from "../../constants";
-import "./index.scss";
-import { map, uniqueId } from "lodash-es";
+import { map, uniqueId, entries, filter } from "lodash-es";
 import { useDraggable } from "@dnd-kit/core";
-import { ComponentTypes, DragOrigin, DragTargetFromSide } from "../../types";
+import {
+  ComponentTypes,
+  DragOrigin,
+  DragTargetFromSide,
+} from "@/components/editor/types";
+
+import "./index.scss";
 
 const PREFIX = "editor-siderbar";
 
@@ -41,17 +46,23 @@ export const SiderBarItem: FC<SiderBarItemProps> = (props) => {
 };
 
 export const Siderbar = () => {
-  const renderSiderItem = () => (
-    <div className={`${PREFIX}-container`}>
-      {map(COMPONENTS_INFO, (value, key) => (
-        <SiderBarItem
-          componentType={value.type}
-          componentName={value.name}
-          key={key}
-        />
-      ))}
-    </div>
-  );
+  const components = useMemo(() => {
+    const filteredComponents = filter(
+      entries(COMPONENTS_INFO),
+      ([key]) => key !== ComponentTypes.PAGE
+    );
+    return (
+      <div className={`${PREFIX}-container`}>
+        {map(filteredComponents, ([key, value]) => (
+          <SiderBarItem
+            componentType={value.type}
+            componentName={value.name}
+            key={key}
+          />
+        ))}
+      </div>
+    );
+  }, []);
 
-  return <div className={PREFIX}>{renderSiderItem()}</div>;
+  return <div className={PREFIX}>{components}</div>;
 };

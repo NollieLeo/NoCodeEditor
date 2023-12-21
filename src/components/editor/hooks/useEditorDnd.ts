@@ -7,7 +7,11 @@ import { transaction } from "mobx";
 import { uniqueId } from "lodash-es";
 import { COMPONENTS_INFO } from "@/components/editor/constants";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { ComponentTypes, DragOrigin, DragTarget } from "@/components/editor/types";
+import {
+  ComponentTypes,
+  DragOrigin,
+  DragTarget,
+} from "@/components/editor/types";
 
 export default function useEditorDnd() {
   const { editorStore } = useEditorContext();
@@ -16,16 +20,20 @@ export default function useEditorDnd() {
     addType: ComponentTypes,
     addTargetId: string
   ) => {
-    const newNode = COMPONENTS_INFO[addType];
+    const newNodeDefaultData = COMPONENTS_INFO[addType];
+    const newNodeId = uniqueId();
     editorStore.createNewNode(
       {
-        id: uniqueId(),
+        id: newNodeId,
         type: addType,
-        data: newNode.defaultData,
+        data: newNodeDefaultData.defaultData,
         childNodes: [],
       },
       String(addTargetId)
     );
+    setTimeout(() => {
+      editorStore.setFocusedNodeId(newNodeId);
+    }, 10);
   };
 
   const onDragStart = ({ active }: DragStartEvent) => {
@@ -64,12 +72,16 @@ export default function useEditorDnd() {
         break;
       case DragOrigin.PAN:
         editorStore.moveNodeTo(String(activeId), String(overId));
+        editorStore.setFocusedNodeId(null);
+        setTimeout(() => {
+          editorStore.setFocusedNodeId(String(activeId));
+        }, 10);
         break;
       default:
         throw new Error(`unsupported drag origin`);
     }
     transaction(() => {
-      editorStore?.setOverNodeId(null);
+      editorStore.setOverNodeId(null);
       editorStore.setDraggingNode(null);
     });
   };

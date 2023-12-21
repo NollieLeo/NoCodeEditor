@@ -30,7 +30,7 @@ const HoveredNodeToolComp = observer(() => {
     height: domHeight,
     top: domTop,
     bottom: domBottom,
-    zIndex: 3,
+    zIndex: 1,
     left: domLeft - wrapperRect.left,
   };
 

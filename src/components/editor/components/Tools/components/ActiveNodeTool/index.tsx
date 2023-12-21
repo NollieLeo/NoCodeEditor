@@ -34,7 +34,7 @@ const ActiveNodeToolComp = observer(() => {
     left: domLeft - wrapperRect.left,
   };
 
-  return <BorderedRectangle style={style} />;
+  return <BorderedRectangle style={style} anchorPoint />;
 });
 
 export const ActiveNodeTool = memo(ActiveNodeToolComp);

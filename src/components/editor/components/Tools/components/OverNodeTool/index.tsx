@@ -29,7 +29,7 @@ const OverNodeToolComp = observer(() => {
     height: domHeight,
     top: domTop,
     bottom: domBottom,
-    zIndex: 4,
+    zIndex: 3,
     left: domLeft - wrapperRect.left,
   };
 
