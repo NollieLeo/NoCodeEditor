@@ -15,6 +15,7 @@ export const COMPONENTS_INFO = {
       style: {
         width: 120,
         height: 32,
+        display: "block",
       },
       children: "按钮",
     },
@@ -24,7 +25,9 @@ export const COMPONENTS_INFO = {
     type: ComponentTypes.TEXT,
     render: Text,
     defaultData: {
-      style: {},
+      style: {
+        display: "block",
+      },
       children: "文本",
     },
   },
@@ -36,6 +39,7 @@ export const COMPONENTS_INFO = {
       style: {
         width: 120,
         height: 32,
+        display: "block",
       },
       placeholder: "输入框",
     },
@@ -48,6 +52,7 @@ export const COMPONENTS_INFO = {
       style: {
         width: 120,
         height: 32,
+        display: "block",
       },
       placeholder: "输入框",
     },
@@ -59,9 +64,10 @@ export const COMPONENTS_INFO = {
     defaultData: {
       style: {
         width: "100%",
-        minHeight: 50,
+        height: 50,
         heigth: "fit-content",
         background: "#666",
+        display: "block",
       },
     },
   },
@@ -74,6 +80,7 @@ export const COMPONENTS_INFO = {
         width: 1280,
         height: 720,
         background: "#fff",
+        display: "block",
       },
     },
   },

@@ -61,6 +61,7 @@ export const DndMonitor = observer(() => {
         });
         return;
       }
+      boardStore?.setOverNode(null);
       console.log(`End: Draggable item ${id} was dropped.`);
     },
     onDragCancel(id) {

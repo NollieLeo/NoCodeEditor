@@ -12,7 +12,7 @@ export interface BoardState {
   nodeMap: Record<string, SchemaData>;
   activeNodeId: string | null;
   hoveredNodeId: string | null;
-  panState: ReactZoomPanPinchState | null;
+  panState: Omit<ReactZoomPanPinchState, "previousScale"> | null;
 }
 
 export interface BoardAction {
@@ -21,7 +21,7 @@ export interface BoardAction {
   setOverNode(over: BoardState["overNode"]): void;
   setActiveNodeId(id: BoardState["activeNodeId"]): void;
   setHoverNodeId(id: BoardState["hoveredNodeId"]): void;
-  setPanState(panState: ReactZoomPanPinchState | null): void;
+  setPanState(panState: BoardState["panState"]): void;
   cleanUpHelperNode(): void;
 }
 
