@@ -1,4 +1,8 @@
-import { useDroppable } from "@dnd-kit/core";
+import {
+  UseDraggableArguments,
+  UseDroppableArguments,
+  useDroppable,
+} from "@dnd-kit/core";
 import {
   useSortable,
   SortableContext,
@@ -19,7 +23,7 @@ import "./index.scss";
 
 export interface CompWrapperProps {
   droppable?: boolean;
-  itemIds?: string[];
+  childIds?: string[];
   draggable?: boolean;
   id: string;
   parentId?: string | null;
@@ -28,14 +32,27 @@ export interface CompWrapperProps {
 
 export const CompWrapper: FC<CompWrapperProps> = observer((props) => {
   const {
-    children,
     droppable = true,
     draggable = true,
     id,
     parentId,
-    itemIds,
+    childIds,
+    children,
   } = props;
   const { editorStore } = useEditorContext();
+
+  const sortableConfig = useMemo<UseDraggableArguments>(
+    () => ({
+      id,
+      disabled: !draggable,
+      data: {
+        id,
+        parentId,
+        from: DragOrigin.PAN_SORT,
+      } as DragInfoFromPanSort,
+    }),
+    [draggable, id, parentId]
+  );
 
   const {
     setNodeRef: setDragRef,
@@ -44,29 +61,21 @@ export const CompWrapper: FC<CompWrapperProps> = observer((props) => {
     isDragging,
     transform,
     transition,
-  } = useSortable({
-    id,
-    disabled: !draggable,
-    data: {
-      id,
-      parentId,
-      from: DragOrigin.PAN_SORT,
-    } as DragInfoFromPanSort,
-  });
+  } = useSortable(sortableConfig);
 
-  const isDroppableDisabled = useMemo(() => {
-    console.log("itemIds", itemIds);
-    return isDragging || !itemIds;
-  }, [isDragging, itemIds]);
-
-  const { setNodeRef: setDropRef } = useDroppable({
-    id,
-    disabled: isDroppableDisabled,
-    data: {
+  const droppableConfig = useMemo<UseDroppableArguments>(
+    () => ({
       id,
-      parentId,
-    } as DropInfo,
-  });
+      disabled: isDragging,
+      data: {
+        id,
+        parentId,
+      } as DropInfo,
+    }),
+    [id, isDragging, parentId]
+  );
+
+  const { setNodeRef: setDropRef } = useDroppable(droppableConfig);
 
   const sortableItemTransform = useMemo(() => {
     if (transform) {
@@ -79,10 +88,13 @@ export const CompWrapper: FC<CompWrapperProps> = observer((props) => {
     }
   }, [editorStore.panState?.scale, transform]);
 
-  const sortItemStyle = {
-    transform: sortableItemTransform,
-    transition,
-  };
+  const sortItemStyle = useMemo(
+    () => ({
+      transform: sortableItemTransform,
+      transition,
+    }),
+    [sortableItemTransform, transition]
+  );
 
   const dropZoomCls = classNames("editor-dropzoom");
 
@@ -119,7 +131,7 @@ export const CompWrapper: FC<CompWrapperProps> = observer((props) => {
   return droppable ? (
     <SortableContext
       id={id}
-      items={itemIds || []}
+      items={childIds || []}
       strategy={verticalListSortingStrategy}
     >
       {genComps}

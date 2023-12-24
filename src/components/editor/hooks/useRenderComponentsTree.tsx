@@ -14,7 +14,7 @@ export function useRenderComponentsTree(renderWithDndWrapper = true) {
       type
     );
     const draggable = type !== ComponentTypes.PAGE;
-    const itemIds = childNodes ? map(childNodes, ({ id }) => id) : undefined;
+    const childIds = childNodes ? map(childNodes, ({ id }) => id) : undefined;
     return (
       <CompWrapper
         key={id}
@@ -22,7 +22,7 @@ export function useRenderComponentsTree(renderWithDndWrapper = true) {
         parentId={parentId}
         droppable={droppable}
         draggable={draggable}
-        itemIds={itemIds}
+        childIds={childIds}
       >
         {(params) => (
           <Component

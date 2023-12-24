@@ -1,7 +1,27 @@
 import { COMPONENTS_INFO } from "@/components/editor/constants";
-import { DragInfoFromSideAdd, DropInfo } from "@/components/editor/types";
+import {
+  ComponentTypes,
+  DragInfoFromSideAdd,
+  DropInfo,
+} from "@/components/editor/types";
 import { uniqueId } from "lodash-es";
 import { useEditorContext } from "../useEditorContext";
+
+// TODO
+function generateNewNode(type: ComponentTypes, parentId: string) {
+  const newNodeDefaultData = COMPONENTS_INFO[type];
+  const newNodeId = uniqueId();
+  const newNode: any = {
+    id: newNodeId,
+    parentId,
+    type: type,
+    data: newNodeDefaultData.defaultData,
+  };
+  if ([ComponentTypes.CONTAINER].includes(type)) {
+    newNode.childNodes = [];
+  }
+  return newNode;
+}
 
 export function useSideDnd() {
   const { editorStore } = useEditorContext();
@@ -10,22 +30,12 @@ export function useSideDnd() {
   };
 
   const onDragEnd = (dragInfo: DragInfoFromSideAdd, dropInfo: DropInfo) => {
-    const { type: addCompType } = dragInfo;
+    const { type } = dragInfo;
     const { id: parentId } = dropInfo;
-    const newNodeDefaultData = COMPONENTS_INFO[addCompType];
-    const newNodeId = uniqueId();
-    editorStore.addNode(
-      {
-        id: newNodeId,
-        parentId,
-        type: addCompType,
-        data: newNodeDefaultData.defaultData,
-        childNodes: [],
-      },
-      parentId
-    );
+    const newNode = generateNewNode(type, parentId);
+    editorStore.addNode(newNode, parentId);
     requestIdleCallback(() => {
-      editorStore.setFocusedNodeId(newNodeId);
+      editorStore.setFocusedNodeId(newNode.id);
     });
   };
 
