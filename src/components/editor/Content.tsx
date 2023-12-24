@@ -1,6 +1,5 @@
-import { FC, memo, useDeferredValue, PropsWithChildren } from "react";
+import { FC, memo, PropsWithChildren, useDeferredValue, useMemo } from "react";
 import { DndContext } from "@dnd-kit/core";
-import { toJS } from "mobx";
 import { ZoomPan } from "./components/ZoomPan";
 import { Siderbar } from "./components/Siderbar";
 import { DndMonitor } from "./components/DndMonitor";
@@ -9,20 +8,29 @@ import useEditorDndSensors from "./hooks/useEditorDndSensors";
 import { useEditorContext } from "./hooks/useEditorContext";
 import { DndDragOverlay } from "./components/DndDragOverlay";
 import useEditorDnd from "./hooks/useEditorDnd";
+import { useRenderComponentsTree } from "./hooks/useRenderComponentsTree";
 
 import "./Content.scss";
-import { useRenderComponentsTree } from "./hooks/useRenderComponentsTree";
+import { useEditorMeasuring } from "./hooks/useEditorMeasuring";
 
 const ContentComp: FC<PropsWithChildren> = observer(() => {
   const sensors = useEditorDndSensors();
   const { editorStore } = useEditorContext();
   const { onDragStart, onDragEnd, onDragOver } = useEditorDnd();
-  const defferedNodes = useDeferredValue(toJS(editorStore.nodes));
+  const measuringConfig = useEditorMeasuring();
+
+  const defferedNodes = useDeferredValue(editorStore.nodes.slice());
   const renderCompTree = useRenderComponentsTree();
+
+  const compTrees = useMemo(
+    () => renderCompTree(defferedNodes),
+    [defferedNodes, renderCompTree]
+  );
 
   return (
     <DndContext
       sensors={sensors}
+      measuring={measuringConfig}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
@@ -31,7 +39,7 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
         {/* --------- Siderbar for editor --------- */}
         <Siderbar />
         {/* --------- Editor's zoom pan */}
-        <ZoomPan>{renderCompTree(defferedNodes)}</ZoomPan>
+        <ZoomPan>{compTrees}</ZoomPan>
         {/* --------- Dnd overlays for editor's global drag overlay  ---------- */}
         <DndDragOverlay />
       </div>

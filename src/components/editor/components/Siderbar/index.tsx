@@ -5,7 +5,7 @@ import { useDraggable } from "@dnd-kit/core";
 import {
   ComponentTypes,
   DragOrigin,
-  DragTargetFromSide,
+  DragInfoFromSideAdd,
 } from "@/components/editor/types";
 
 import "./index.scss";
@@ -13,18 +13,18 @@ import "./index.scss";
 const PREFIX = "editor-siderbar";
 
 interface SiderBarItemProps {
-  componentType: ComponentTypes;
-  componentName: string;
+  type: ComponentTypes;
+  name: string;
 }
 
 export const SiderBarItem: FC<SiderBarItemProps> = (props) => {
-  const { componentType, componentName } = props;
+  const { type, name } = props;
 
   const id = useRef(uniqueId());
 
-  const dragData: DragTargetFromSide = {
-    componentType,
-    componentName,
+  const dragData: DragInfoFromSideAdd = {
+    type,
+    name,
     from: DragOrigin.SIDE_ADD,
   };
 
@@ -40,7 +40,7 @@ export const SiderBarItem: FC<SiderBarItemProps> = (props) => {
       {...listeners}
       className={`${PREFIX}-item`}
     >
-      {componentName}
+      {name}
     </div>
   );
 };
@@ -54,11 +54,7 @@ export const Siderbar = () => {
     return (
       <div className={`${PREFIX}-container`}>
         {map(filteredComponents, ([key, value]) => (
-          <SiderBarItem
-            componentType={value.type}
-            componentName={value.name}
-            key={key}
-          />
+          <SiderBarItem type={value.type} name={value.name} key={key} />
         ))}
       </div>
     );

@@ -1,9 +1,10 @@
 import { ReactZoomPanPinchState } from "react-zoom-pan-pinch";
 import { useLocalStore } from "mobx-react-lite";
-import { forEach, remove } from "lodash-es";
-import { toJS } from "mobx";
-import { DragTarget, SchemaData } from "../types";
+import { observable, transaction } from "mobx";
+import { findIndex, forEach } from "lodash-es";
+import { DragInfo, SchemaData } from "../types";
 import { mock } from "./mock";
+import { swapPos } from "./utils/swapPos";
 
 export interface EditorState {
   /** 拖拽时候经过的元素id */
@@ -15,7 +16,7 @@ export interface EditorState {
   /** 面板的信息，包括缩放大小/位移信息 */
   panState: Omit<ReactZoomPanPinchState, "previousScale"> | null;
   /** 被拖拽的元素信息 */
-  draggingNode: DragTarget | null;
+  draggingInfo: DragInfo | null;
   nodes: SchemaData[];
   nodeMap: Record<string, SchemaData>;
 }
@@ -25,9 +26,9 @@ export interface EditorAction {
   setFocusedNodeId(id: EditorState["focusedNodeId"]): void;
   setHoverNodeId(id: EditorState["hoveredNodeId"]): void;
   setPanState(panState: EditorState["panState"]): void;
-  setDraggingNode(node: EditorState["draggingNode"]): void;
-  createNewNode(data: SchemaData, target: string): void;
-  moveNodeTo(from: string, to: string): void;
+  setDraggingInfo(node: EditorState["draggingInfo"]): void;
+  addNode(data: SchemaData, target: string): void;
+  movePos(parentId: string, from: string, to: string): void;
   cleanUpHelperNode(): void;
 }
 
@@ -39,7 +40,7 @@ export const useEditorStore = () =>
     focusedNodeId: null,
     hoveredNodeId: null,
     panState: null,
-    draggingNode: null,
+    draggingInfo: null,
     nodes: mock,
     get nodeMap() {
       const map: Record<string, SchemaData> = {};
@@ -69,37 +70,54 @@ export const useEditorStore = () =>
     setPanState(state) {
       this.panState = state;
     },
-    setDraggingNode(node) {
-      this.draggingNode = node;
+    setDraggingInfo(node) {
+      this.draggingInfo = node;
     },
     cleanUpHelperNode() {
       this.hoveredNodeId = null;
       this.focusedNodeId = null;
       this.overNodeId = null;
     },
-    createNewNode(data, targetId) {
+    /**
+     * @description add node from sidebar
+     */
+    addNode(data, targetId) {
       const target = this.nodeMap[targetId];
       if (target) {
+        const observableObj = observable.object(data);
         if (!target.childNodes) {
-          target.childNodes = [data];
+          const observableArr = observable.array([observableObj]);
+          target.childNodes = observableArr;
         } else {
-          target.childNodes.push(data);
+          target.childNodes.push(observableObj);
         }
       }
     },
-    moveNodeTo(from: string, to: string) {
-      const origin = this.nodeMap[from];
-      const target = this.nodeMap[to];
-      if (origin.parentId) {
-        const childs = this.nodeMap[origin.parentId].childNodes;
-        if (childs && childs.length) {
-          const [removedNode] = remove(childs, (n) => n.id === origin.id);
-          if (!target.childNodes) {
-            target.childNodes = [toJS(removedNode)];
-          } else {
-            target.childNodes.push(toJS(removedNode));
+    /**
+     * @description move node in a sortable container
+     */
+    movePos(parentId: string, from: string, to: string) {
+      const parent = this.nodeMap[parentId];
+      if (!parent || !parent.childNodes) {
+        throw new Error(`swap failed: node ${parentId} does not exist`);
+      }
+      const { childNodes } = parent;
+      const fromIdx = findIndex(childNodes, ({ id }) => id === from);
+      const toIdx = findIndex(childNodes, ({ id }) => id === to);
+      if (fromIdx === -1 || toIdx === -1) {
+        return;
+      }
+      const isAsceOrder = fromIdx < toIdx;
+      transaction(() => {
+        if (isAsceOrder) {
+          for (let i = fromIdx; i < toIdx; i++) {
+            swapPos(childNodes, i, i + 1);
+          }
+        } else {
+          for (let i = fromIdx; i > toIdx; i--) {
+            swapPos(childNodes, i, i - 1);
           }
         }
-      }
+      });
     },
   }));

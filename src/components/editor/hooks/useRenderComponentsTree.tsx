@@ -8,18 +8,27 @@ export function useRenderComponentsTree(renderWithDndWrapper = true) {
   const render = renderWithDndWrapper ? renderCompWithDndWrapper : renderComp;
 
   function renderCompWithDndWrapper(value: SchemaData) {
-    const { type, id, childNodes, data } = value;
+    const { type, id, childNodes, data, parentId } = value;
     const { render: Component } = COMPONENTS_INFO[type];
     const droppable = [ComponentTypes.PAGE, ComponentTypes.CONTAINER].includes(
       type
     );
     const draggable = type !== ComponentTypes.PAGE;
+    const itemIds = childNodes ? map(childNodes, ({ id }) => id) : undefined;
     return (
-      <CompWrapper key={id} id={id} droppable={droppable} draggable={draggable}>
+      <CompWrapper
+        key={id}
+        id={id}
+        parentId={parentId}
+        droppable={droppable}
+        draggable={draggable}
+        itemIds={itemIds}
+      >
         {(params) => (
           <Component
             {...data}
             {...params}
+            style={{ ...data.style, ...params.style }}
             children={
               childNodes?.length ? renderComps(childNodes) : data.children
             }
@@ -40,11 +49,8 @@ export function useRenderComponentsTree(renderWithDndWrapper = true) {
     );
   }
 
-  function renderComps(nodes: SchemaData[]) {
-    return map(nodes.slice(), (value) => (
-      <Fragment key={value.id}>{render(value)}</Fragment>
-    ));
-  }
+  const renderComps = (nodes: SchemaData[]) =>
+    map(nodes, (value) => <Fragment key={value.id}>{render(value)}</Fragment>);
 
   return renderComps;
 }

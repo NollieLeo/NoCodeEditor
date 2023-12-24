@@ -9,17 +9,17 @@ const SiderBarDragOverlayTmpl: FC = observer(() => {
 
   const activeSiderBarComp = useMemo(() => {
     if (
-      !editorStore.draggingNode ||
-      editorStore.draggingNode.from !== DragOrigin.SIDE_ADD
+      !editorStore.draggingInfo ||
+      editorStore.draggingInfo.from !== DragOrigin.SIDE_ADD
     ) {
       return <></>;
     }
-    const { componentType } = editorStore.draggingNode;
-    if (componentType) {
-      const { render: Component, defaultData } = COMPONENTS_INFO[componentType];
+    const { type } = editorStore.draggingInfo;
+    if (type) {
+      const { render: Component, defaultData } = COMPONENTS_INFO[type];
       return <Component {...defaultData} />;
     }
-  }, [editorStore.draggingNode]);
+  }, [editorStore.draggingInfo]);
 
   return activeSiderBarComp;
 });

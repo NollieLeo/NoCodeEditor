@@ -3,25 +3,30 @@ import { ComponentTypes } from "./Components";
 /** 拖拽的元素的来源 */
 export enum DragOrigin {
   /** 来源侧边栏 拖拽添加 */
-  SIDE_ADD = "addFromSide",
-  /** 来源面板 拖拽 */
-  PAN = "dragFromPan",
+  SIDE_ADD = "sideAdd",
+  /** 来源面板 拖拽排序 */
+  PAN_SORT = "panSort",
 }
 
-export interface DragTargetDefault {
+export interface DragInfoDefault {
   from: DragOrigin;
 }
 
-export interface DragTargetFromSide extends DragTargetDefault {
-  componentType: ComponentTypes;
-  componentName: string;
+export interface DragInfoFromSideAdd extends DragInfoDefault {
+  type: ComponentTypes;
+  name: string;
   from: DragOrigin.SIDE_ADD;
 }
 
-export interface DragTargetFromPan extends DragTargetDefault {
-  componentType: ComponentTypes;
-  componentId: string;
-  from: DragOrigin.PAN;
+export interface DragInfoFromPanSort extends DragInfoDefault {
+  id: string;
+  parentId: string;
+  from: DragOrigin.PAN_SORT;
 }
 
-export type DragTarget = DragTargetFromSide | DragTargetFromPan;
+export type DragInfo = DragInfoFromSideAdd | DragInfoFromPanSort;
+
+export interface DropInfo {
+  parentId?: string;
+  id: string;
+}

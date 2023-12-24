@@ -3,27 +3,28 @@ import { observer } from "mobx-react-lite";
 import { toJS } from "mobx";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { DragOrigin } from "@/components/editor/types";
-import { useRenderComponentsTree } from "@/components/editor/hooks/useRenderComponentsTree";
+// import { useRenderComponentsTree } from "@/components/editor/hooks/useRenderComponentsTree";
 
 const PanDragOverlayTmpl: FC = observer(() => {
   const { editorStore } = useEditorContext();
-  const renderCompTree = useRenderComponentsTree(false);
+  // const renderCompTree = useRenderComponentsTree(false);
 
   const activePanComp = useMemo(() => {
     if (
-      !editorStore.draggingNode ||
-      editorStore.draggingNode.from !== DragOrigin.PAN
+      !editorStore.draggingInfo ||
+      editorStore.draggingInfo.from !== DragOrigin.PAN_SORT
     ) {
       return <></>;
     }
-    const { componentId } = editorStore.draggingNode;
-    if (componentId && editorStore.nodeMap[componentId]) {
-      const targetComp = toJS(editorStore.nodeMap[componentId], {
+    const { id } = editorStore.draggingInfo;
+    if (id && editorStore.nodeMap[id]) {
+      const targetComp = toJS(editorStore.nodeMap[id], {
         recurseEverything: true,
       });
-      return <div>{renderCompTree([targetComp])}</div>;
+      return <span>{targetComp.type}</span>;
+      // return <div>{renderCompTree([targetComp])}</div>;
     }
-  }, [editorStore.draggingNode, editorStore.nodeMap]);
+  }, [editorStore.draggingInfo, editorStore.nodeMap]);
 
   return activePanComp;
 });
