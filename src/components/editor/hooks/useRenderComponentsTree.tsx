@@ -1,7 +1,7 @@
 import { map } from "lodash-es";
 import { COMPONENTS_INFO } from "../constants";
 import { SchemaData, ComponentTypes } from "../types";
-import { CompWrapper } from "../components/CompWrapper";
+import { DndBox } from "../components/DndBox";
 import { Fragment } from "react";
 
 export function useRenderComponentsTree(renderWithDndWrapper = true) {
@@ -16,7 +16,7 @@ export function useRenderComponentsTree(renderWithDndWrapper = true) {
     const draggable = type !== ComponentTypes.PAGE;
     const childIds = childNodes ? map(childNodes, ({ id }) => id) : undefined;
     return (
-      <CompWrapper
+      <DndBox
         key={id}
         id={id}
         parentId={parentId}
@@ -34,7 +34,7 @@ export function useRenderComponentsTree(renderWithDndWrapper = true) {
             }
           />
         )}
-      </CompWrapper>
+      </DndBox>
     );
   }
 

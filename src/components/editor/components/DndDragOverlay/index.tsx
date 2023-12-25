@@ -1,20 +1,23 @@
 /**
  * @description 拖拽元素的overlay
  */
-import { CSSProperties, memo } from "react";
+import { CSSProperties, memo, useMemo } from "react";
 import { snapCenterToCursor } from "@dnd-kit/modifiers";
 import { DragOverlay } from "@dnd-kit/core";
 import { SiderBarDragOverlayComp } from "./components/SiderBarDragOverlayComp";
 import { PanDragOverlayComp } from "./components/PanDragOverlayComp";
+import { observer } from "mobx-react-lite";
 
-const dragOverlayStyle: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: "fit-content",
-};
+const DndDragOverlayComp = observer(() => {
+  const dragOverlayStyle: CSSProperties = useMemo(() => {
+    return {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "fit-content",
+    };
+  }, []);
 
-const DndDragOverlayComp = () => {
   return (
     <DragOverlay
       dropAnimation={null}
@@ -26,5 +29,6 @@ const DndDragOverlayComp = () => {
       <PanDragOverlayComp />
     </DragOverlay>
   );
-};
+});
+
 export const DndDragOverlay = memo(DndDragOverlayComp);

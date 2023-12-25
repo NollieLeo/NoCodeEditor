@@ -1,14 +1,14 @@
 import { ReactZoomPanPinchState } from "react-zoom-pan-pinch";
 import { useLocalStore } from "mobx-react-lite";
 import { observable, transaction } from "mobx";
-import { findIndex, forEach } from "lodash-es";
-import { DragInfo, SchemaData } from "../types";
+import { cloneDeep, findIndex, forEach } from "lodash-es";
+import { DragInfo, DropInfo, SchemaData } from "../types";
 import { mock } from "./mock";
 import { swapPos } from "./utils/swapPos";
 
 export interface EditorState {
-  /** 拖拽时候经过的元素id */
-  overNodeId: string | null;
+  /** 拖拽时候经过的元素信息 */
+  overInfo: DropInfo | null;
   /** 页面被点击激活的元素id */
   focusedNodeId: string | null;
   /** 页面上被hover的元素id */
@@ -22,7 +22,7 @@ export interface EditorState {
 }
 
 export interface EditorAction {
-  setOverNodeId(over: EditorState["overNodeId"]): void;
+  setOverInfo(over: EditorState["overInfo"]): void;
   setFocusedNodeId(id: EditorState["focusedNodeId"]): void;
   setHoverNodeId(id: EditorState["hoveredNodeId"]): void;
   setPanState(panState: EditorState["panState"]): void;
@@ -34,32 +34,36 @@ export interface EditorAction {
 
 export type EditorStore = EditorState & EditorAction;
 
-export const useEditorStore = () =>
-  useLocalStore<EditorStore>(() => ({
-    overNodeId: null,
+export const useEditorStore = () => {
+  const generate = (datas: SchemaData[]) => {
+    const map: Record<string, SchemaData> = {};
+    const generateNodesMap = (
+      nodes: SchemaData[],
+      parentId?: string | null
+    ) => {
+      forEach(nodes, (value) => {
+        map[value.id] = { ...value, parentId };
+        if (value.childNodes) {
+          generateNodesMap(value.childNodes, value.id);
+        }
+      });
+    };
+    generateNodesMap(datas, null);
+    return map;
+  };
+
+  return useLocalStore<EditorStore>(() => ({
+    overInfo: null,
     focusedNodeId: null,
     hoveredNodeId: null,
     panState: null,
     draggingInfo: null,
-    nodes: mock,
+    nodes: cloneDeep(mock),
     get nodeMap() {
-      const map: Record<string, SchemaData> = {};
-      const generateNodesMap = (
-        nodes: SchemaData[],
-        parentId?: string | null
-      ) => {
-        forEach(nodes, (value) => {
-          map[value.id] = { ...value, parentId };
-          if (value.childNodes) {
-            generateNodesMap(value.childNodes, value.id);
-          }
-        });
-      };
-      generateNodesMap(this.nodes, null);
-      return map;
+      return generate(this.nodes);
     },
-    setOverNodeId(id) {
-      this.overNodeId = id;
+    setOverInfo(overInfo) {
+      this.overInfo = overInfo;
     },
     setFocusedNodeId(id) {
       this.focusedNodeId = id;
@@ -70,13 +74,13 @@ export const useEditorStore = () =>
     setPanState(state) {
       this.panState = state;
     },
-    setDraggingInfo(node) {
-      this.draggingInfo = node;
+    setDraggingInfo(info) {
+      this.draggingInfo = info;
     },
     cleanUpHelperNode() {
       this.hoveredNodeId = null;
       this.focusedNodeId = null;
-      this.overNodeId = null;
+      this.overInfo = null;
     },
     /**
      * @description add node from sidebar
@@ -97,6 +101,9 @@ export const useEditorStore = () =>
      * @description move node in a sortable container
      */
     movePos(parentId: string, from: string, to: string) {
+      if (from === to) {
+        return;
+      }
       const parent = this.nodeMap[parentId];
       if (!parent || !parent.childNodes) {
         throw new Error(`swap failed: node ${parentId} does not exist`);
@@ -121,3 +128,4 @@ export const useEditorStore = () =>
       });
     },
   }));
+};

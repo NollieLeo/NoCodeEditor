@@ -1,3 +1,4 @@
+import { ClientRect } from "@dnd-kit/core";
 import { ComponentTypes } from "./Components";
 
 /** 拖拽的元素的来源 */
@@ -10,6 +11,8 @@ export enum DragOrigin {
 
 export interface DragInfoDefault {
   from: DragOrigin;
+  id: string;
+  rect: ClientRect | null;
 }
 
 export interface DragInfoFromSideAdd extends DragInfoDefault {
@@ -19,14 +22,15 @@ export interface DragInfoFromSideAdd extends DragInfoDefault {
 }
 
 export interface DragInfoFromPanSort extends DragInfoDefault {
-  id: string;
-  parentId: string;
+  parentId?: string | null;
   from: DragOrigin.PAN_SORT;
 }
 
 export type DragInfo = DragInfoFromSideAdd | DragInfoFromPanSort;
 
 export interface DropInfo {
-  parentId?: string;
+  parentId?: string | null;
+  rect: ClientRect | null;
   id: string;
+  accepts?: string[];
 }

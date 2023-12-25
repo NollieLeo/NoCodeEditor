@@ -7,23 +7,22 @@ import { useRenderComponentsTree } from "@/components/editor/hooks/useRenderComp
 
 const PanDragOverlayTmpl: FC = observer(() => {
   const { editorStore } = useEditorContext();
+  const { draggingInfo, nodeMap } = editorStore;
   const renderCompTree = useRenderComponentsTree(false);
 
   const activePanComp = useMemo(() => {
-    if (
-      !editorStore.draggingInfo ||
-      editorStore.draggingInfo.from !== DragOrigin.PAN_SORT
-    ) {
+    if (!draggingInfo || draggingInfo.from !== DragOrigin.PAN_SORT) {
       return <></>;
     }
-    const { id } = editorStore.draggingInfo;
-    if (id && editorStore.nodeMap[id]) {
-      const targetComp = toJS(editorStore.nodeMap[id], {
+    const { id } = draggingInfo;
+
+    if (id && nodeMap[id]) {
+      const targetComp = toJS(nodeMap[id], {
         recurseEverything: true,
       });
-      return <div>{renderCompTree([targetComp])}</div>;
+      return renderCompTree([targetComp]);
     }
-  }, [editorStore.draggingInfo, editorStore.nodeMap, renderCompTree]);
+  }, [draggingInfo, nodeMap, renderCompTree]);
 
   return activePanComp;
 });

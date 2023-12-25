@@ -10,7 +10,7 @@ import { useEditorContext } from "../useEditorContext";
 // TODO
 function generateNewNode(type: ComponentTypes, parentId: string) {
   const newNodeDefaultData = COMPONENTS_INFO[type];
-  const newNodeId = uniqueId();
+  const newNodeId = `${type}-${uniqueId()}`;
   const newNode: any = {
     id: newNodeId,
     parentId,

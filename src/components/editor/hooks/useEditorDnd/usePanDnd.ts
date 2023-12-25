@@ -11,16 +11,29 @@ export function usePanDnd() {
     });
   };
 
+  const onDragOver = (dragInfo: DragInfoFromPanSort, dropInfo: DropInfo) => {
+    const { parentId: dragParentId, id: fromId } = dragInfo;
+    const { id: toId, parentId: dropParentId } = dropInfo;
+    if (!dropParentId || !dragParentId || dropParentId !== dragParentId) {
+      return;
+    }
+    editorStore.setOverInfo(dropInfo);
+    editorStore.movePos(dropParentId, fromId, toId);
+  };
+
   const onDragEnd = (dragInfo: DragInfoFromPanSort, dropInfo: DropInfo) => {
     const { parentId, id: fromId } = dragInfo;
-    const { id: toId } = dropInfo;
-    transaction(() => {
-      editorStore.movePos(parentId, fromId, toId);
+    if (!parentId) {
+      return;
+    }
+    console.log("dropInfo", dropInfo);
+    setTimeout(() => {
       editorStore.setFocusedNodeId(fromId);
-    });
+    }, 1);
   };
 
   return {
+    onDragOver,
     onDragStart,
     onDragEnd,
   };
