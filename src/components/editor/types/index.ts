@@ -3,11 +3,11 @@ import { ComponentTypes } from "./Components";
 export interface SchemaData {
   id: string;
   type: ComponentTypes;
-  parentId?: string | null;
-  childNodes?: SchemaData[];
+  parentId: string | null;
+  childNodes: string[] | null;
   data: {
     style: CSSProperties;
-    children?: ReactNode;
+    children: ReactNode;
   };
 }
 

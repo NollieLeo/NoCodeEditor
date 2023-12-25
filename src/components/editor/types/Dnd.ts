@@ -22,7 +22,7 @@ export interface DragInfoFromSideAdd extends DragInfoDefault {
 }
 
 export interface DragInfoFromPanSort extends DragInfoDefault {
-  parentId?: string | null;
+  parentId: string | null;
   from: DragOrigin.PAN_SORT;
 }
 
@@ -32,5 +32,5 @@ export interface DropInfo {
   parentId?: string | null;
   rect: ClientRect | null;
   id: string;
-  accepts?: string[];
+  accepts: string[] | null;
 }

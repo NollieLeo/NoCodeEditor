@@ -1,13 +1,12 @@
 import { FC, memo, useMemo } from "react";
 import { observer } from "mobx-react-lite";
-import { toJS } from "mobx";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { DragOrigin } from "@/components/editor/types";
 import { useRenderComponentsTree } from "@/components/editor/hooks/useRenderComponentsTree";
 
 const PanDragOverlayTmpl: FC = observer(() => {
   const { editorStore } = useEditorContext();
-  const { draggingInfo, nodeMap } = editorStore;
+  const { draggingInfo, nodesMap } = editorStore;
   const renderCompTree = useRenderComponentsTree(false);
 
   const activePanComp = useMemo(() => {
@@ -16,13 +15,10 @@ const PanDragOverlayTmpl: FC = observer(() => {
     }
     const { id } = draggingInfo;
 
-    if (id && nodeMap[id]) {
-      const targetComp = toJS(nodeMap[id], {
-        recurseEverything: true,
-      });
-      return renderCompTree([targetComp]);
+    if (id && nodesMap[id]) {
+      return renderCompTree(id);
     }
-  }, [draggingInfo, nodeMap, renderCompTree]);
+  }, [draggingInfo, nodesMap, renderCompTree]);
 
   return activePanComp;
 });

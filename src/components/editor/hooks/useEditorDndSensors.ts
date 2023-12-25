@@ -8,14 +8,13 @@ import {
 export default function useEditorDndSensors() {
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
-      distance: 0,
+      distance: 5,
     },
   });
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
       delay: 250,
       tolerance: 5,
-      distance: 0,
     },
   });
   const sensors = useSensors(mouseSensor, touchSensor);

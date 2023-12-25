@@ -1,4 +1,4 @@
-import { FC, memo, PropsWithChildren, useDeferredValue, useMemo } from "react";
+import { FC, memo, PropsWithChildren, useMemo } from "react";
 import { DndContext } from "@dnd-kit/core";
 import { ZoomPan } from "./components/ZoomPan";
 import { Siderbar } from "./components/Siderbar";
@@ -12,20 +12,26 @@ import { useRenderComponentsTree } from "./hooks/useRenderComponentsTree";
 
 import "./Content.scss";
 import { useEditorMeasuring } from "./hooks/useEditorMeasuring";
+import { find } from "lodash-es";
+import { ComponentTypes } from "./types";
 
 const ContentComp: FC<PropsWithChildren> = observer(() => {
   const sensors = useEditorDndSensors();
-  const { editorStore } = useEditorContext();
+  const {
+    editorStore: { nodesMap },
+  } = useEditorContext();
   const { onDragStart, onDragEnd, onDragOver } = useEditorDnd();
   const measuringConfig = useEditorMeasuring();
 
-  const defferedNodes = useDeferredValue(editorStore.nodes.slice());
   const renderCompTree = useRenderComponentsTree();
 
-  const compTrees = useMemo(
-    () => renderCompTree(defferedNodes),
-    [defferedNodes, renderCompTree]
-  );
+  const compTrees = useMemo(() => {
+    const root = find(nodesMap, ({ type }) => type === ComponentTypes.PAGE);
+    if (!root) {
+      return <></>;
+    }
+    return renderCompTree(root.id);
+  }, [nodesMap, renderCompTree]);
 
   return (
     <DndContext

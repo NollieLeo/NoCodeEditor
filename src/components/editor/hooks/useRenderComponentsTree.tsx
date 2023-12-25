@@ -2,19 +2,35 @@ import { map } from "lodash-es";
 import { COMPONENTS_INFO } from "../constants";
 import { SchemaData, ComponentTypes } from "../types";
 import { DndBox } from "../components/DndBox";
+import { useEditorContext } from "./useEditorContext";
+import { toJS } from "mobx";
 import { Fragment } from "react";
 
 export function useRenderComponentsTree(renderWithDndWrapper = true) {
-  const render = renderWithDndWrapper ? renderCompWithDndWrapper : renderComp;
+  const { editorStore } = useEditorContext();
+  const { nodesMap } = editorStore;
 
-  function renderCompWithDndWrapper(value: SchemaData) {
+  const render = renderWithDndWrapper
+    ? renderTreeWithDnd
+    : renderTreeWithoutDnd;
+
+  function renderTreeWithDnd(compId: SchemaData["id"]) {
+    const value = toJS(nodesMap[compId], {
+      recurseEverything: true,
+    });
     const { type, id, childNodes, data, parentId } = value;
     const { render: Component } = COMPONENTS_INFO[type];
     const droppable = [ComponentTypes.PAGE, ComponentTypes.CONTAINER].includes(
       type
     );
     const draggable = type !== ComponentTypes.PAGE;
-    const childIds = childNodes ? map(childNodes, ({ id }) => id) : undefined;
+
+    const childComps = childNodes?.length
+      ? map(childNodes, (childId) => (
+          <Fragment key={childId}>{renderTreeWithDnd(childId)}</Fragment>
+        ))
+      : data.children;
+
     return (
       <DndBox
         key={id}
@@ -22,35 +38,35 @@ export function useRenderComponentsTree(renderWithDndWrapper = true) {
         parentId={parentId}
         droppable={droppable}
         draggable={draggable}
-        childIds={childIds}
+        childIds={childNodes}
       >
         {(params) => (
           <Component
             {...data}
             {...params}
             style={{ ...data.style, ...params.style }}
-            children={
-              childNodes?.length ? renderComps(childNodes) : data.children
-            }
+            children={childComps}
           />
         )}
       </DndBox>
     );
   }
 
-  function renderComp(value: SchemaData) {
+  function renderTreeWithoutDnd(compId: SchemaData["id"]) {
+    const value = toJS(nodesMap[compId], {
+      recurseEverything: true,
+    });
     const { type, childNodes, data } = value;
     const { render: Component } = COMPONENTS_INFO[type];
-    return (
-      <Component
-        {...data}
-        children={childNodes?.length ? renderComps(childNodes) : data.children}
-      />
-    );
+
+    const childComps = childNodes?.length
+      ? map(childNodes, (childId) => (
+          <Fragment key={childId}>{renderTreeWithoutDnd(childId)}</Fragment>
+        ))
+      : data.children;
+
+    return <Component {...data} children={childComps} />;
   }
 
-  const renderComps = (nodes: SchemaData[]) =>
-    map(nodes, (value) => <Fragment key={value.id}>{render(value)}</Fragment>);
-
-  return renderComps;
+  return render;
 }

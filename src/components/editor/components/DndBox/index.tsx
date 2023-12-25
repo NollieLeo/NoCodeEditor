@@ -18,10 +18,10 @@ import "./index.scss";
 
 export interface CompWrapperProps {
   droppable?: boolean;
-  childIds?: string[];
+  childIds: string[] | null;
   draggable?: boolean;
   id: string;
-  parentId?: string | null;
+  parentId: string | null;
   children: (params: any) => ReactNode;
 }
 

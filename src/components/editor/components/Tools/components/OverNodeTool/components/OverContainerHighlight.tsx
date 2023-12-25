@@ -7,7 +7,7 @@ import { BorderedRectangle } from "@/components/editor/components/Tools/componen
 
 export const OverContainerHighlight = observer(() => {
   const {
-    editorStore: { overInfo, nodeMap, draggingInfo },
+    editorStore: { overInfo, nodesMap, draggingInfo },
   } = useEditorContext();
   const wrapperRect = useToolWrapperRect();
 
@@ -18,9 +18,9 @@ export const OverContainerHighlight = observer(() => {
   const { id: dragId } = draggingInfo;
 
   const { id: overId, accepts } = overInfo;
-  const { type: overType } = nodeMap[overId];
+  const { type: overType } = nodesMap[overId];
 
-  let highlightDomId: string | undefined;
+  let highlightDomId: string | undefined | null;
 
   const isContainerBox = [
     ComponentTypes.CONTAINER,
