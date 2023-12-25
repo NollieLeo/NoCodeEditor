@@ -15,9 +15,9 @@ const HoveredNodeToolComp = observer(() => {
 
   if (
     editorStore.draggingInfo ||
+    isNil(editorStore.panState) ||
     !hoveredNodeDom ||
-    !wrapperRect ||
-    isNil(editorStore.panState)
+    !wrapperRect
   ) {
     return <></>;
   }

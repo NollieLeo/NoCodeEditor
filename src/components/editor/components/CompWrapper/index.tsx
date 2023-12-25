@@ -41,7 +41,7 @@ export const CompWrapper: FC<CompWrapperProps> = observer((props) => {
   } = props;
   const { editorStore } = useEditorContext();
 
-  const sortableConfig = useMemo<UseDraggableArguments>(
+  const sortItemConfig = useMemo<UseDraggableArguments>(
     () => ({
       id,
       disabled: !draggable,
@@ -61,7 +61,7 @@ export const CompWrapper: FC<CompWrapperProps> = observer((props) => {
     isDragging,
     transform,
     transition,
-  } = useSortable(sortableConfig);
+  } = useSortable(sortItemConfig);
 
   const droppableConfig = useMemo<UseDroppableArguments>(
     () => ({
@@ -92,8 +92,9 @@ export const CompWrapper: FC<CompWrapperProps> = observer((props) => {
     () => ({
       transform: sortableItemTransform,
       transition,
+      opacity: isDragging ? 0.6 : 1,
     }),
-    [sortableItemTransform, transition]
+    [isDragging, sortableItemTransform, transition]
   );
 
   const dropZoomCls = classNames("editor-dropzoom");
