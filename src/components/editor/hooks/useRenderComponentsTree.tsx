@@ -6,15 +6,11 @@ import { useEditorContext } from "./useEditorContext";
 import { toJS } from "mobx";
 import { Fragment } from "react";
 
-export function useRenderComponentsTree(renderWithDndWrapper = true) {
+export function useRenderComponentsTree(withDnd = true) {
   const { editorStore } = useEditorContext();
   const { nodesMap } = editorStore;
 
-  const render = renderWithDndWrapper
-    ? renderTreeWithDnd
-    : renderTreeWithoutDnd;
-
-  function renderTreeWithDnd(compId: SchemaData["id"]) {
+  const renderTreeWithDnd = (compId: SchemaData["id"]) => {
     const value = toJS(nodesMap[compId], {
       recurseEverything: true,
     });
@@ -50,9 +46,9 @@ export function useRenderComponentsTree(renderWithDndWrapper = true) {
         )}
       </DndBox>
     );
-  }
+  };
 
-  function renderTreeWithoutDnd(compId: SchemaData["id"]) {
+  const renderTreeWithoutDnd = (compId: SchemaData["id"]) => {
     const value = toJS(nodesMap[compId], {
       recurseEverything: true,
     });
@@ -66,7 +62,9 @@ export function useRenderComponentsTree(renderWithDndWrapper = true) {
       : data.children;
 
     return <Component {...data} children={childComps} />;
-  }
+  };
+
+  const render = withDnd ? renderTreeWithDnd : renderTreeWithoutDnd;
 
   return render;
 }

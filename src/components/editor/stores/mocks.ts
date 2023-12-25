@@ -8,9 +8,11 @@ export const mocks = {
         width: "1280px",
         height: "720px",
         background: "#fff",
+        display: "flex",
+        flexDirection: "column",
       },
     },
-    childNodes: ["input-438", "container-561", "container-93", "text-321"],
+    childNodes: ["input-438", "container-561", "text-321", "container-93"],
   },
   "container-93": {
     id: "container-93",

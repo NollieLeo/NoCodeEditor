@@ -6,15 +6,15 @@ import { snapCenterToCursor } from "@dnd-kit/modifiers";
 import { DragOverlay } from "@dnd-kit/core";
 import { SiderBarDragOverlayComp } from "./components/SiderBarDragOverlayComp";
 import { PanDragOverlayComp } from "./components/PanDragOverlayComp";
-import { observer } from "mobx-react-lite";
 
-const DndDragOverlayComp = observer(() => {
+const DndDragOverlayComp = () => {
   const dragOverlayStyle: CSSProperties = useMemo(() => {
     return {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       width: "fit-content",
+      height: "fit-content",
     };
   }, []);
 
@@ -29,6 +29,6 @@ const DndDragOverlayComp = observer(() => {
       <PanDragOverlayComp />
     </DragOverlay>
   );
-});
+};
 
 export const DndDragOverlay = memo(DndDragOverlayComp);

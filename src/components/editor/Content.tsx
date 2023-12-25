@@ -11,9 +11,9 @@ import useEditorDnd from "./hooks/useEditorDnd";
 import { useRenderComponentsTree } from "./hooks/useRenderComponentsTree";
 
 import "./Content.scss";
-import { useEditorMeasuring } from "./hooks/useEditorMeasuring";
 import { find } from "lodash-es";
 import { ComponentTypes } from "./types";
+import { useEditorCollisionDetection } from "./hooks/useEditorCollisionDetection";
 
 const ContentComp: FC<PropsWithChildren> = observer(() => {
   const sensors = useEditorDndSensors();
@@ -21,8 +21,7 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
     editorStore: { nodesMap },
   } = useEditorContext();
   const { onDragStart, onDragEnd, onDragOver } = useEditorDnd();
-  const measuringConfig = useEditorMeasuring();
-
+  const editorCollisionDetection = useEditorCollisionDetection();
   const renderCompTree = useRenderComponentsTree();
 
   const compTrees = useMemo(() => {
@@ -36,7 +35,7 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
   return (
     <DndContext
       sensors={sensors}
-      measuring={measuringConfig}
+      collisionDetection={editorCollisionDetection}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}

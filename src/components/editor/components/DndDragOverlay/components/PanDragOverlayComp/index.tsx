@@ -6,7 +6,7 @@ import { useRenderComponentsTree } from "@/components/editor/hooks/useRenderComp
 
 const PanDragOverlayTmpl: FC = observer(() => {
   const { editorStore } = useEditorContext();
-  const { draggingInfo, nodesMap } = editorStore;
+  const { draggingInfo, nodesMap, panState } = editorStore;
   const renderCompTree = useRenderComponentsTree(false);
 
   const activePanComp = useMemo(() => {
@@ -16,9 +16,17 @@ const PanDragOverlayTmpl: FC = observer(() => {
     const { id } = draggingInfo;
 
     if (id && nodesMap[id]) {
-      return renderCompTree(id);
+      return (
+        <div
+          style={{
+            transform: `scale(${panState?.scale || 1})`,
+          }}
+        >
+          {renderCompTree(id)}
+        </div>
+      );
     }
-  }, [draggingInfo, nodesMap, renderCompTree]);
+  }, [draggingInfo, nodesMap, panState?.scale, renderCompTree]);
 
   return activePanComp;
 });

@@ -8,11 +8,7 @@ import classNames from "classnames";
 import { observer } from "mobx-react-lite";
 import { FC, ReactNode, useMemo } from "react";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import {
-  DragInfoFromPanSort,
-  DragOrigin,
-  DropInfo,
-} from "@/components/editor/types";
+import { DragOrigin } from "@/components/editor/types";
 
 import "./index.scss";
 
@@ -31,22 +27,17 @@ export const DndBox: FC<CompWrapperProps> = observer((props) => {
 
   const { draggingInfo } = editorStore;
 
-  const dragData: Omit<DragInfoFromPanSort, "rect"> = useMemo(
-    () => ({
-      id,
-      parentId,
-      from: DragOrigin.PAN_SORT,
-    }),
-    [id, parentId]
-  );
-
   const dragItemConfig = useMemo<UseDraggableArguments>(
     () => ({
       id,
       disabled: !draggable,
-      data: dragData,
+      data: {
+        id,
+        parentId,
+        from: DragOrigin.PAN_SORT,
+      },
     }),
-    [dragData, draggable, id]
+    [draggable, id, parentId]
   );
 
   const {
@@ -55,14 +46,6 @@ export const DndBox: FC<CompWrapperProps> = observer((props) => {
     listeners,
     isDragging,
   } = useDraggable(dragItemConfig);
-
-  const droppableData = useMemo<Omit<DropInfo, "rect">>(() => {
-    return {
-      id,
-      parentId,
-      accepts: childIds,
-    };
-  }, [childIds, id, parentId]);
 
   const droppableDisabled = useMemo(() => {
     if (!draggingInfo || draggingInfo.from === DragOrigin.SIDE_ADD) {
@@ -74,10 +57,14 @@ export const DndBox: FC<CompWrapperProps> = observer((props) => {
   const droppableConfig = useMemo<UseDroppableArguments>(() => {
     return {
       id,
-      data: droppableData,
+      data: {
+        id,
+        parentId,
+        accepts: childIds,
+      },
       disabled: droppableDisabled,
     };
-  }, [droppableData, droppableDisabled, id]);
+  }, [childIds, droppableDisabled, id, parentId]);
 
   const { setNodeRef: setDropRef } = useDroppable(droppableConfig);
 
