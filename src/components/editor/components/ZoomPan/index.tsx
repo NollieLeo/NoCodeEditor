@@ -3,12 +3,12 @@ import {
   TransformComponent,
   ReactZoomPanPinchRef,
 } from "react-zoom-pan-pinch";
-import { useEventListener } from "ahooks";
 import { observer } from "mobx-react-lite";
-import { FC, PropsWithChildren, memo, useRef } from "react";
+import { FC, MouseEventHandler, PropsWithChildren, memo, useRef } from "react";
 import { Tools } from "../Tools";
-import { useEditorContext } from "../../hooks/useEditorContext";
+import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { DEFAULT_PANE_PROPS } from "./constants";
+import { usePanMoveAndZoomEvent } from "./hooks/usePanMoveAndZoomEvent";
 
 import "./index.scss";
 
@@ -18,31 +18,26 @@ const ZoomPanComp: FC<PropsWithChildren> = observer((props) => {
   const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  useEventListener("wheel", handleWrapperWheel, {
-    passive: false,
-    target: wrapperRef,
-  });
+  const { isTransforming, onTransformed, onInit } = usePanMoveAndZoomEvent(
+    wrapperRef,
+    transformComponentRef
+  );
 
-  function handleWrapperWheel(e: WheelEvent) {
+  const showTools = !isTransforming;
+
+  const onContextMenu: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
-    const { deltaX, deltaY } = e;
-    const tranformeComp = transformComponentRef.current;
-    if (tranformeComp) {
-      const { instance, setTransform } = tranformeComp;
-      const {
-        transformState: { positionX, positionY, scale },
-      } = instance;
-      const newPosX = positionX - deltaX / scale;
-      const newPosY = positionY - deltaY / scale;
-      setTransform(newPosX, newPosY, scale, 10, "linear");
+    const targetDom = e.target as HTMLDivElement;
+    if (targetDom) {
+      editorStore.setFocusedNodeId(targetDom.id);
     }
-  }
+  };
 
   return (
     <div
       className="editor-pane"
       ref={wrapperRef}
-      onContextMenu={(e) => e.preventDefault()}
+      onContextMenu={onContextMenu}
       onClick={() => {
         editorStore.cleanUpHelperNode();
       }}
@@ -50,13 +45,11 @@ const ZoomPanComp: FC<PropsWithChildren> = observer((props) => {
       <TransformWrapper
         {...DEFAULT_PANE_PROPS}
         ref={transformComponentRef}
-        onInit={(ref) => {
-          editorStore.setPanState(ref.instance.transformState);
-        }}
-        onTransformed={(_, state) => editorStore.setPanState(state)}
+        onInit={onInit}
+        onTransformed={onTransformed}
       >
         {/* -------------- Helper Tools -------------- */}
-        <Tools />
+        {showTools && <Tools />}
         {/* -------------- Real ZoomPan Transformer -------------- */}
         <TransformComponent
           wrapperClass="editor-pane-wrapper"

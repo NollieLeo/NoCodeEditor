@@ -3,7 +3,7 @@ import type { ReactZoomPanPinchProps } from "react-zoom-pan-pinch";
 export const DEFAULT_PANE_PROPS: ReactZoomPanPinchProps = {
   limitToBounds: false,
   maxScale: 5,
-  minScale: 0.2,
+  minScale: 0.5,
   maxPositionX: Infinity,
   minPositionX: -Infinity,
   maxPositionY: Infinity,

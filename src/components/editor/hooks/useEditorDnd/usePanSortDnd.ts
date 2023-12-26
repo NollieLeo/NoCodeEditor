@@ -2,7 +2,7 @@ import { DragInfoFromPanSort, DropInfo } from "@/components/editor/types";
 import { useEditorContext } from "../useEditorContext";
 import { transaction } from "mobx";
 
-export function usePanDnd() {
+export function usePanSortDnd() {
   const { editorStore } = useEditorContext();
   const onDragStart = (dragInfo: DragInfoFromPanSort) => {
     transaction(() => {
@@ -14,10 +14,10 @@ export function usePanDnd() {
   const onDragOver = (dragInfo: DragInfoFromPanSort, dropInfo: DropInfo) => {
     const { parentId: dragParentId, id: fromId } = dragInfo;
     const { id: toId, parentId: dropParentId } = dropInfo;
+    // 确保其为同层级拖拽排序
     if (!dropParentId || !dragParentId || dropParentId !== dragParentId) {
       return;
     }
-    editorStore.setOverInfo(dropInfo);
     editorStore.movePos(dropParentId, fromId, toId);
   };
 
@@ -27,9 +27,7 @@ export function usePanDnd() {
       return;
     }
     console.log("dropInfo", dropInfo);
-    setTimeout(() => {
-      editorStore.setFocusedNodeId(fromId);
-    }, 1);
+    editorStore.setFocusedNodeId(fromId);
   };
 
   return {
