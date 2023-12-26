@@ -10,6 +10,8 @@ export const mocks = {
         background: "#fff",
         display: "flex",
         flexDirection: "column",
+        alignItems: "center",
+        gap: "20px",
       },
     },
     childNodes: ["input-438", "container-561", "text-321", "container-93"],
@@ -20,27 +22,21 @@ export const mocks = {
     type: "container",
     data: {
       style: {
-        width: 400,
+        width: 500,
+        gap: "10px",
         height: 150,
-        background: "green",
-        display: "flex",
-        flexWrap: "wrap",
+        background: "#fff",
+        display: "grid",
+        gridTemplateColumns: "repeat(2, minmax(150px, 1fr))",
+        gridTemplateRows: "repeat(2, minmax(0px, 1fr))",
       },
     },
-    childNodes: ["textarea-194", "text-145", "input-284", "button-580"],
-  },
-  "textarea-194": {
-    id: "textarea-194",
-    parentId: "container-93",
-    type: "textarea",
-    data: {
-      style: {
-        width: 120,
-        height: 32,
-        display: "block",
-      },
-      placeholder: "输入框",
-    },
+    childNodes: [
+      "container-193",
+      "container-1966",
+      "container-19662",
+      "container-29662",
+    ],
   },
   "text-321": {
     id: "text-321",
@@ -80,43 +76,6 @@ export const mocks = {
     },
     childNodes: ["button-665", "text-774", "input-935"],
   },
-  "text-145": {
-    id: "text-145",
-    parentId: "container-93",
-    type: "text",
-    data: {
-      style: {
-        display: "block",
-      },
-      children: "Go fuck yourself",
-    },
-  },
-  "input-284": {
-    id: "input-284",
-    parentId: "container-93",
-    type: "input",
-    data: {
-      style: {
-        width: 120,
-        height: 32,
-        display: "block",
-      },
-      placeholder: "输入框",
-    },
-  },
-  "button-580": {
-    id: "button-580",
-    parentId: "container-93",
-    type: "button",
-    data: {
-      style: {
-        width: 120,
-        height: 32,
-        display: "block",
-      },
-      children: "按钮",
-    },
-  },
   "button-665": {
     id: "button-665",
     parentId: "container-561",
@@ -153,5 +112,61 @@ export const mocks = {
       },
       placeholder: "输入框",
     },
+  },
+  "container-193": {
+    id: "container-193",
+    parentId: "container-93",
+    type: "container",
+    data: {
+      style: {
+        width: "100%",
+        height: "100%",
+        background: "blue",
+        display: "block",
+      },
+    },
+    childNodes: [],
+  },
+  "container-1966": {
+    id: "container-1966",
+    parentId: "container-93",
+    type: "container",
+    data: {
+      style: {
+        width: "100%",
+        height: "100%",
+        background: "#666",
+        display: "block",
+      },
+    },
+    childNodes: [],
+  },
+  "container-19662": {
+    id: "container-19662",
+    parentId: "container-93",
+    type: "container",
+    data: {
+      style: {
+        width: "100%",
+        height: "100%",
+        background: "green",
+        display: "block",
+      },
+    },
+    childNodes: [],
+  },
+  "container-29662": {
+    id: "container-29662",
+    parentId: "container-93",
+    type: "container",
+    data: {
+      style: {
+        width: "100%",
+        height: "100%",
+        background: "#40b6cd",
+        display: "block",
+      },
+    },
+    childNodes: [],
   },
 } as any;

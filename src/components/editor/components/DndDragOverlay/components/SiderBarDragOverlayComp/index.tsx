@@ -4,6 +4,9 @@ import { DragOrigin } from "@/components/editor/types";
 import { COMPONENTS_INFO } from "@/components/editor/constants";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 
+/**
+ * 从侧边栏拖拽的时候的overlay
+ */
 const SiderBarDragOverlayTmpl: FC = observer(() => {
   const { editorStore } = useEditorContext();
 
