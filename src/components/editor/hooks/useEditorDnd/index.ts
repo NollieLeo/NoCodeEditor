@@ -1,5 +1,6 @@
 import type {
   DragEndEvent,
+  DragMoveEvent,
   DragOverEvent,
   DragStartEvent,
 } from "@dnd-kit/core";
@@ -11,8 +12,11 @@ import { usePanSortDnd } from "./usePanSortDnd";
 
 export default function useEditorDnd() {
   const { editorStore } = useEditorContext();
-  const { onDragStart: onSideDragStart, onDragEnd: onSideDragEnd } =
-    useSideDnd();
+  const {
+    onDragStart: onSideDragStart,
+    onDragEnd: onSideDragEnd,
+    onDragMove: onSideDragMove,
+  } = useSideDnd();
 
   const {
     onDragStart: onPanDragStart,
@@ -57,7 +61,7 @@ export default function useEditorDnd() {
         onSideDragEnd(dragInfo, dropInfo);
         break;
       case DragOrigin.PAN_SORT:
-        onPanDragEnd(dragInfo, dropInfo);
+        onPanDragEnd(dragInfo);
         break;
       default:
         throw new Error(`unsupported drag origin`);
@@ -68,7 +72,7 @@ export default function useEditorDnd() {
   };
 
   const onDragOver = ({ over, active }: DragOverEvent) => {
-    const { data: activeData, rect } = active;
+    const { data: activeData, rect: activeRect } = active;
     if (!activeData.current) {
       throw new Error("dragging item must bind data");
     }
@@ -76,17 +80,16 @@ export default function useEditorDnd() {
       editorStore?.setOverInfo(null);
       return;
     }
+    const { data: overData, rect: overRect } = over;
     const dragInfo = {
       ...activeData.current,
-      rect: rect.current.translated,
+      rect: activeRect.current.translated,
     } as DragInfo;
 
     const overInfo = {
-      ...over.data.current,
-      rect: over.rect,
+      ...overData.current,
+      rect: overRect,
     } as DropInfo;
-
-    editorStore.setOverInfo(overInfo);
 
     switch (dragInfo.from) {
       case DragOrigin.SIDE_ADD:
@@ -99,9 +102,42 @@ export default function useEditorDnd() {
     }
   };
 
+  const onDragMove = ({ over, active }: DragMoveEvent) => {
+    const { data: activeData, rect: activeRect } = active;
+    if (!activeData.current) {
+      throw new Error("dragging item must bind data");
+    }
+
+    if (!over) {
+      editorStore?.setOverInfo(null);
+      return;
+    }
+    const { data: overData, rect: overRect } = over;
+    const dragInfo = {
+      ...activeData.current,
+      rect: activeRect.current.translated,
+    } as DragInfo;
+
+    const overInfo = {
+      ...overData.current,
+      rect: overRect,
+    } as DropInfo;
+
+    switch (dragInfo.from) {
+      case DragOrigin.SIDE_ADD:
+        onSideDragMove(dragInfo, overInfo);
+        break;
+      case DragOrigin.PAN_SORT:
+        break;
+      default:
+        throw new Error(`unsupported drag origin`);
+    }
+  };
+
   return {
     onDragStart,
     onDragEnd,
     onDragOver,
+    onDragMove,
   };
 }

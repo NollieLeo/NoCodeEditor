@@ -11,22 +11,23 @@ export function usePanSortDnd() {
     });
   };
 
-  const onDragOver = (dragInfo: DragInfoFromPanSort, dropInfo: DropInfo) => {
+  const onDragOver = (dragInfo: DragInfoFromPanSort, overInfo: DropInfo) => {
     const { parentId: dragParentId, id: fromId } = dragInfo;
-    const { id: toId, parentId: dropParentId } = dropInfo;
+    const { id: toId, parentId: dropParentId } = overInfo;
     // 确保其为同层级拖拽排序
     if (!dropParentId || !dragParentId || dropParentId !== dragParentId) {
       return;
     }
+    editorStore.setOverInfo(overInfo);
     editorStore.movePos(dropParentId, fromId, toId);
   };
 
-  const onDragEnd = (dragInfo: DragInfoFromPanSort, dropInfo: DropInfo) => {
+  const onDragEnd = (dragInfo: DragInfoFromPanSort) => {
     const { parentId, id: fromId } = dragInfo;
     if (!parentId) {
       return;
     }
-    console.log("dropInfo", dropInfo);
+    // console.log("dropInfo", dropInfo);
     editorStore.setFocusedNodeId(fromId);
   };
 

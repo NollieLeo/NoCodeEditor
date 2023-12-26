@@ -1,7 +1,7 @@
 import { ReactZoomPanPinchState } from "react-zoom-pan-pinch";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useLocalStore } from "mobx-react-lite";
-import { cloneDeep, findIndex } from "lodash-es";
+import { cloneDeep, findIndex, isUndefined } from "lodash-es";
 import { DragInfo, DropInfo, SchemaData } from "../types";
 import { mocks } from "./mocks";
 
@@ -25,7 +25,7 @@ export interface EditorAction {
   setHoverNodeId(id: EditorState["hoveredNodeId"]): void;
   setPanState(panState: EditorState["panState"]): void;
   setDraggingInfo(node: EditorState["draggingInfo"]): void;
-  addNode(data: SchemaData, target: string): void;
+  addNode(data: SchemaData, target: string, idx?: number): void;
   movePos(parentId: string, from: string, to: string): void;
   cleanUpHelperNode(): void;
 }
@@ -63,14 +63,17 @@ export const useEditorStore = () => {
     /**
      * @description add node from sidebar
      */
-    addNode(data, targetId) {
+    addNode(data, targetId, idx) {
       const target = this.nodesMap[targetId];
       this.nodesMap[data.id] = data;
       if (target) {
         if (!target.childNodes) {
           target.childNodes = [data.id];
         } else {
-          target.childNodes.push(data.id);
+          const targetIdx = isUndefined(idx)
+            ? target.childNodes?.length - 1
+            : idx;
+          target.childNodes.splice(targetIdx, 0, data.id);
         }
       }
     },

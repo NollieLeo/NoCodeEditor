@@ -16,7 +16,6 @@ export const OverContainerHighlight = observer(() => {
   }
 
   const { id: dragId } = draggingInfo;
-
   const { id: overId, accepts } = overInfo;
   const { type: overType } = nodesMap[overId];
 

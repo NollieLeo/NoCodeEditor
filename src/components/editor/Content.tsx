@@ -20,7 +20,7 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
   const {
     editorStore: { nodesMap },
   } = useEditorContext();
-  const { onDragStart, onDragEnd, onDragOver } = useEditorDnd();
+  const { onDragStart, onDragEnd, onDragOver, onDragMove } = useEditorDnd();
   const editorCollisionDetection = useEditorCollisionDetection();
   const renderCompTree = useRenderComponentsTree();
 
@@ -33,24 +33,25 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
   }, [nodesMap, renderCompTree]);
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={editorCollisionDetection}
-      onDragStart={onDragStart}
-      onDragOver={onDragOver}
-      onDragEnd={onDragEnd}
-    >
-      <div className="editor-wrapper">
+    <div className="editor-wrapper">
+      <DndContext
+        sensors={sensors}
+        collisionDetection={editorCollisionDetection}
+        onDragStart={onDragStart}
+        onDragOver={onDragOver}
+        onDragEnd={onDragEnd}
+        onDragMove={onDragMove}
+      >
         {/* --------- Siderbar for editor --------- */}
         <Siderbar />
         {/* --------- Editor's zoom pan */}
         <ZoomPan>{compTrees}</ZoomPan>
         {/* --------- Dnd overlays for editor's global drag overlay  ---------- */}
         <DndDragOverlay />
-      </div>
-      {/* --------- Dnd monitor for editor's global Dnd events  ---------- */}
-      <DndMonitor />
-    </DndContext>
+        {/* --------- Dnd monitor for editor's global Dnd events  ---------- */}
+        <DndMonitor />
+      </DndContext>
+    </div>
   );
 });
 

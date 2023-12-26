@@ -1,46 +1,42 @@
-import { COMPONENTS_INFO } from "@/components/editor/constants";
-import {
-  ComponentTypes,
-  DragInfoFromSideAdd,
-  DropInfo,
-} from "@/components/editor/types";
-import { uniqueId } from "lodash-es";
+import { DragInfoFromSideAdd, DropInfo } from "@/components/editor/types";
 import { useEditorContext } from "../useEditorContext";
-
-// TODO
-function generateNewNode(type: ComponentTypes, parentId: string) {
-  const newNodeDefaultData = COMPONENTS_INFO[type];
-  const newNodeId = `${type}-${uniqueId()}`;
-  const newNode: any = {
-    id: newNodeId,
-    parentId,
-    type: type,
-    data: newNodeDefaultData.defaultData,
-  };
-  if ([ComponentTypes.CONTAINER].includes(type)) {
-    newNode.childNodes = [];
-  }
-  return newNode;
-}
+import { createNewNode } from "../../utils/createNewNode";
+import { useEditorOverTarget } from "../useEditorOverTarget";
 
 export function useSideDnd() {
   const { editorStore } = useEditorContext();
+
+  const [targetIdx] = useEditorOverTarget();
+
   const onDragStart = (dragInfo: DragInfoFromSideAdd) => {
     editorStore.setDraggingInfo(dragInfo);
+  };
+
+  const onDragMove = (dragInfo: DragInfoFromSideAdd, overInfo: DropInfo) => {
+    const { id } = dragInfo;
+    const dragRect = document.getElementById(id)?.getBoundingClientRect();
+    if (!dragRect) {
+      return;
+    }
+    if (overInfo.accepts) {
+      editorStore.setOverInfo(overInfo);
+    }
   };
 
   const onDragEnd = (dragInfo: DragInfoFromSideAdd, dropInfo: DropInfo) => {
     const { type } = dragInfo;
     const { id: parentId } = dropInfo;
-    const newNode = generateNewNode(type, parentId);
-    editorStore.addNode(newNode, parentId);
+    const newNode = createNewNode(type, parentId);
+    editorStore.addNode(newNode, parentId, targetIdx);
     requestIdleCallback(() => {
       editorStore.setFocusedNodeId(newNode.id);
+      editorStore.setOverInfo(null);
     });
   };
 
   return {
     onDragStart,
     onDragEnd,
+    onDragMove,
   };
 }

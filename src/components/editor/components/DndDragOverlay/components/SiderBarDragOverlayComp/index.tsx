@@ -10,19 +10,21 @@ import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 const SiderBarDragOverlayTmpl: FC = observer(() => {
   const { editorStore } = useEditorContext();
 
+  const { draggingInfo } = editorStore;
+
   const activeSiderBarComp = useMemo(() => {
     if (
-      !editorStore.draggingInfo ||
-      editorStore.draggingInfo.from !== DragOrigin.SIDE_ADD
+      !draggingInfo ||
+      draggingInfo.from !== DragOrigin.SIDE_ADD
     ) {
       return <></>;
     }
-    const { type } = editorStore.draggingInfo;
+    const { type, id } = draggingInfo;
     if (type) {
       const { render: Component, defaultData } = COMPONENTS_INFO[type];
-      return <Component {...defaultData} />;
+      return <Component {...defaultData} id={id} />;
     }
-  }, [editorStore.draggingInfo]);
+  }, [draggingInfo]);
 
   return activeSiderBarComp;
 });

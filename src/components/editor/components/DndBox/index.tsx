@@ -48,11 +48,14 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
   } = useDraggable(dragItemConfig);
 
   const droppableDisabled = useMemo(() => {
-    if (!draggingInfo || draggingInfo.from === DragOrigin.SIDE_ADD) {
+    if (!draggingInfo) {
       return false;
     }
+    if (draggingInfo.from === DragOrigin.SIDE_ADD) {
+      return !childIds;
+    }
     return draggingInfo.parentId !== parentId;
-  }, [draggingInfo, parentId]);
+  }, [childIds, draggingInfo, parentId]);
 
   const droppableConfig = useMemo<UseDroppableArguments>(
     () => ({
