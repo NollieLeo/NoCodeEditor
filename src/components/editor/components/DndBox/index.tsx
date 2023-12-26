@@ -6,7 +6,7 @@ import {
 } from "@dnd-kit/core";
 import classNames from "classnames";
 import { observer } from "mobx-react-lite";
-import { FC, ReactNode, useMemo } from "react";
+import { FC, ReactNode, memo, useMemo } from "react";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { DragOrigin } from "@/components/editor/types";
 
@@ -21,7 +21,7 @@ export interface CompWrapperProps {
   children: (params: any) => ReactNode;
 }
 
-export const DndBox: FC<CompWrapperProps> = observer((props) => {
+const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
   const { draggable = true, id, parentId, childIds, children } = props;
   const { editorStore } = useEditorContext();
 
@@ -54,8 +54,8 @@ export const DndBox: FC<CompWrapperProps> = observer((props) => {
     return draggingInfo.parentId !== parentId;
   }, [draggingInfo, parentId]);
 
-  const droppableConfig = useMemo<UseDroppableArguments>(() => {
-    return {
+  const droppableConfig = useMemo<UseDroppableArguments>(
+    () => ({
       id,
       data: {
         id,
@@ -63,8 +63,9 @@ export const DndBox: FC<CompWrapperProps> = observer((props) => {
         accepts: childIds,
       },
       disabled: droppableDisabled,
-    };
-  }, [childIds, droppableDisabled, id, parentId]);
+    }),
+    [childIds, droppableDisabled, id, parentId]
+  );
 
   const { setNodeRef: setDropRef } = useDroppable(droppableConfig);
 
@@ -109,3 +110,5 @@ export const DndBox: FC<CompWrapperProps> = observer((props) => {
 
   return genComps;
 });
+
+export const DndBox = memo(DndBoxComp);
