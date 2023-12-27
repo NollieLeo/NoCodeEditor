@@ -2,16 +2,19 @@ import { observer } from "mobx-react-lite";
 import useToolWrapperRect from "@/components/editor/components/Tools/hooks/useToolWrapperRect";
 import { isNil } from "lodash-es";
 import { useEditorInsertTarget } from "@/components/editor/hooks/useEditorInsertTarget";
-import { CSSProperties } from "react";
+import { CSSProperties, memo } from "react";
+import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 
-export const OverNodeLine = observer(() => {
+const OverNodeLineComp = observer(() => {
   const wrapperRect = useToolWrapperRect();
-
+  const {
+    editorStore: { panState },
+  } = useEditorContext();
   const getInsertInfo = useEditorInsertTarget();
 
   const insertInfo = getInsertInfo();
 
-  if (isNil(wrapperRect) || isNil(insertInfo)) {
+  if (isNil(wrapperRect) || isNil(insertInfo) || isNil(panState)) {
     return <></>;
   }
 
@@ -35,7 +38,10 @@ export const OverNodeLine = observer(() => {
     left,
     position: "absolute",
     background: "red",
+    transform: `scale(${panState.scale})`,
   };
 
   return <div style={style} />;
 });
+
+export const OverNodeLine = memo(OverNodeLineComp);
