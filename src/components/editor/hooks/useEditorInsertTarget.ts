@@ -21,8 +21,6 @@ export function useEditorInsertTarget() {
     editorStore: { overInfo, draggingInfo },
   } = useEditorContext();
 
-  // const isss = getDomLayout(document.getElementById(overInfo?.id || ""));
-
   const getChildRects = useCallback(() => {
     if (!overInfo?.id || !overInfo.accepts?.length) {
       return null;

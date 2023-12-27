@@ -49,7 +49,7 @@ const ZoomPanComp: FC<PropsWithChildren> = observer((props) => {
         onTransformed={onTransformed}
       >
         {/* -------------- Helper Tools -------------- */}
-        {showTools && <Tools />}
+        {<Tools visible={showTools} />}
         {/* -------------- Real ZoomPan Transformer -------------- */}
         <TransformComponent
           wrapperClass="editor-pane-wrapper"
