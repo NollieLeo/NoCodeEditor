@@ -1,80 +1,113 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useEditorContext } from "./useEditorContext";
-import { findIndex, map, times } from "lodash-es";
+import { indexOf, map, min } from "lodash-es";
 import { DragOrigin } from "../types";
+
+function pointRectDist(pLeft: number, pTop: number, rect: DOMRect) {
+  const { left: rLeft, width: rWidth, height: rHeight, top: rTop } = rect;
+  //   const cx = Math.max(Math.min(pLeft, rLeft + rWidth), rLeft);
+  //   const cy = Math.max(Math.min(pTop, rTop + rHeight), rTop);
+  //   const diffX = Math.abs(pLeft - cx);
+  //   const diffY = Math.abs(pTop - cy);
+  const diffX = Math.abs(pLeft - (rLeft + rWidth / 2));
+  const diffY = Math.abs(pTop - (rTop + rHeight / 2));
+
+  return Math.sqrt(diffX * diffX + diffY * diffY);
+}
 
 export function useEditorOverTarget() {
   const {
     editorStore: { overInfo, draggingInfo },
   } = useEditorContext();
 
-  const [targetIdx, setTargetIdx] = useState<number>(0);
-  const [targetTop, setTargetTop] = useState<number>(0);
+  const [insertIdx, setInsertIdx] = useState<number>(0);
+  const [insertRect, setInsertRect] = useState<DOMRect | null>();
+
+  const childRects = useMemo(() => {
+    if (!overInfo?.id || !overInfo.accepts?.length) {
+      return null;
+    }
+    return map(overInfo.accepts, (id) => {
+      const dom = document.getElementById(id);
+      if (!dom) {
+        throw new Error(`child id: ${id} not found in dom tree`);
+      }
+      return dom.getBoundingClientRect();
+    });
+  }, [overInfo?.id]);
+
+  const getDragRect = useCallback(() => {
+    if (!draggingInfo) {
+      return null;
+    }
+    const { id } = draggingInfo;
+    const draggingDom = document.getElementById(id);
+    if (!draggingDom) {
+      return null;
+    }
+    const { top, height, width, left } = draggingDom.getBoundingClientRect();
+    return {
+      top: top + height / 2,
+      left: left + width / 2,
+    };
+  }, [draggingInfo]);
+
+  const getClosestDomInfo = useCallback(
+    (pLeft: number, pTop: number): [DOMRect, number] | null => {
+      if (!childRects) {
+        return null;
+      }
+      const distances = map(childRects, (rect) =>
+        pointRectDist(pLeft, pTop, rect)
+      );
+      const minDis = min(distances);
+      const idx = indexOf(distances, minDis);
+      return childRects[idx] ? [childRects[idx], idx] : null;
+    },
+    [childRects]
+  );
 
   useEffect(() => {
     if (
+      draggingInfo?.from !== DragOrigin.SIDE_ADD ||
       !overInfo ||
-      !overInfo.accepts?.length ||
-      !overInfo.rect ||
-      !draggingInfo ||
-      draggingInfo?.from !== DragOrigin.SIDE_ADD
+      !overInfo.rect
     ) {
-      setTargetIdx(0);
-      setTargetTop(0);
+      setInsertIdx(0);
+      setInsertRect(null);
       return;
     }
-    const { accepts, rect: overRect } = overInfo;
-    const { id: dragId } = draggingInfo;
-    const dragRect = document.getElementById(dragId)?.getBoundingClientRect();
-    const childRects = map(overInfo.accepts, (id) =>
-      document.getElementById(id)?.getBoundingClientRect()
-    ) as DOMRect[];
+    const dragRect = getDragRect();
     if (!dragRect) {
       return;
     }
-    const dragTop = dragRect?.top + dragRect?.height / 2 || 0;
-
-    const sections: Array<[number, number]> = times(
-      accepts.length + 1,
-      (idx) => {
-        const preIdx = idx - 1;
-        if (preIdx < 0) {
-          const childRect = childRects[idx];
-          return [overRect.top, childRect.top + childRect.height / 2];
-        }
-        if (idx >= (accepts.length || 0)) {
-          const preChildRect = childRects[preIdx];
-          return [
-            preChildRect.top + preChildRect.height / 2 + 1,
-            overRect.top + overRect.height,
-          ];
-        }
-        const preChildRect = childRects[preIdx];
-        const curChildRect = childRects[idx];
-        return [
-          preChildRect.top + preChildRect.height / 2 + 1,
-          curChildRect.top + curChildRect.height / 2,
-        ];
-      }
-    );
-
-    const targetIdx = findIndex(
-      sections,
-      ([left, right]) => dragTop >= left && dragTop <= right
-    );
-    if (targetIdx > -1) {
-      setTargetIdx(targetIdx);
-      if (targetIdx === 0) {
-        setTargetTop((childRects[0].top - overRect.top) / 2 + overRect.top);
-      } else if (targetIdx === sections.length - 1) {
-        setTargetTop(childRects[targetIdx - 1].bottom + 10);
-      } else {
-        const diff =
-          childRects[targetIdx]?.top - childRects[targetIdx - 1]?.bottom;
-        setTargetTop(diff / 2 + childRects[targetIdx - 1]?.bottom);
-      }
+    const targetInfo = getClosestDomInfo(dragRect.left, dragRect.top);
+    if (!targetInfo) {
+      return;
     }
-  }, [draggingInfo, overInfo]);
+    const [targetRect, targetIdx] = targetInfo;
+    if (targetIdx === -1) {
+      return;
+    }
+    const { top: dragTop } = dragRect;
+    const {
+      top: targetTop,
+      height: targetHeight,
+      left: targetLeft,
+      width: targetWidth,
+    } = targetRect;
 
-  return [targetIdx, targetTop] as const;
+    const targetCenterTop = targetTop + targetHeight / 2;
+
+    const insertIdx = dragTop > targetCenterTop ? targetIdx + 1 : targetIdx;
+    const insertRect = {
+      ...targetRect,
+      left: targetLeft + targetWidth / 2,
+      top: dragTop > targetCenterTop ? targetTop + targetHeight : targetTop,
+    };
+    setInsertIdx(insertIdx);
+    setInsertRect(insertRect);
+  }, [draggingInfo, getClosestDomInfo, getDragRect, overInfo]);
+
+  return [insertIdx, insertRect] as const;
 }

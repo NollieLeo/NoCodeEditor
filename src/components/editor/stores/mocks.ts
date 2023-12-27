@@ -11,159 +11,102 @@ export const mocks = {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        justifyContent: "center",
         gap: "20px",
       },
     },
-    childNodes: ["input-438", "container-561", "text-321", "container-93"],
+    childNodes: ["container-287"],
   },
-  "container-93": {
-    id: "container-93",
+  "container-287": {
+    id: "container-287",
     parentId: "page-1",
     type: "container",
     data: {
       style: {
-        width: 500,
-        gap: "10px",
-        height: 150,
-        background: "#fff",
-        display: "grid",
-        gridTemplateColumns: "repeat(2, minmax(150px, 1fr))",
-        gridTemplateRows: "repeat(2, minmax(0px, 1fr))",
+        width: 1200,
+        height: 500,
+        background: "#64bb64",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: "20px",
       },
     },
     childNodes: [
-      "container-193",
-      "container-1966",
-      "container-19662",
-      "container-29662",
+      "container-257",
+      "container-560",
+      "container-299",
+      "container-621",
+      "container-1106",
     ],
   },
-  "text-321": {
-    id: "text-321",
-    parentId: "page-1",
-    type: "text",
-    data: {
-      style: {
-        display: "block",
-      },
-      children: "Go fuck yourself",
-    },
-  },
-  "input-438": {
-    id: "input-438",
-    parentId: "page-1",
-    type: "input",
-    data: {
-      style: {
-        width: 120,
-        height: 32,
-        display: "block",
-      },
-      placeholder: "输入框",
-    },
-  },
-  "container-561": {
-    id: "container-561",
-    parentId: "page-1",
+  "container-257": {
+    id: "container-257",
+    parentId: "container-287",
     type: "container",
     data: {
       style: {
-        width: 160,
-        height: 200,
-        background: "#666",
+        width: 100,
+        height: 50,
+        background: "pink",
         display: "block",
       },
     },
-    childNodes: ["button-665", "text-774", "input-935"],
+    childNodes: [],
   },
-  "button-665": {
-    id: "button-665",
-    parentId: "container-561",
-    type: "button",
-    data: {
-      style: {
-        width: 120,
-        height: 32,
-        display: "block",
-      },
-      children: "按钮",
-    },
-  },
-  "text-774": {
-    id: "text-774",
-    parentId: "container-561",
-    type: "text",
-    data: {
-      style: {
-        display: "block",
-      },
-      children: "Go fuck yourself",
-    },
-  },
-  "input-935": {
-    id: "input-935",
-    parentId: "container-561",
-    type: "input",
-    data: {
-      style: {
-        width: 120,
-        height: 32,
-        display: "block",
-      },
-      placeholder: "输入框",
-    },
-  },
-  "container-193": {
-    id: "container-193",
-    parentId: "container-93",
+  "container-560": {
+    id: "container-560",
+    parentId: "container-287",
     type: "container",
     data: {
       style: {
-        width: "100%",
-        height: "100%",
+        width: 200,
+        height: 100,
         background: "blue",
         display: "block",
       },
     },
     childNodes: [],
   },
-  "container-1966": {
-    id: "container-1966",
-    parentId: "container-93",
+  "container-621": {
+    id: "container-621",
+    parentId: "container-287",
     type: "container",
     data: {
       style: {
-        width: "100%",
-        height: "100%",
+        width: 350,
+        height: 200,
         background: "#666",
         display: "block",
       },
     },
     childNodes: [],
   },
-  "container-19662": {
-    id: "container-19662",
-    parentId: "container-93",
+  "container-1106": {
+    id: "container-1106",
+    parentId: "container-287",
     type: "container",
     data: {
       style: {
-        width: "100%",
-        height: "100%",
-        background: "green",
+        width: 150,
+        height: 200,
+        background: "#fff",
         display: "block",
       },
     },
     childNodes: [],
   },
-  "container-29662": {
-    id: "container-29662",
-    parentId: "container-93",
+  "container-299": {
+    id: "container-299",
+    parentId: "container-287",
     type: "container",
     data: {
       style: {
-        width: "100%",
-        height: "100%",
-        background: "#40b6cd",
+        width: 300,
+        height: 200,
+        background: "purple",
         display: "block",
       },
     },
