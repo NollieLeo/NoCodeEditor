@@ -1,13 +1,13 @@
 import { observer } from "mobx-react-lite";
 import useToolWrapperRect from "@/components/editor/components/Tools/hooks/useToolWrapperRect";
 import { isNil } from "lodash-es";
-import { useEditorOverTarget } from "@/components/editor/hooks/useEditorOverTarget";
+import { useEditorInsertTarget } from "@/components/editor/hooks/useEditorInsertTarget";
 import { CSSProperties } from "react";
 
 export const OverNodeLine = observer(() => {
   const wrapperRect = useToolWrapperRect();
 
-  const [, targetRect] = useEditorOverTarget();
+  const [, targetRect] = useEditorInsertTarget();
 
   if (isNil(wrapperRect) || isNil(targetRect)) {
     return <></>;

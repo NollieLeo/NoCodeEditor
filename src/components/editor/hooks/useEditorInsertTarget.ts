@@ -15,7 +15,7 @@ function pointRectDist(pLeft: number, pTop: number, rect: DOMRect) {
   return Math.sqrt(diffX * diffX + diffY * diffY);
 }
 
-export function useEditorOverTarget() {
+export function useEditorInsertTarget() {
   const {
     editorStore: { overInfo, draggingInfo },
   } = useEditorContext();

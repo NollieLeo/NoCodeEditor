@@ -1,12 +1,12 @@
 import { DragInfoFromSideAdd, DropInfo } from "@/components/editor/types";
 import { useEditorContext } from "../useEditorContext";
 import { createNewNode } from "../../utils/createNewNode";
-import { useEditorOverTarget } from "../useEditorOverTarget";
+import { useEditorInsertTarget } from "../useEditorInsertTarget";
 
 export function useSideDnd() {
   const { editorStore } = useEditorContext();
 
-  const [targetIdx] = useEditorOverTarget();
+  const [targetIdx] = useEditorInsertTarget();
 
   const onDragStart = (dragInfo: DragInfoFromSideAdd) => {
     editorStore.setDraggingInfo(dragInfo);

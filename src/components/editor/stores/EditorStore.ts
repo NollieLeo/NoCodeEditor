@@ -65,16 +65,16 @@ export const useEditorStore = () => {
      */
     addNode(data, targetId, idx) {
       const target = this.nodesMap[targetId];
+      if (!target) {
+        return;
+      }
       this.nodesMap[data.id] = data;
-      if (target) {
-        if (!target.childNodes) {
-          target.childNodes = [data.id];
-        } else {
-          const targetIdx = isUndefined(idx)
-            ? target.childNodes?.length - 1
-            : idx;
-          target.childNodes.splice(targetIdx, 0, data.id);
-        }
+      const { childNodes } = target;
+      if (!childNodes) {
+        target.childNodes = [data.id];
+      } else {
+        const targetIdx = isUndefined(idx) ? childNodes?.length - 1 : idx;
+        childNodes.splice(targetIdx, 0, data.id);
       }
     },
     /**

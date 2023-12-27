@@ -20,7 +20,9 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
   const {
     editorStore: { nodesMap },
   } = useEditorContext();
+
   const { onDragStart, onDragEnd, onDragOver, onDragMove } = useEditorDnd();
+
   const editorCollisionDetection = useEditorCollisionDetection();
 
   const rootId = useMemo(() => {
