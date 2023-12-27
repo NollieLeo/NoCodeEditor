@@ -121,6 +121,7 @@ export const mocks = {
         height: 200,
         background: "yellow",
         display: "flex",
+        flexWrap: "wrap",
       },
     },
     childNodes: ["button-2454", "text-4365", "textarea-4918"],
