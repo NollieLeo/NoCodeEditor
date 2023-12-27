@@ -9,11 +9,11 @@ import useEditorDndSensors from "./hooks/useEditorDndSensors";
 import { useEditorContext } from "./hooks/useEditorContext";
 import { DndDragOverlay } from "./components/DndDragOverlay";
 import useEditorDnd from "./hooks/useEditorDnd";
-import { useRenderComponentsTree } from "./hooks/useRenderComponentsTree";
 
 import "./Content.scss";
 import { ComponentTypes } from "./types";
 import { useEditorCollisionDetection } from "./hooks/useEditorCollisionDetection";
+import { CompTree } from "./components/CompTree";
 
 const ContentComp: FC<PropsWithChildren> = observer(() => {
   const sensors = useEditorDndSensors();
@@ -22,15 +22,14 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
   } = useEditorContext();
   const { onDragStart, onDragEnd, onDragOver, onDragMove } = useEditorDnd();
   const editorCollisionDetection = useEditorCollisionDetection();
-  const renderCompTree = useRenderComponentsTree();
 
-  const compTrees = useMemo(() => {
+  const rootId = useMemo(() => {
     const root = find(nodesMap, ({ type }) => type === ComponentTypes.PAGE);
     if (!root) {
-      return <></>;
+      return null;
     }
-    return renderCompTree(root.id);
-  }, [nodesMap, renderCompTree]);
+    return root.id;
+  }, [nodesMap]);
 
   return (
     <div className="editor-wrapper">
@@ -45,7 +44,9 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
         {/* --------- Siderbar for editor --------- */}
         <Siderbar />
         {/* --------- Editor's zoom pan --------- */}
-        <ZoomPan>{compTrees}</ZoomPan>
+        <ZoomPan>
+          <CompTree rootId={rootId} />
+        </ZoomPan>
         {/* --------- Dnd overlays for editor's global drag overlay  ---------- */}
         <DndDragOverlay />
         {/* --------- Dnd monitor for editor's global Dnd events  ---------- */}

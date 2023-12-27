@@ -23,7 +23,7 @@ export const mocks = {
     type: "container",
     data: {
       style: {
-        width: 1200,
+        width: 'fit-content',
         height: 500,
         background: "#64bb64",
         display: "flex",
@@ -31,7 +31,6 @@ export const mocks = {
         justifyContent: "center",
         alignItems: "center",
         flexWrap: "wrap",
-        gap: "20px",
       },
     },
     childNodes: [

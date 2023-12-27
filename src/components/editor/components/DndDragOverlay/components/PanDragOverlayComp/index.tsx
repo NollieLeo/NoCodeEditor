@@ -2,7 +2,7 @@ import { FC, memo, useMemo } from "react";
 import { observer } from "mobx-react-lite";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { DragOrigin } from "@/components/editor/types";
-import { useRenderComponentsTree } from "@/components/editor/hooks/useRenderComponentsTree";
+import { CompTree } from "@/components/editor/components/CompTree";
 
 /**
  * @description 面板内部拖拽元素的时候的overlay
@@ -10,7 +10,6 @@ import { useRenderComponentsTree } from "@/components/editor/hooks/useRenderComp
 const PanDragOverlayTmpl: FC = observer(() => {
   const { editorStore } = useEditorContext();
   const { draggingInfo, nodesMap, panState } = editorStore;
-  const renderCompTree = useRenderComponentsTree(false);
 
   const activePanComp = useMemo(() => {
     if (!draggingInfo || draggingInfo.from !== DragOrigin.PAN_SORT) {
@@ -28,11 +27,11 @@ const PanDragOverlayTmpl: FC = observer(() => {
             transform: `scale(${panState.scale})`,
           }}
         >
-          {renderCompTree(id)}
+          <CompTree rootId={id} withDnd={false} />
         </div>
       );
     }
-  }, [draggingInfo, nodesMap, panState?.scale, renderCompTree]);
+  }, [draggingInfo, nodesMap, panState?.scale]);
 
   return activePanComp;
 });
