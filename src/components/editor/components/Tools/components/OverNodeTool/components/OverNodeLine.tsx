@@ -15,14 +15,24 @@ export const OverNodeLine = observer(() => {
     return <></>;
   }
 
-  const { insertRect } = insertInfo;
+  const { insertRect, direction } = insertInfo;
+
+  const { top: insertTop, left: insertLeft } = insertRect;
+
+  const width = direction === "vertical" ? 100 : 2;
+  const height = direction === "vertical" ? 2 : 60;
+  const top = direction === "vertical" ? insertTop - 1 : insertTop - 30;
+  const left =
+    direction === "vertical"
+      ? insertLeft - wrapperRect.left - 50
+      : insertLeft - wrapperRect.left - 1;
 
   const style: CSSProperties = {
-    width: 100,
-    height: 2,
-    top: insertRect.top - 1,
+    width,
+    height,
+    top,
     zIndex: 4,
-    left: insertRect.left - wrapperRect.left - 50,
+    left,
     position: "absolute",
     background: "red",
   };

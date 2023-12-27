@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useEditorContext } from "./useEditorContext";
 import { indexOf, map, min } from "lodash-es";
 import { DragOrigin } from "../types";
+import { getFlexLayoutDirection } from "../utils/layout";
 
 function pointRectDist(pLeft: number, pTop: number, rect: DOMRect) {
   const { left: rLeft, width: rWidth, height: rHeight, top: rTop } = rect;
@@ -19,6 +20,8 @@ export function useEditorInsertTarget() {
   const {
     editorStore: { overInfo, draggingInfo },
   } = useEditorContext();
+
+  // const isss = getDomLayout(document.getElementById(overInfo?.id || ""));
 
   const getChildRects = useCallback(() => {
     if (!overInfo?.id || !overInfo.accepts?.length) {
@@ -85,26 +88,57 @@ export function useEditorInsertTarget() {
     if (targetIdx === -1) {
       return;
     }
-    const { top: dragTop } = dragRect;
-    const {
-      top: targetTop,
-      height: targetHeight,
-      left: targetLeft,
-      width: targetWidth,
-    } = targetRect;
 
-    const targetCenterTop = targetTop + targetHeight / 2;
+    const direction = getFlexLayoutDirection(
+      document.getElementById(overInfo.id)
+    );
 
-    const insertIdx = dragTop > targetCenterTop ? targetIdx + 1 : targetIdx;
-    const insertRect = {
-      ...targetRect,
-      left: targetLeft + targetWidth / 2,
-      top: dragTop > targetCenterTop ? targetTop + targetHeight : targetTop,
-    };
-    return {
-      insertIdx,
-      insertRect,
-    };
+    if (direction === "vertical") {
+      const { top: dragTop } = dragRect;
+      const {
+        top: targetTop,
+        height: targetHeight,
+        left: targetLeft,
+        width: targetWidth,
+      } = targetRect;
+
+      const targetCenterTop = targetTop + targetHeight / 2;
+
+      const insertIdx = dragTop > targetCenterTop ? targetIdx + 1 : targetIdx;
+      const insertRect = {
+        ...targetRect,
+        left: targetLeft + targetWidth / 2,
+        top: dragTop > targetCenterTop ? targetTop + targetHeight : targetTop,
+      };
+      return {
+        insertIdx,
+        insertRect,
+        direction,
+      };
+    } else if (direction === "horizontal") {
+      const { left: dragLeft } = dragRect;
+      const {
+        top: targetTop,
+        height: targetHeight,
+        left: targetLeft,
+        width: targetWidth,
+      } = targetRect;
+
+      const targetCenterLeft = targetLeft + targetWidth / 2;
+
+      const insertIdx = dragLeft > targetCenterLeft ? targetIdx + 1 : targetIdx;
+      const insertRect = {
+        ...targetRect,
+        top: targetTop + targetHeight / 2,
+        left:
+          dragLeft > targetCenterLeft ? targetLeft + targetWidth : targetLeft,
+      };
+      return {
+        insertIdx,
+        insertRect,
+        direction,
+      };
+    }
   };
 
   return getInsertInfo;
