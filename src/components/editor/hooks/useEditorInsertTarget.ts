@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback } from "react";
 import { useEditorContext } from "./useEditorContext";
 import { indexOf, map, min } from "lodash-es";
 import { DragOrigin } from "../types";
@@ -20,10 +20,7 @@ export function useEditorInsertTarget() {
     editorStore: { overInfo, draggingInfo },
   } = useEditorContext();
 
-  const [insertIdx, setInsertIdx] = useState<number>(0);
-  const [insertRect, setInsertRect] = useState<DOMRect | null>();
-
-  const childRects = useMemo(() => {
+  const getChildRects = useCallback(() => {
     if (!overInfo?.id || !overInfo.accepts?.length) {
       return null;
     }
@@ -54,6 +51,7 @@ export function useEditorInsertTarget() {
 
   const getClosestDomInfo = useCallback(
     (pLeft: number, pTop: number): [DOMRect, number] | null => {
+      const childRects = getChildRects();
       if (!childRects) {
         return null;
       }
@@ -64,17 +62,15 @@ export function useEditorInsertTarget() {
       const idx = indexOf(distances, minDis);
       return childRects[idx] ? [childRects[idx], idx] : null;
     },
-    [childRects]
+    [getChildRects]
   );
 
-  useEffect(() => {
+  const getInsertInfo = () => {
     if (
       draggingInfo?.from !== DragOrigin.SIDE_ADD ||
       !overInfo ||
       !overInfo.rect
     ) {
-      setInsertIdx(0);
-      setInsertRect(null);
       return;
     }
     const dragRect = getDragRect();
@@ -105,9 +101,11 @@ export function useEditorInsertTarget() {
       left: targetLeft + targetWidth / 2,
       top: dragTop > targetCenterTop ? targetTop + targetHeight : targetTop,
     };
-    setInsertIdx(insertIdx);
-    setInsertRect(insertRect);
-  }, [draggingInfo, getClosestDomInfo, getDragRect, overInfo]);
+    return {
+      insertIdx,
+      insertRect,
+    };
+  };
 
-  return [insertIdx, insertRect] as const;
+  return getInsertInfo;
 }

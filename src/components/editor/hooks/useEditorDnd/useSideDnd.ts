@@ -1,12 +1,12 @@
 import { DragInfoFromSideAdd, DropInfo } from "@/components/editor/types";
 import { useEditorContext } from "../useEditorContext";
-import { createNewNode } from "../../utils/createNewNode";
+import { createNewNode } from "@/components/editor/utils/createNewNode";
 import { useEditorInsertTarget } from "../useEditorInsertTarget";
 
 export function useSideDnd() {
   const { editorStore } = useEditorContext();
 
-  const [targetIdx] = useEditorInsertTarget();
+  const getInsertInfo = useEditorInsertTarget();
 
   const onDragStart = (dragInfo: DragInfoFromSideAdd) => {
     editorStore.setDraggingInfo(dragInfo);
@@ -26,8 +26,12 @@ export function useSideDnd() {
   const onDragEnd = (dragInfo: DragInfoFromSideAdd, dropInfo: DropInfo) => {
     const { type } = dragInfo;
     const { id: parentId } = dropInfo;
+    const insertInfo = getInsertInfo();
+    if (!insertInfo) {
+      return;
+    }
     const newNode = createNewNode(type, parentId);
-    editorStore.addNode(newNode, parentId, targetIdx);
+    editorStore.addNode(newNode, parentId, insertInfo.insertIdx);
     requestIdleCallback(() => {
       editorStore.setFocusedNodeId(newNode.id);
       editorStore.setOverInfo(null);

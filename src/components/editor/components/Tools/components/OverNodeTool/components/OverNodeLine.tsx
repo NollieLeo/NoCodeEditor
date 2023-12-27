@@ -7,18 +7,22 @@ import { CSSProperties } from "react";
 export const OverNodeLine = observer(() => {
   const wrapperRect = useToolWrapperRect();
 
-  const [, targetRect] = useEditorInsertTarget();
+  const getInsertInfo = useEditorInsertTarget();
 
-  if (isNil(wrapperRect) || isNil(targetRect)) {
+  const insertInfo = getInsertInfo();
+
+  if (isNil(wrapperRect) || isNil(insertInfo)) {
     return <></>;
   }
+
+  const { insertRect } = insertInfo;
 
   const style: CSSProperties = {
     width: 100,
     height: 2,
-    top: targetRect.top - 1,
+    top: insertRect.top - 1,
     zIndex: 4,
-    left: targetRect.left - wrapperRect.left - 50,
+    left: insertRect.left - wrapperRect.left - 50,
     position: "absolute",
     background: "red",
   };
