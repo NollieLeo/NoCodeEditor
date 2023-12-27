@@ -15,7 +15,7 @@ export const mocks = {
         gap: "20px",
       },
     },
-    childNodes: ["container-287"],
+    childNodes: ["container-287", "container-433"],
   },
   "container-287": {
     id: "container-287",
@@ -23,7 +23,7 @@ export const mocks = {
     type: "container",
     data: {
       style: {
-        width: 'fit-content',
+        width: "fit-content",
         height: 500,
         background: "#64bb64",
         display: "flex",
@@ -110,5 +110,56 @@ export const mocks = {
       },
     },
     childNodes: [],
+  },
+  "container-433": {
+    id: "container-433",
+    parentId: "page-1",
+    type: "container",
+    data: {
+      style: {
+        width: 500,
+        height: 200,
+        background: "yellow",
+        display: "flex",
+      },
+    },
+    childNodes: ["button-2454", "text-4365", "textarea-4918"],
+  },
+  "button-2454": {
+    id: "button-2454",
+    parentId: "container-433",
+    type: "button",
+    data: {
+      style: {
+        width: 120,
+        height: 32,
+        display: "block",
+      },
+      children: "按钮",
+    },
+  },
+  "text-4365": {
+    id: "text-4365",
+    parentId: "container-433",
+    type: "text",
+    data: {
+      style: {
+        display: "block",
+      },
+      children: "Go fuck yourself",
+    },
+  },
+  "textarea-4918": {
+    id: "textarea-4918",
+    parentId: "container-433",
+    type: "textarea",
+    data: {
+      style: {
+        width: 120,
+        height: 32,
+        display: "block",
+      },
+      placeholder: "输入框",
+    },
   },
 } as any;

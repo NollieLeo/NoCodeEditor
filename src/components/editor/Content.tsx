@@ -9,11 +9,11 @@ import useEditorDndSensors from "./hooks/useEditorDndSensors";
 import { useEditorContext } from "./hooks/useEditorContext";
 import { DndDragOverlay } from "./components/DndDragOverlay";
 import useEditorDnd from "./hooks/useEditorDnd";
-
-import "./Content.scss";
 import { ComponentTypes } from "./types";
 import { useEditorCollisionDetection } from "./hooks/useEditorCollisionDetection";
 import { CompTree } from "./components/CompTree";
+
+import "./Content.scss";
 
 const ContentComp: FC<PropsWithChildren> = observer(() => {
   const sensors = useEditorDndSensors();
