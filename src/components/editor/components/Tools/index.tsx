@@ -1,31 +1,28 @@
-import "./index.scss";
-import { FC, memo, useRef } from "react";
-import { ActiveNodeTool } from "./components/ActiveNodeTool";
-import { TOOL_WRAPPER_ID } from "./constants";
-import { OverNodeTool } from "./components/OverNodeTool";
-import { HoveredNodeTool } from "./components/HoveredNodeTool";
+import { observer } from "mobx-react-lite";
+import { memo } from "react";
+import { ToolsContext } from "./context";
+import { ToolsContent } from "./Content";
+import { useEditorContext } from "../../hooks/useEditorContext";
+import { isNil, keys } from "lodash-es";
 
-export const ToolsComps: FC<{ visible?: boolean }> = ({ visible }) => {
-  const wrapperRef = useRef<HTMLDivElement>(null);
+const ToolsComp = observer(() => {
+  const {
+    editorStore: { panState, nodesMap, isPanTransforming },
+  } = useEditorContext();
 
-  const renderTools = () => {
-    if (!visible) {
-      return <></>;
-    }
-    return (
-      <>
-        <OverNodeTool />
-        <ActiveNodeTool />
-        <HoveredNodeTool />
-      </>
-    );
-  };
+  if (isNil(panState) || !keys(nodesMap).length || isPanTransforming) {
+    return <></>;
+  }
 
   return (
-    <div className="tools-wrapper" id={TOOL_WRAPPER_ID} ref={wrapperRef}>
-      {renderTools()}
-    </div>
+    <ToolsContext.Provider
+      value={{
+        panState,
+      }}
+    >
+      <ToolsContent />
+    </ToolsContext.Provider>
   );
-};
+});
 
-export const Tools = memo(ToolsComps);
+export const Tools = memo(ToolsComp);

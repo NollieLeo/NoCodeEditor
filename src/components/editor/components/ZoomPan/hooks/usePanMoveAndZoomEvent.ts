@@ -1,7 +1,7 @@
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { useEventListener } from "ahooks";
 import { Timeout } from "ahooks/lib/useRequest/src/types";
-import { MutableRefObject, RefObject, useRef, useState } from "react";
+import { MutableRefObject, RefObject, useRef } from "react";
 import {
   ReactZoomPanPinchProps,
   ReactZoomPanPinchRef,
@@ -13,8 +13,6 @@ export function usePanMoveAndZoomEvent(
 ) {
   const { editorStore } = useEditorContext();
   const transformTimer = useRef<Timeout>();
-
-  const [isTransforming, setIsTranforming] = useState(false);
 
   useEventListener("wheel", handleWrapperWheel, {
     passive: false,
@@ -38,10 +36,10 @@ export function usePanMoveAndZoomEvent(
 
   const onTransformed: ReactZoomPanPinchProps["onTransformed"] = (_, state) => {
     clearTimeout(transformTimer.current);
-    setIsTranforming(true);
+    editorStore.setPanIsTransforming(true);
     editorStore.setPanState(state);
     transformTimer.current = setTimeout(() => {
-      setIsTranforming(false);
+      editorStore.setPanIsTransforming(false);
     }, 200);
   };
 
@@ -50,7 +48,6 @@ export function usePanMoveAndZoomEvent(
   };
 
   return {
-    isTransforming,
     onTransformed,
     onInit,
   };

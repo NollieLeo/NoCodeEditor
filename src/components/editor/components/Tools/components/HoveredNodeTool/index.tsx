@@ -1,24 +1,14 @@
-import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { memo } from "react";
-import useToolWrapperRect from "../../hooks/useToolWrapperRect";
-import { isNil } from "lodash-es";
+import { FC, memo } from "react";
 import { BorderedRectangle } from "../BorderedRectangle";
-import { observer } from "mobx-react-lite";
 
-const HoveredNodeToolComp = observer(() => {
-  const { editorStore } = useEditorContext();
-  const wrapperRect = useToolWrapperRect();
+interface HoveredHightlightProps {
+  hoveredNodeId: string;
+}
 
-  const hoveredNodeDom = document.getElementById(
-    String(editorStore.hoveredNodeId)
-  );
+const HoveredNodeToolComp: FC<HoveredHightlightProps> = ({ hoveredNodeId }) => {
+  const hoveredNodeDom = document.getElementById(String(hoveredNodeId));
 
-  if (
-    editorStore.draggingInfo ||
-    isNil(editorStore.panState) ||
-    !hoveredNodeDom ||
-    !wrapperRect
-  ) {
+  if (!hoveredNodeDom) {
     return <></>;
   }
 
@@ -36,7 +26,7 @@ const HoveredNodeToolComp = observer(() => {
     top: domTop,
     bottom: domBottom,
     zIndex: 1,
-    left: domLeft - wrapperRect.left,
+    left: domLeft,
   };
 
   return (
@@ -47,6 +37,6 @@ const HoveredNodeToolComp = observer(() => {
       }}
     />
   );
-});
+};
 
 export const HoveredNodeTool = memo(HoveredNodeToolComp);

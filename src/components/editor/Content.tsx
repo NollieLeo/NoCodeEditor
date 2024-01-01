@@ -10,6 +10,7 @@ import { useEditorContext } from "./hooks/useEditorContext";
 import { DndDragOverlay } from "./components/DndDragOverlay";
 import useEditorDnd from "./hooks/useEditorDnd";
 import { ComponentTypes } from "./types";
+import { Tools } from "./components/Tools";
 import { useEditorCollisionDetection } from "./hooks/useEditorCollisionDetection";
 import { CompTree } from "./components/CompTree";
 
@@ -20,10 +21,10 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
   const {
     editorStore: { nodesMap },
   } = useEditorContext();
+  const editorCollisionDetection = useEditorCollisionDetection();
 
   const { onDragStart, onDragEnd, onDragOver, onDragMove } = useEditorDnd();
 
-  const editorCollisionDetection = useEditorCollisionDetection();
 
   const rootId = useMemo(() => {
     const root = find(nodesMap, ({ type }) => type === ComponentTypes.PAGE);
@@ -43,6 +44,8 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
         onDragEnd={onDragEnd}
         onDragMove={onDragMove}
       >
+        {/* -------------- Helper Tools -------------- */}
+        {<Tools />}
         {/* --------- Siderbar for editor --------- */}
         <Siderbar />
         {/* --------- Editor's zoom pan --------- */}

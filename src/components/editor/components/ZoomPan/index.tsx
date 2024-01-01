@@ -5,7 +5,6 @@ import {
 } from "react-zoom-pan-pinch";
 import { observer } from "mobx-react-lite";
 import { FC, MouseEventHandler, PropsWithChildren, memo, useRef } from "react";
-import { Tools } from "../Tools";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { DEFAULT_PANE_PROPS } from "./constants";
 import { usePanMoveAndZoomEvent } from "./hooks/usePanMoveAndZoomEvent";
@@ -18,18 +17,16 @@ const ZoomPanComp: FC<PropsWithChildren> = observer((props) => {
   const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const { isTransforming, onTransformed, onInit } = usePanMoveAndZoomEvent(
+  const { onTransformed, onInit } = usePanMoveAndZoomEvent(
     wrapperRef,
     transformComponentRef
   );
-
-  const showTools = !isTransforming;
 
   const onContextMenu: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     const targetDom = e.target as HTMLDivElement;
     if (targetDom) {
-      editorStore.setFocusedNodeId(targetDom.id);
+      editorStore.setFocusedInfo({ id: targetDom.id });
     }
   };
 
@@ -48,8 +45,6 @@ const ZoomPanComp: FC<PropsWithChildren> = observer((props) => {
         onInit={onInit}
         onTransformed={onTransformed}
       >
-        {/* -------------- Helper Tools -------------- */}
-        {<Tools visible={showTools} />}
         {/* -------------- Real ZoomPan Transformer -------------- */}
         <TransformComponent
           wrapperClass="editor-pane-wrapper"

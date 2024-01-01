@@ -6,7 +6,7 @@ export function usePanSortDnd() {
   const { editorStore } = useEditorContext();
   const onDragStart = (dragInfo: DragInfoFromPanSort) => {
     transaction(() => {
-      editorStore.setFocusedNodeId(null);
+      editorStore.setFocusedInfo(null);
       editorStore.setDraggingInfo(dragInfo);
     });
   };
@@ -23,12 +23,12 @@ export function usePanSortDnd() {
   };
 
   const onDragEnd = (dragInfo: DragInfoFromPanSort) => {
-    const { parentId, id: fromId } = dragInfo;
+    const { parentId, id } = dragInfo;
     if (!parentId) {
       return;
     }
     // console.log("dropInfo", dropInfo);
-    editorStore.setFocusedNodeId(fromId);
+    editorStore.setFocusedInfo({ id });
   };
 
   return {

@@ -1,39 +1,50 @@
-import { isNil } from "lodash-es";
+import { FC, memo, useMemo } from "react";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { ComponentTypes, DragOrigin } from "@/components/editor/types";
+import {
+  ComponentTypes,
+  DragInfo,
+  DragOrigin,
+  DropInfo,
+} from "@/components/editor/types";
 import { observer } from "mobx-react-lite";
-import useToolWrapperRect from "@/components/editor/components/Tools/hooks/useToolWrapperRect";
 import { BorderedRectangle } from "@/components/editor/components/Tools/components/BorderedRectangle";
 
-export const OverContainerHighlight = observer(() => {
-  const {
-    editorStore: { overInfo, nodesMap, draggingInfo },
-  } = useEditorContext();
-  const wrapperRect = useToolWrapperRect();
+interface OverHighlightProps {
+  overInfo: DropInfo;
+  draggingInfo: DragInfo;
+}
 
-  if (isNil(overInfo) || isNil(wrapperRect) || isNil(draggingInfo)) {
-    return <></>;
-  }
+export const OverHighlightComp: FC<OverHighlightProps> = observer((props) => {
+  const { overInfo, draggingInfo } = props;
+  const {
+    editorStore: { nodesMap },
+  } = useEditorContext();
 
   const { id: dragId } = draggingInfo;
   const { id: overId, accepts } = overInfo;
   const { type: overType } = nodesMap[overId];
-
-  let highlightDomId: string | undefined | null;
 
   const isContainerBox = [
     ComponentTypes.CONTAINER,
     ComponentTypes.PAGE,
   ].includes(overType);
 
-  if (draggingInfo.from === DragOrigin.PAN_SORT) {
-    highlightDomId =
-      isContainerBox && accepts?.includes(dragId)
+  const highlightDomId = useMemo(() => {
+    if (draggingInfo.from === DragOrigin.PAN_SORT) {
+      return isContainerBox && accepts?.includes(dragId)
         ? overId
         : draggingInfo.parentId;
-  } else if (draggingInfo.from === DragOrigin.SIDE_ADD) {
-    highlightDomId = isContainerBox ? overId : overInfo.parentId;
-  }
+    } else if (draggingInfo.from === DragOrigin.SIDE_ADD) {
+      return isContainerBox ? overId : overInfo.parentId;
+    }
+  }, [
+    accepts,
+    dragId,
+    draggingInfo,
+    isContainerBox,
+    overId,
+    overInfo.parentId,
+  ]);
 
   if (!highlightDomId) {
     return <></>;
@@ -59,7 +70,7 @@ export const OverContainerHighlight = observer(() => {
     top: domTop,
     bottom: domBottom,
     zIndex: 3,
-    left: domLeft - wrapperRect.left,
+    left: domLeft,
   };
 
   return (
@@ -72,3 +83,5 @@ export const OverContainerHighlight = observer(() => {
     />
   );
 });
+
+export const OverHighlight = memo(OverHighlightComp);

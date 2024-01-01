@@ -5,25 +5,34 @@ import { cloneDeep, findIndex, isUndefined } from "lodash-es";
 import { DragInfo, DropInfo, SchemaData } from "../types";
 import { mocks } from "./mocks";
 
+export interface PanState
+  extends Omit<ReactZoomPanPinchState, "previousScale"> {}
+
 export interface EditorState {
   /** 拖拽时候经过的元素信息 */
   overInfo: DropInfo | null;
   /** 页面被点击激活的元素id */
-  focusedNodeId: string | null;
+  focusedInfo: { id: string } | null;
   /** 页面上被hover的元素id */
   hoveredNodeId: string | null;
   /** 面板的信息，包括缩放大小/位移信息 */
-  panState: Omit<ReactZoomPanPinchState, "previousScale"> | null;
+  panState: PanState | null;
+  /** 面板是否在缩放/移动 */
+  isPanTransforming: boolean;
   /** 被拖拽的元素信息 */
   draggingInfo: DragInfo | null;
+  /** 所有的元素 */
   nodesMap: Record<string, SchemaData>;
 }
 
 export interface EditorAction {
   setOverInfo(over: EditorState["overInfo"]): void;
-  setFocusedNodeId(id: EditorState["focusedNodeId"]): void;
+  setFocusedInfo(id: EditorState["focusedInfo"]): void;
   setHoverNodeId(id: EditorState["hoveredNodeId"]): void;
   setPanState(panState: EditorState["panState"]): void;
+  setPanIsTransforming(
+    isPanTransforming: EditorState["isPanTransforming"]
+  ): void;
   setDraggingInfo(node: EditorState["draggingInfo"]): void;
   addNode(data: SchemaData, target: string, idx?: number): void;
   movePos(parentId: string, from: string, to: string): void;
@@ -35,16 +44,17 @@ export type EditorStore = EditorState & EditorAction;
 export const useEditorStore = () => {
   return useLocalStore<EditorStore>(() => ({
     overInfo: null,
-    focusedNodeId: null,
+    focusedInfo: null,
     hoveredNodeId: null,
     panState: null,
+    isPanTransforming: false,
     draggingInfo: null,
     nodesMap: cloneDeep(mocks),
     setOverInfo(overInfo) {
       this.overInfo = overInfo;
     },
-    setFocusedNodeId(id) {
-      this.focusedNodeId = id;
+    setFocusedInfo(focusedInfo) {
+      this.focusedInfo = focusedInfo;
     },
     setHoverNodeId(id) {
       this.hoveredNodeId = id;
@@ -52,12 +62,15 @@ export const useEditorStore = () => {
     setPanState(state) {
       this.panState = state;
     },
+    setPanIsTransforming(isPanTransforming) {
+      this.isPanTransforming = isPanTransforming;
+    },
     setDraggingInfo(info) {
       this.draggingInfo = info;
     },
     cleanUpHelperNode() {
       this.hoveredNodeId = null;
-      this.focusedNodeId = null;
+      this.focusedInfo = null;
       this.overInfo = null;
     },
     /**

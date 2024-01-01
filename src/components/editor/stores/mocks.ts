@@ -13,9 +13,10 @@ export const mocks = {
         alignItems: "center",
         justifyContent: "center",
         gap: "20px",
+        position: "relative",
       },
     },
-    childNodes: ["container-287", "container-433"],
+    childNodes: ["container-287", "container-433", "container-409"],
   },
   "container-287": {
     id: "container-287",
@@ -124,7 +125,7 @@ export const mocks = {
         flexWrap: "wrap",
       },
     },
-    childNodes: ["button-2454", "text-4365", "textarea-4918"],
+    childNodes: ["text-4365", "button-2454", "textarea-4918"],
   },
   "button-2454": {
     id: "button-2454",
@@ -162,5 +163,21 @@ export const mocks = {
       },
       placeholder: "输入框",
     },
+  },
+  "container-409": {
+    id: "container-409",
+    parentId: "page-1",
+    type: "container",
+    data: {
+      style: {
+        width: 300,
+        height: 200,
+        background: "#00b9ff",
+        display: "block",
+        position: "absolute",
+        left: "0",
+      },
+    },
+    childNodes: [],
   },
 } as any;

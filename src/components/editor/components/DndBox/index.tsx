@@ -27,7 +27,7 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
 
   const { draggingInfo } = editorStore;
 
-  const dragItemConfig = useMemo<UseDraggableArguments>(
+  const draggableConfig = useMemo<UseDraggableArguments>(
     () => ({
       id,
       disabled: !draggable,
@@ -45,7 +45,7 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
     attributes,
     listeners,
     isDragging,
-  } = useDraggable(dragItemConfig);
+  } = useDraggable(draggableConfig);
 
   const droppableDisabled = useMemo(() => {
     if (!draggingInfo) {
@@ -83,7 +83,9 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
 
   const onClick = (e: Event) => {
     e.stopPropagation();
-    editorStore.setFocusedNodeId(id);
+    editorStore.setFocusedInfo({
+      id,
+    });
   };
 
   const onMouseOver = (e: Event) => {
