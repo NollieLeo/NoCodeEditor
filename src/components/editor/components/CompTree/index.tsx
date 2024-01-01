@@ -22,9 +22,7 @@ const CompTreeTmpl = observer((props: CompTreeProps) => {
 
   const { nodesMap } = editorStore;
 
-  const value = toJS(nodesMap[rootId], {
-    recurseEverything: true,
-  });
+  const value = toJS(nodesMap[rootId]);
 
   const { type, id, childNodes, data, parentId } = value;
 
@@ -42,10 +40,6 @@ const CompTreeTmpl = observer((props: CompTreeProps) => {
         </Fragment>
       ))
     : data.children;
-
-  if (rootId === "page-1") {
-    console.log("nodesMap", nodesMap);
-  }
 
   return withDnd ? (
     <DndBox
