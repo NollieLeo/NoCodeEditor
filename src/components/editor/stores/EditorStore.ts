@@ -4,6 +4,7 @@ import { useLocalStore } from "mobx-react-lite";
 import { cloneDeep, findIndex, isUndefined } from "lodash-es";
 import { DragInfo, DropInfo, SchemaData } from "../types";
 import { mocks } from "./mocks";
+import { CSSProperties } from "react";
 
 export interface PanState
   extends Omit<ReactZoomPanPinchState, "previousScale"> {}
@@ -34,9 +35,12 @@ export interface EditorAction {
     isPanTransforming: EditorState["isPanTransforming"]
   ): void;
   setDraggingInfo(node: EditorState["draggingInfo"]): void;
-  addNode(data: SchemaData, target: string, idx?: number): void;
-  movePos(parentId: string, from: string, to: string): void;
   cleanUpHelperNode(): void;
+
+  // ----------- node operations -----------
+  addNode(data: SchemaData, target: string, idx?: number): void;
+  updateNodeStyle(styles: CSSProperties, target: string): void;
+  movePos(parentId: string, from: string, to: string): void;
 }
 
 export type EditorStore = EditorState & EditorAction;
@@ -110,6 +114,14 @@ export const useEditorStore = () => {
       const newChildNodes = arrayMove(childNodes, fromIdx, toIdx);
       childNodes.length = 0;
       childNodes.push(...newChildNodes);
+    },
+
+    updateNodeStyle(styles, target) {
+      const updateTarget = this.nodesMap[target];
+      if (!updateTarget) {
+        throw new Error(`update failed: node ${target} does not exist`);
+      }
+      updateTarget.data.style = { ...updateTarget.data.style, ...styles };
     },
   }));
 };

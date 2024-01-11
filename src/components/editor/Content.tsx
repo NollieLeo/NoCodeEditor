@@ -4,7 +4,7 @@ import { find } from "lodash-es";
 import { observer } from "mobx-react-lite";
 import { ZoomPan } from "./components/ZoomPan";
 import { Siderbar } from "./components/Siderbar";
-// import { DndMonitor } from "./components/DndMonitor";
+import { DndMonitor } from "./components/DndMonitor";
 import useEditorDndSensors from "./hooks/useEditorDndSensors";
 import { useEditorContext } from "./hooks/useEditorContext";
 import { DndDragOverlay } from "./components/DndDragOverlay";
@@ -15,16 +15,17 @@ import { useEditorCollisionDetection } from "./hooks/useEditorCollisionDetection
 import { CompTree } from "./components/CompTree";
 
 import "./Content.scss";
+import useEditorDndModifiers from "./hooks/useEditorDndModifiers";
 
 const ContentComp: FC<PropsWithChildren> = observer(() => {
   const sensors = useEditorDndSensors();
+  const modifiers = useEditorDndModifiers();
   const {
     editorStore: { nodesMap },
   } = useEditorContext();
   const editorCollisionDetection = useEditorCollisionDetection();
 
   const { onDragStart, onDragEnd, onDragOver, onDragMove } = useEditorDnd();
-
 
   const rootId = useMemo(() => {
     const root = find(nodesMap, ({ type }) => type === ComponentTypes.PAGE);
@@ -38,6 +39,7 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
     <div className="editor-wrapper">
       <DndContext
         sensors={sensors}
+        modifiers={modifiers}
         collisionDetection={editorCollisionDetection}
         onDragStart={onDragStart}
         onDragOver={onDragOver}
@@ -55,7 +57,7 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
         {/* --------- Dnd overlays for editor's global drag overlay  ---------- */}
         <DndDragOverlay />
         {/* --------- Dnd monitor for editor's global Dnd events  ---------- */}
-        {/* <DndMonitor /> */}
+        <DndMonitor />
       </DndContext>
     </div>
   );

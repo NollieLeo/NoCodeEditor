@@ -4,47 +4,36 @@ import {
   ComponentTypes,
   DragInfo,
   DragOrigin,
-  DropInfo,
 } from "@/components/editor/types";
 import { observer } from "mobx-react-lite";
 import { BorderedRectangle } from "@/components/editor/components/Tools/components/BorderedRectangle";
 
 interface OverHighlightProps {
-  overInfo: DropInfo;
   draggingInfo: DragInfo;
 }
 
 export const OverHighlightComp: FC<OverHighlightProps> = observer((props) => {
-  const { overInfo, draggingInfo } = props;
+  const { draggingInfo } = props;
   const {
-    editorStore: { nodesMap },
+    editorStore: { nodesMap, overInfo },
   } = useEditorContext();
 
-  const { id: dragId } = draggingInfo;
-  const { id: overId, accepts } = overInfo;
-  const { type: overType } = nodesMap[overId];
-
-  const isContainerBox = [
-    ComponentTypes.CONTAINER,
-    ComponentTypes.PAGE,
-  ].includes(overType);
-
   const highlightDomId = useMemo(() => {
-    if (draggingInfo.from === DragOrigin.PAN_SORT) {
-      return isContainerBox && accepts?.includes(dragId)
-        ? overId
-        : draggingInfo.parentId;
-    } else if (draggingInfo.from === DragOrigin.SIDE_ADD) {
+    if (
+      draggingInfo.from === DragOrigin.SORT ||
+      draggingInfo.from === DragOrigin.MOVE
+    ) {
+      return draggingInfo.parentId;
+    } else if (draggingInfo.from === DragOrigin.SIDE_ADD && overInfo) {
+      const { id: overId } = overInfo;
+      const { type: overType } = nodesMap[overId];
+      const isContainerBox = [
+        ComponentTypes.CONTAINER,
+        ComponentTypes.PAGE,
+      ].includes(overType);
       return isContainerBox ? overId : overInfo.parentId;
     }
-  }, [
-    accepts,
-    dragId,
-    draggingInfo,
-    isContainerBox,
-    overId,
-    overInfo.parentId,
-  ]);
+  }, [draggingInfo, nodesMap, overInfo]);
 
   if (!highlightDomId) {
     return <></>;

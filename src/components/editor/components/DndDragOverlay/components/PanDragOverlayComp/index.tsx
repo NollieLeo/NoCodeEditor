@@ -9,29 +9,32 @@ import { CompTree } from "@/components/editor/components/CompTree";
  */
 const PanDragOverlayTmpl: FC = observer(() => {
   const { editorStore } = useEditorContext();
-  const { draggingInfo, nodesMap, panState } = editorStore;
+  const { draggingInfo, nodesMap } = editorStore;
 
   const activePanComp = useMemo(() => {
-    if (!draggingInfo || draggingInfo.from !== DragOrigin.PAN_SORT) {
+    if (
+      !draggingInfo ||
+      ![DragOrigin.SORT, DragOrigin.MOVE].includes(draggingInfo.from)
+    ) {
       return <></>;
     }
     const { id } = draggingInfo;
     const targetDom = document.getElementById(id);
-    if (id && nodesMap[id] && targetDom && panState?.scale) {
+    if (id && nodesMap[id] && targetDom) {
       const { width, height } = targetDom.getBoundingClientRect();
       return (
-        <div
+        <CompTree
+          rootId={id}
+          withDnd={false}
           style={{
-            height: height * (1 / panState.scale),
-            width: width * (1 / panState.scale),
-            transform: `scale(${panState.scale})`,
+            height,
+            width,
+            position: "unset",
           }}
-        >
-          <CompTree rootId={id} withDnd={false} />
-        </div>
+        />
       );
     }
-  }, [draggingInfo, nodesMap, panState?.scale]);
+  }, [draggingInfo, nodesMap]);
 
   return activePanComp;
 });

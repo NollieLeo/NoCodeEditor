@@ -13,19 +13,32 @@ import { DragOrigin } from "@/components/editor/types";
 import "./index.scss";
 
 export interface CompWrapperProps {
-  droppable?: boolean;
-  childIds: string[] | null;
-  draggable?: boolean;
   id: string;
   parentId: string | null;
+  childIds: string[] | null;
+  droppable?: boolean;
+  draggable?: boolean;
   children: (params: any) => ReactNode;
 }
 
 const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
   const { draggable = true, id, parentId, childIds, children } = props;
-  const { editorStore } = useEditorContext();
+  const {
+    editorStore,
+    editorStore: { draggingInfo, nodesMap },
+  } = useEditorContext();
 
-  const { draggingInfo } = editorStore;
+  const draggableOrigin = useMemo(() => {
+    const curDetail = nodesMap[id];
+    let from = DragOrigin.SORT;
+    if (
+      curDetail.data.style.position &&
+      ["absolute", "fixed"].includes(curDetail.data.style.position)
+    ) {
+      from = DragOrigin.MOVE;
+    }
+    return from;
+  }, [id, nodesMap]);
 
   const draggableConfig = useMemo<UseDraggableArguments>(
     () => ({
@@ -34,10 +47,10 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
       data: {
         id,
         parentId,
-        from: DragOrigin.PAN_SORT,
+        from: draggableOrigin,
       },
     }),
-    [draggable, id, parentId]
+    [draggable, id, parentId, draggableOrigin]
   );
 
   const {
@@ -104,7 +117,7 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
     id,
     style: dragItemStyle,
     className: dropZoomCls,
-    ref(nodeRef: any) {
+    ref(nodeRef: HTMLElement) {
       setDragRef(nodeRef);
       setDropRef(nodeRef);
     },

@@ -27,7 +27,6 @@ export function usePanSortDnd() {
     if (!parentId) {
       return;
     }
-    // console.log("dropInfo", dropInfo);
     editorStore.setFocusedInfo({ id });
   };
 

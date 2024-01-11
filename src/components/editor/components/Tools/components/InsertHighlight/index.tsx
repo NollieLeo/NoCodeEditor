@@ -7,7 +7,6 @@ import { useToolsContext } from "../../hooks/useToolsContext";
 const InsertHighlightComp = observer(() => {
   const { panState } = useToolsContext();
   const getInsertInfo = useEditorInsertTarget();
-
   const insertInfo = getInsertInfo();
 
   if (isNil(insertInfo)) {

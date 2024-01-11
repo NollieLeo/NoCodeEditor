@@ -1,6 +1,6 @@
 import { isNil, map } from "lodash-es";
 import { toJS } from "mobx";
-import { Fragment, memo } from "react";
+import { CSSProperties, Fragment, memo } from "react";
 import { COMPONENTS_INFO } from "@/components/editor/constants";
 import { ComponentTypes } from "@/components/editor/types";
 import { DndBox } from "../DndBox";
@@ -10,10 +10,11 @@ import { observer } from "mobx-react-lite";
 interface CompTreeProps {
   rootId: string | null;
   withDnd?: boolean;
+  style?: CSSProperties;
 }
 
 const CompTreeTmpl = observer((props: CompTreeProps) => {
-  const { rootId, withDnd = true } = props;
+  const { rootId, withDnd = true, style } = props;
   const { editorStore } = useEditorContext();
 
   if (isNil(rootId)) {
@@ -50,17 +51,24 @@ const CompTreeTmpl = observer((props: CompTreeProps) => {
       draggable={draggable}
       childIds={childNodes}
     >
-      {(params) => (
-        <Component
-          {...data}
-          {...params}
-          style={{ ...data.style, ...params.style }}
-          children={childComps}
-        />
-      )}
+      {(params) => {
+        const compStyle = { ...data.style, ...params.style };
+        return (
+          <Component
+            {...data}
+            {...params}
+            style={compStyle}
+            children={childComps}
+          />
+        );
+      }}
     </DndBox>
   ) : (
-    <Component {...data} children={childComps} />
+    <Component
+      {...data}
+      style={{ ...data.style, ...style }}
+      children={childComps}
+    />
   );
 });
 

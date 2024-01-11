@@ -5,8 +5,10 @@ import { ComponentTypes } from "./Components";
 export enum DragOrigin {
   /** 来源侧边栏 拖拽添加 */
   SIDE_ADD = "sideAdd",
-  /** 来源面板 拖拽排序 */
-  PAN_SORT = "panSort",
+  /** 来源面板 拖拽排序，在Flex布局容器中做排序 */
+  SORT = "sort",
+  /** 来源面板 拖拽位移，元素本身position为fixed/absolute */
+  MOVE = "move",
 }
 
 export interface DragInfoDefault {
@@ -23,10 +25,15 @@ export interface DragInfoFromSideAdd extends DragInfoDefault {
 
 export interface DragInfoFromPanSort extends DragInfoDefault {
   parentId: string | null;
-  from: DragOrigin.PAN_SORT;
+  from: DragOrigin.SORT;
 }
 
-export type DragInfo = DragInfoFromSideAdd | DragInfoFromPanSort;
+export interface DragInfoFromPanMove extends DragInfoDefault {
+  parentId: string | null;
+  from: DragOrigin.MOVE;
+}
+
+export type DragInfo = DragInfoFromSideAdd | DragInfoFromPanSort | DragInfoFromPanMove;
 
 export interface DropInfo {
   parentId?: string | null;

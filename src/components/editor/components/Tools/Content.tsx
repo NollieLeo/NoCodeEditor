@@ -2,7 +2,7 @@ import { FC, memo } from "react";
 import { FocusedHighlight } from "./components/FocusedHighlight";
 import { TOOL_WRAPPER_ID } from "./constants";
 import { HoveredNodeTool } from "./components/HoveredNodeTool";
-import { useEditorContext } from "../../hooks/useEditorContext";
+import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { observer } from "mobx-react-lite";
 import { OverHighlight } from "./components/OverHighlight";
 import { InsertHighlight } from "./components/InsertHighlight";
@@ -10,14 +10,14 @@ import "./index.scss";
 
 const ToolsContentComps: FC = observer(() => {
   const {
-    editorStore: { overInfo, draggingInfo, focusedInfo, hoveredNodeId },
+    editorStore: { draggingInfo, focusedInfo, hoveredNodeId },
   } = useEditorContext();
 
   const renderOverHighlight = () => {
-    if (!overInfo || !draggingInfo) {
+    if (!draggingInfo) {
       return <></>;
     }
-    return <OverHighlight overInfo={overInfo} draggingInfo={draggingInfo} />;
+    return <OverHighlight draggingInfo={draggingInfo} />;
   };
 
   const renderFocusedHighlight = () => {
