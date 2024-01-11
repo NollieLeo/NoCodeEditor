@@ -57,7 +57,6 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
     setNodeRef: setDragRef,
     attributes,
     listeners,
-    isDragging,
   } = useDraggable(draggableConfig);
 
   const droppableDisabled = useMemo(() => {
@@ -85,13 +84,6 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
 
   const { setNodeRef: setDropRef } = useDroppable(droppableConfig);
 
-  const dragItemStyle = useMemo(
-    () => ({
-      opacity: isDragging ? 0.6 : 1,
-    }),
-    [isDragging]
-  );
-
   const dropZoomCls = classNames("editor-dropzoom");
 
   const onClick = (e: Event) => {
@@ -117,7 +109,6 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
     ...attributes,
     ...listeners,
     id,
-    style: dragItemStyle,
     className: dropZoomCls,
     ref(nodeRef: HTMLElement) {
       setDragRef(nodeRef);

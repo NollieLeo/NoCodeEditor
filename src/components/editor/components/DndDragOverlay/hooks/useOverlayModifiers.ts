@@ -1,9 +1,6 @@
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { DragOrigin } from "@/components/editor/types";
-import {
-  snapCenterToCursor,
-  restrictToWindowEdges,
-} from "@dnd-kit/modifiers";
+import { snapCenterToCursor, restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { useMemo } from "react";
 
 export function useOverlayModifiers() {
@@ -12,13 +9,10 @@ export function useOverlayModifiers() {
   } = useEditorContext();
 
   const overlayModifiers = useMemo(() => {
-    if (draggingInfo?.from === DragOrigin.SIDE_ADD) {
-      return [snapCenterToCursor];
+    if (draggingInfo?.from === DragOrigin.MOVE) {
+      return [restrictToWindowEdges];
     }
-    if (draggingInfo?.from === DragOrigin.SORT) {
-      return [snapCenterToCursor];
-    }
-    return [restrictToWindowEdges];
+    return [snapCenterToCursor];
   }, [draggingInfo?.from]);
 
   return overlayModifiers;
