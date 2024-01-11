@@ -36,6 +36,7 @@ export default function useEditorDnd() {
     if (!data.current) {
       throw new Error("dragging target must bind drag info");
     }
+    editorStore.setHoverNodeId(null);
     const dragInfo = {
       ...data.current,
       rect: rect.current.translated,

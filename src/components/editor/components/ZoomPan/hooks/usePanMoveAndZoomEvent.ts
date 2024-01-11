@@ -30,7 +30,7 @@ export function usePanMoveAndZoomEvent(
       } = instance;
       const newPosX = positionX - deltaX / scale;
       const newPosY = positionY - deltaY / scale;
-      setTransform(newPosX, newPosY, scale, 10, "linear");
+      setTransform(newPosX, newPosY, scale, 5, "linear");
     }
   }
 

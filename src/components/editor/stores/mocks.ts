@@ -14,6 +14,7 @@ export const mocks = {
         justifyContent: "center",
         gap: "20px",
         position: "relative",
+        overflow: "hidden",
       },
     },
     childNodes: ["container-287", "container-433", "container-409"],
@@ -24,7 +25,7 @@ export const mocks = {
     type: "container",
     data: {
       style: {
-        width: "fit-content",
+        width: 600,
         height: 500,
         background: "#64bb64",
         display: "flex",
@@ -32,6 +33,10 @@ export const mocks = {
         justifyContent: "center",
         alignItems: "center",
         flexWrap: "wrap",
+        position: "absolute",
+        overflow: "hidden",
+        left: 100,
+        top: 100,
       },
     },
     childNodes: [
@@ -123,6 +128,9 @@ export const mocks = {
         background: "yellow",
         display: "flex",
         flexWrap: "wrap",
+        position: "absolute",
+        top: 200,
+        left: 300,
       },
     },
     childNodes: ["text-4365", "button-2454", "textarea-4918"],
