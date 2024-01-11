@@ -134,6 +134,8 @@ export default function useEditorDnd() {
       rect: overRect,
     } as DropInfo;
 
+    editorStore.setDraggingInfo(dragInfo);
+
     switch (dragInfo.from) {
       case DragOrigin.SIDE_ADD:
         onSideDragMove(dragInfo, overInfo);

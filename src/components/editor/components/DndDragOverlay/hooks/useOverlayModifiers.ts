@@ -16,7 +16,7 @@ export function useOverlayModifiers() {
       return [snapCenterToCursor];
     }
     if (draggingInfo?.from === DragOrigin.SORT) {
-      return [];
+      return [snapCenterToCursor];
     }
     return [restrictToWindowEdges];
   }, [draggingInfo?.from]);

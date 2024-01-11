@@ -1,4 +1,4 @@
-import { FC, memo, useMemo } from "react";
+import { CSSProperties, FC, memo, useMemo } from "react";
 import { observer } from "mobx-react-lite";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { DragOrigin } from "@/components/editor/types";
@@ -9,32 +9,28 @@ import { CompTree } from "@/components/editor/components/CompTree";
  */
 const PanDragOverlayTmpl: FC = observer(() => {
   const { editorStore } = useEditorContext();
-  const { draggingInfo, nodesMap } = editorStore;
+  const { draggingInfo, panState } = editorStore;
+
+  const dragId = draggingInfo?.id;
+  const dragOrigin = draggingInfo?.from;
+  const panScale = panState?.scale || 1;
 
   const activePanComp = useMemo(() => {
-    if (
-      !draggingInfo ||
-      ![DragOrigin.SORT, DragOrigin.MOVE].includes(draggingInfo.from)
-    ) {
+    if (!dragId || dragOrigin !== DragOrigin.SORT) {
       return <></>;
     }
-    const { id } = draggingInfo;
-    const targetDom = document.getElementById(id);
-    if (id && nodesMap[id] && targetDom) {
-      const { width, height } = targetDom.getBoundingClientRect();
+    if (dragId && panScale) {
+      const wrapperStyle: CSSProperties = {
+        transform: `scale(${panScale})`,
+        position: "relative",
+      };
       return (
-        <CompTree
-          rootId={id}
-          withDnd={false}
-          style={{
-            height,
-            width,
-            position: "unset",
-          }}
-        />
+        <div style={wrapperStyle}>
+          <CompTree rootId={dragId} withDnd={false} />
+        </div>
       );
     }
-  }, [draggingInfo, nodesMap]);
+  }, [dragId, dragOrigin, panScale]);
 
   return activePanComp;
 });

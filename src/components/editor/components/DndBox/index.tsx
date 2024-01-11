@@ -103,7 +103,9 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
 
   const onMouseOver = (e: Event) => {
     e.stopPropagation();
-    editorStore.setHoverNodeId(id);
+    if (!draggingInfo) {
+      editorStore.setHoverNodeId(id);
+    }
   };
 
   const onMouseLeave = (e: MouseEvent) => {

@@ -59,7 +59,7 @@ export const mocks = {
         display: "block",
       },
     },
-    childNodes: [],
+    childNodes: ["button-1452"],
   },
   "container-560": {
     id: "container-560",
@@ -73,7 +73,7 @@ export const mocks = {
         display: "block",
       },
     },
-    childNodes: [],
+    childNodes: ["text-1215"],
   },
   "container-621": {
     id: "container-621",
@@ -87,7 +87,7 @@ export const mocks = {
         display: "block",
       },
     },
-    childNodes: [],
+    childNodes: ["text-891"],
   },
   "container-1106": {
     id: "container-1106",
@@ -115,7 +115,7 @@ export const mocks = {
         display: "block",
       },
     },
-    childNodes: [],
+    childNodes: ["input-1026"],
   },
   "container-433": {
     id: "container-433",
@@ -129,8 +129,8 @@ export const mocks = {
         display: "flex",
         flexWrap: "wrap",
         position: "absolute",
-        top: 200,
-        left: 300,
+        top: 80.99531555175781,
+        left: 743.9937438964844,
       },
     },
     childNodes: ["text-4365", "button-2454", "textarea-4918"],
@@ -183,9 +183,58 @@ export const mocks = {
         background: "#00b9ff",
         display: "block",
         position: "absolute",
-        left: "0",
+        left: 937.9937438964844,
+        top: 462.9953155517578,
       },
     },
     childNodes: [],
+  },
+  "text-891": {
+    id: "text-891",
+    parentId: "container-621",
+    type: "text",
+    data: {
+      style: {
+        display: "block",
+      },
+      children: "Go fuck yourself",
+    },
+  },
+  "input-1026": {
+    id: "input-1026",
+    parentId: "container-299",
+    type: "input",
+    data: {
+      style: {
+        width: 120,
+        height: 32,
+        display: "block",
+      },
+      placeholder: "输入框",
+    },
+  },
+  "text-1215": {
+    id: "text-1215",
+    parentId: "container-560",
+    type: "text",
+    data: {
+      style: {
+        display: "block",
+      },
+      children: "Go fuck yourself",
+    },
+  },
+  "button-1452": {
+    id: "button-1452",
+    parentId: "container-257",
+    type: "button",
+    data: {
+      style: {
+        width: 120,
+        height: 32,
+        display: "block",
+      },
+      children: "按钮",
+    },
   },
 } as any;
