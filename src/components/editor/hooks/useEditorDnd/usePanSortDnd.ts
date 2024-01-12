@@ -1,15 +1,8 @@
 import { DragInfoFromPanSort, DropInfo } from "@/components/editor/types";
 import { useEditorContext } from "../useEditorContext";
-import { transaction } from "mobx";
 
 export function usePanSortDnd() {
   const { editorStore } = useEditorContext();
-  const onDragStart = (dragInfo: DragInfoFromPanSort) => {
-    transaction(() => {
-      editorStore.setFocusedInfo(null);
-      editorStore.setDraggingInfo(dragInfo);
-    });
-  };
 
   const onDragOver = (dragInfo: DragInfoFromPanSort, overInfo: DropInfo) => {
     const { parentId: dragParentId, id: fromId } = dragInfo;
@@ -32,7 +25,6 @@ export function usePanSortDnd() {
 
   return {
     onDragOver,
-    onDragStart,
     onDragEnd,
   };
 }

@@ -35,8 +35,8 @@ export const mocks = {
         flexWrap: "wrap",
         position: "absolute",
         overflow: "hidden",
-        left: 100,
-        top: 100,
+        left: 105.2276742445539,
+        top: 104.22975599573711,
       },
     },
     childNodes: [
@@ -129,8 +129,8 @@ export const mocks = {
         display: "flex",
         flexWrap: "wrap",
         position: "absolute",
-        top: 80.99531555175781,
-        left: 743.9937438964844,
+        top: 24.032051914104457,
+        left: 769.2733912155528,
       },
     },
     childNodes: ["text-4365", "button-2454", "textarea-4918"],
@@ -178,16 +178,23 @@ export const mocks = {
     type: "container",
     data: {
       style: {
-        width: 300,
+        width: 400,
         height: 200,
         background: "#00b9ff",
         display: "block",
         position: "absolute",
-        left: 937.9937438964844,
-        top: 462.9953155517578,
+        left: 787.8018552327386,
+        top: 474.64798907844386,
       },
     },
-    childNodes: [],
+    childNodes: [
+      "button-9000",
+      "button-9178",
+      "text-9468",
+      "textarea-1585",
+      "button-2313",
+      "text-8719",
+    ],
   },
   "text-891": {
     id: "text-891",
@@ -227,6 +234,92 @@ export const mocks = {
   "button-1452": {
     id: "button-1452",
     parentId: "container-257",
+    type: "button",
+    data: {
+      style: {
+        width: 120,
+        height: 32,
+        display: "block",
+      },
+      children: "按钮",
+    },
+  },
+  "text-8719": {
+    id: "text-8719",
+    parentId: "container-409",
+    type: "text",
+    data: {
+      style: {
+        display: "block",
+        position: "absolute",
+        top: 140.9859619140625,
+        left: 238.98748779296875,
+      },
+      children: "Go fuck yourself",
+    },
+  },
+  "button-9000": {
+    id: "button-9000",
+    parentId: "container-409",
+    type: "button",
+    data: {
+      style: {
+        width: 120,
+        height: 32,
+        display: "block",
+        position: "absolute",
+        top: 90.13383704961373,
+        left: 38.20751309998734,
+      },
+      children: "按钮",
+    },
+  },
+  "button-9178": {
+    id: "button-9178",
+    parentId: "container-409",
+    type: "button",
+    data: {
+      style: {
+        width: 120,
+        height: 32,
+        display: "block",
+        position: "absolute",
+        top: 151.9937744140625,
+        left: 8.99530029296875,
+      },
+      children: "按钮",
+    },
+  },
+  "text-9468": {
+    id: "text-9468",
+    parentId: "container-409",
+    type: "text",
+    data: {
+      style: {
+        display: "block",
+        position: "absolute",
+        top: 40.28264657342325,
+        left: 246.98410884466819,
+      },
+      children: "Go fuck yourself",
+    },
+  },
+  "textarea-1585": {
+    id: "textarea-1585",
+    parentId: "container-409",
+    type: "textarea",
+    data: {
+      style: {
+        width: 120,
+        height: 32,
+        display: "block",
+      },
+      placeholder: "输入框",
+    },
+  },
+  "button-2313": {
+    id: "button-2313",
+    parentId: "container-409",
     type: "button",
     data: {
       style: {

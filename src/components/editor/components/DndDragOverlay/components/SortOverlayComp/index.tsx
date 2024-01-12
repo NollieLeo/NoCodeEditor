@@ -7,7 +7,7 @@ import { CompTree } from "@/components/editor/components/CompTree";
 /**
  * @description 面板内部拖拽元素的时候的overlay
  */
-const PanDragOverlayTmpl: FC = observer(() => {
+const SortOverlayCompTmpl: FC = observer(() => {
   const { editorStore } = useEditorContext();
   const { draggingInfo, panState } = editorStore;
 
@@ -15,24 +15,23 @@ const PanDragOverlayTmpl: FC = observer(() => {
   const dragOrigin = draggingInfo?.from;
   const panScale = panState?.scale || 1;
 
-  const activePanComp = useMemo(() => {
-    if (!dragId || dragOrigin !== DragOrigin.SORT) {
-      return <></>;
-    }
-    if (dragId && panScale) {
-      const wrapperStyle: CSSProperties = {
-        transform: `scale(${panScale})`,
-        position: "relative",
-      };
-      return (
-        <div style={wrapperStyle}>
-          <CompTree rootId={dragId} withDnd={false} />
-        </div>
-      );
-    }
-  }, [dragId, dragOrigin, panScale]);
+  const wrapperStyle: CSSProperties = useMemo(
+    () => ({
+      transform: `scale(${panScale})`,
+      position: "relative",
+    }),
+    [panScale]
+  );
 
-  return activePanComp;
+  if (!dragId || dragOrigin !== DragOrigin.SORT) {
+    return <></>;
+  }
+
+  return (
+    <div style={wrapperStyle}>
+      <CompTree rootId={dragId} withDnd={false} />
+    </div>
+  );
 });
 
-export const PanDragOverlayComp = memo(PanDragOverlayTmpl);
+export const SortOverlayComp = memo(SortOverlayCompTmpl);

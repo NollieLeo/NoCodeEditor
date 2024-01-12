@@ -4,7 +4,7 @@
 import { CSSProperties, memo } from "react";
 import { DragOverlay } from "@dnd-kit/core";
 import { SiderBarDragOverlayComp } from "./components/SiderBarDragOverlayComp";
-import { PanDragOverlayComp } from "./components/PanDragOverlayComp";
+import { SortOverlayComp } from "./components/SortOverlayComp";
 import { observer } from "mobx-react-lite";
 import { useOverlayModifiers } from "./hooks/useOverlayModifiers";
 
@@ -28,7 +28,7 @@ const DndDragOverlayComp = observer(() => {
       wrapperElement="div"
     >
       <SiderBarDragOverlayComp />
-      <PanDragOverlayComp />
+      <SortOverlayComp />
     </DragOverlay>
   );
 });

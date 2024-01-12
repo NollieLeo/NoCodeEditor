@@ -13,17 +13,10 @@ import { useMoveDnd } from "./useMoveDnd";
 
 export default function useEditorDnd() {
   const { editorStore } = useEditorContext();
-  const {
-    onDragStart: onSideDragStart,
-    onDragEnd: onSideDragEnd,
-    onDragMove: onSideDragMove,
-  } = useSideDnd();
+  const { onDragEnd: onSideDragEnd, onDragMove: onSideDragMove } = useSideDnd();
 
-  const {
-    onDragStart: onPanDragStart,
-    onDragEnd: onPanDragEnd,
-    onDragOver: onPanDragOver,
-  } = usePanSortDnd();
+  const { onDragEnd: onPanDragEnd, onDragOver: onPanDragOver } =
+    usePanSortDnd();
 
   const {
     onDragStart: onPanMoveStart,
@@ -36,17 +29,20 @@ export default function useEditorDnd() {
     if (!data.current) {
       throw new Error("dragging target must bind drag info");
     }
-    editorStore.setHoverNodeId(null);
     const dragInfo = {
       ...data.current,
       rect: rect.current.translated,
     } as DragInfo;
+
+    transaction(() => {
+      editorStore.setHoverNodeId(null);
+      editorStore.setFocusedInfo(null);
+      editorStore.setDraggingInfo(dragInfo);
+    });
     switch (dragInfo.from) {
       case DragOrigin.SIDE_ADD:
-        onSideDragStart(dragInfo);
         break;
       case DragOrigin.SORT:
-        onPanDragStart(dragInfo);
         break;
       case DragOrigin.MOVE:
         onPanMoveStart(dragInfo);
@@ -61,16 +57,20 @@ export default function useEditorDnd() {
     if (!activeData.current) {
       throw new Error("dragging item must bind data");
     }
+
+    const dragInfo = activeData.current as DragInfo;
+    const dropInfo = over ? (over.data.current as DropInfo) : null;
+
     transaction(() => {
       editorStore.setDraggingInfo(null);
       editorStore.setOverInfo(null);
+      editorStore.setFocusedInfo({ id: dragInfo.id });
     });
-    if (!over) {
+
+    if (!dropInfo) {
       return;
     }
-    const { data: overData } = over;
-    const dragInfo = activeData.current as DragInfo;
-    const dropInfo = overData?.current as DropInfo;
+
     switch (dragInfo.from) {
       case DragOrigin.SIDE_ADD:
         onSideDragEnd(dragInfo, dropInfo);
@@ -79,7 +79,7 @@ export default function useEditorDnd() {
         onPanDragEnd(dragInfo);
         break;
       case DragOrigin.MOVE:
-        onPanMoveEnd(dragInfo);
+        onPanMoveEnd();
         break;
       default:
         throw new Error(`unsupported drag origin`);

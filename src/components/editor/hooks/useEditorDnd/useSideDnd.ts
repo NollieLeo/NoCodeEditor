@@ -8,10 +8,6 @@ export function useSideDnd() {
 
   const getInsertInfo = useEditorInsertTarget();
 
-  const onDragStart = (dragInfo: DragInfoFromSideAdd) => {
-    editorStore.setDraggingInfo(dragInfo);
-  };
-
   const onDragMove = (dragInfo: DragInfoFromSideAdd, overInfo: DropInfo) => {
     const { id } = dragInfo;
     const dragRect = document.getElementById(id)?.getBoundingClientRect();
@@ -36,7 +32,6 @@ export function useSideDnd() {
   };
 
   return {
-    onDragStart,
     onDragEnd,
     onDragMove,
   };

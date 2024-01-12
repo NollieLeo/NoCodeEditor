@@ -1,6 +1,5 @@
 import { DragInfoFromPanMove } from "@/components/editor/types";
 import { useEditorContext } from "../useEditorContext";
-import { transaction } from "mobx";
 import { useRafState } from "ahooks";
 
 export function useMoveDnd() {
@@ -22,16 +21,10 @@ export function useMoveDnd() {
     }
     const parentRect = parentDom.getBoundingClientRect();
     setDragParentRect(parentRect);
-    transaction(() => {
-      editorStore.setFocusedInfo(null);
-      editorStore.setDraggingInfo(dragInfo);
-    });
   };
 
-  const onDragEnd = (dragInfo: DragInfoFromPanMove) => {
-    const { id } = dragInfo;
+  const onDragEnd = () => {
     setDragParentRect(null);
-    editorStore.setFocusedInfo({ id });
   };
 
   const onDragMove = (dragInfo: DragInfoFromPanMove) => {
