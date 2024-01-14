@@ -1,6 +1,10 @@
 import { FC, memo } from "react";
-import { BorderedRectangle } from "../BorderedRectangle";
 import { EditorState } from "@/components/editor/stores/EditorStore";
+import "./index.scss";
+import useGenSVGLines from "./hooks/useGenSVGLines";
+import { map } from "lodash-es";
+import classNames from "classnames";
+import useGenSVGPoints from "./hooks/useGenSVGPoints";
 
 interface FocusedHighlightProps {
   focusedInfo: NonNullable<EditorState["focusedInfo"]>;
@@ -8,29 +12,39 @@ interface FocusedHighlightProps {
 
 const FocusedHighlightComp: FC<FocusedHighlightProps> = ({ focusedInfo }) => {
   const activeNodeDom = document.getElementById(String(focusedInfo.id));
+  const domRect = activeNodeDom?.getBoundingClientRect();
+  const lineRecords = useGenSVGLines(domRect);
+  const pointRecords = useGenSVGPoints(domRect);
 
   if (!activeNodeDom) {
     return <></>;
   }
 
-  const {
-    width: domWidth,
-    height: domHeight,
-    top: domTop,
-    bottom: domBottom,
-    left: domLeft,
-  } = activeNodeDom.getBoundingClientRect();
+  const renderLines = () =>
+    map(lineRecords, ({ position, ...res }) => (
+      <line {...res} className={classNames("highlight-line", position)} />
+    ));
 
-  const style = {
-    width: domWidth,
-    height: domHeight,
-    top: domTop,
-    bottom: domBottom,
-    zIndex: 2,
-    left: domLeft,
-  };
+  const renderPoints = () =>
+    map(pointRecords, ({ position, ...res }) => (
+      <circle
+        {...res}
+        className={classNames("highlight-point", position)}
+      />
+    ));
 
-  return <BorderedRectangle style={style} anchorPoint />;
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      version="1.1"
+      className="focused-highlight"
+    >
+      {/* ------------- lines ------------- */}
+      {renderLines()}
+      {/* ------------- ponits ------------ */}
+      {renderPoints()}
+    </svg>
+  );
 };
 
 export const FocusedHighlight = memo(FocusedHighlightComp);

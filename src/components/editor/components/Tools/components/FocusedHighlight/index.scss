@@ -1,0 +1,45 @@
+.focused-highlight {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 2;
+  .highlight-line {
+    stroke-width: 2;
+    stroke-linecap: square;
+    stroke: #1450d9;
+    pointer-events: all;
+  }
+  .highlight-point {
+    stroke: #1450d9;
+    fill: #fff;
+    stroke-width: 2;
+    r: 4;
+    pointer-events: all;
+  }
+  .top-left {
+    cursor: nwse-resize;
+  }
+  .top {
+    cursor: ns-resize;
+  }
+  .top-right {
+    cursor: nesw-resize;
+  }
+  .right {
+    cursor: ew-resize;
+  }
+  .bottom-right {
+    cursor: nwse-resize;
+  }
+  .bottom {
+    cursor: ns-resize;
+  }
+
+  .bottom-left {
+    cursor: nesw-resize;
+  }
+  .left {
+    cursor: ew-resize;
+  }
+}

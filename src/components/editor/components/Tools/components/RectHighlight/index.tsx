@@ -2,7 +2,7 @@ import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { SchemaData } from "@/components/editor/types";
 import { isNil } from "lodash-es";
 import { observer } from "mobx-react-lite";
-import { SVGLineElementAttributes, memo, useMemo } from "react";
+import { CSSProperties, SVGLineElementAttributes, memo, useMemo } from "react";
 
 const CLOSE_THRESHOLD = 20;
 
@@ -121,8 +121,15 @@ const RectHighlightTmpl = observer(() => {
     return <line {...leftLineProps} />;
   };
 
+  const wrapperStyle: CSSProperties = {
+    position: "absolute",
+    pointerEvents: "none",
+    width: '100vw',
+    height: '100vh'
+  };
+
   return (
-    <svg style={{ overflow: "visible" }}>
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style={wrapperStyle}>
       {renderTopLine()}
       {renderLeftLine()}
       {renderParentVerticalLine()}
