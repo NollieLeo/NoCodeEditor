@@ -22,13 +22,14 @@ const FocusedHighlightComp: FC<FocusedHighlightProps> = ({ focusedInfo }) => {
 
   const renderLines = () =>
     map(lineRecords, ({ position, ...res }) => (
-      <line {...res} className={classNames("highlight-line", position)} />
+      <line {...res} key={position} className={classNames("highlight-line", position)} />
     ));
 
   const renderPoints = () =>
     map(pointRecords, ({ position, ...res }) => (
       <circle
         {...res}
+        key={position}
         className={classNames("highlight-point", position)}
       />
     ));
