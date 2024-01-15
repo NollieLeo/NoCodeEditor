@@ -29,12 +29,11 @@ const ToolsContentComps: FC = observer(() => {
   };
 
   const renderHoveredHighlight = () => {
-    if (!hoveredNodeId) {
+    if (!hoveredNodeId || hoveredNodeId === focusedInfo?.id) {
       return <></>;
     }
     return <HoveredNodeTool hoveredNodeId={hoveredNodeId} />;
   };
-
 
   return (
     <div className="tools-wrapper" id={TOOL_WRAPPER_ID}>

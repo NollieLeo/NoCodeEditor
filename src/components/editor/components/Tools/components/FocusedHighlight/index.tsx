@@ -1,51 +1,77 @@
-import { FC, memo } from "react";
+import { CSSProperties, FC, memo, useMemo } from "react";
 import { EditorState } from "@/components/editor/stores/EditorStore";
+import { Resizable, ResizeCallback } from "re-resizable";
 import "./index.scss";
-import useGenSVGLines from "./hooks/useGenSVGLines";
-import { map } from "lodash-es";
+import { forEach, values } from "lodash-es";
+import { ResizePositions } from "./types";
 import classNames from "classnames";
-import useGenSVGPoints from "./hooks/useGenSVGPoints";
+import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
+import { observer } from "mobx-react-lite";
 
 interface FocusedHighlightProps {
   focusedInfo: NonNullable<EditorState["focusedInfo"]>;
 }
 
-const FocusedHighlightComp: FC<FocusedHighlightProps> = ({ focusedInfo }) => {
-  const activeNodeDom = document.getElementById(String(focusedInfo.id));
-  const domRect = activeNodeDom?.getBoundingClientRect();
-  const lineRecords = useGenSVGLines(domRect);
-  const pointRecords = useGenSVGPoints(domRect);
+const FocusedHighlightComp: FC<FocusedHighlightProps> = observer(
+  ({ focusedInfo }) => {
+    const {
+      editorStore,
+      editorStore: { panState },
+    } = useEditorContext();
+    if (!panState || !focusedInfo) {
+      throw new Error("no focused node or pan state never initialized");
+    }
 
-  if (!activeNodeDom) {
-    return <></>;
-  }
+    const activeNodeDom = document.getElementById(String(focusedInfo?.id));
+    const domRect = activeNodeDom?.getBoundingClientRect();
+    const { width = 0, height = 0, top = 0, left = 0 } = domRect || {};
+    const resizePositions = useMemo(() => values(ResizePositions), []);
 
-  const renderLines = () =>
-    map(lineRecords, ({ position, ...res }) => (
-      <line {...res} key={position} className={classNames("highlight-line", position)} />
-    ));
+    const resizeHandleClasses = useMemo(() => {
+      const handleClassRecord: Record<string, string> = {};
+      forEach(resizePositions, (position) => {
+        handleClassRecord[position] = classNames(
+          "focused-resize-handle",
+          position
+        );
+      });
+      return handleClassRecord;
+    }, [resizePositions]);
 
-  const renderPoints = () =>
-    map(pointRecords, ({ position, ...res }) => (
-      <circle
-        {...res}
-        key={position}
-        className={classNames("highlight-point", position)}
+    const resizeSize = useMemo(() => {
+      return {
+        width,
+        height,
+      };
+    }, [height, width]);
+
+    const resizeWrapStyle: CSSProperties = { top, left };
+
+    const onResizeStop: ResizeCallback = (_e, _direction, _ref, d) => {
+      editorStore.updateNodeStyle(
+        {
+          width: (width + d.width) / panState.scale,
+          height: (height + d.height) / panState.scale,
+        },
+        focusedInfo.id
+      );
+      requestIdleCallback(() => {
+        editorStore.setFocusedInfo({ id: focusedInfo.id });
+      });
+    };
+
+    return (
+      <Resizable
+        key={focusedInfo.id}
+        style={resizeWrapStyle}
+        defaultSize={resizeSize}
+        onResizeStop={onResizeStop}
+        className="focused-resize"
+        handleWrapperClass="focused-resize-handles"
+        handleClasses={resizeHandleClasses}
       />
-    ));
-
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      version="1.1"
-      className="focused-highlight"
-    >
-      {/* ------------- lines ------------- */}
-      {renderLines()}
-      {/* ------------- ponits ------------ */}
-      {renderPoints()}
-    </svg>
-  );
-};
+    );
+  }
+);
 
 export const FocusedHighlight = memo(FocusedHighlightComp);

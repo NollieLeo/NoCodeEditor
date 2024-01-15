@@ -17,29 +17,46 @@
     r: 4;
     pointer-events: all;
   }
-  .top-left {
-    cursor: nwse-resize;
-  }
-  .top {
-    cursor: ns-resize;
-  }
-  .top-right {
-    cursor: nesw-resize;
-  }
-  .right {
-    cursor: ew-resize;
-  }
-  .bottom-right {
-    cursor: nwse-resize;
-  }
-  .bottom {
-    cursor: ns-resize;
-  }
+}
 
-  .bottom-left {
-    cursor: nesw-resize;
+.focused-resize {
+  position: absolute !important;
+  pointer-events: none;
+  border: 2px solid #1450d9;
+  z-index: 2;
+  .focused-resize-handles {
+    pointer-events: all;
   }
-  .left {
-    cursor: ew-resize;
+  .focused-resize-handle {
+    &.topLeft,
+    &.topRight,
+    &.bottomLeft,
+    &.bottomRight {
+      width: 8px !important;
+      height: 8px !important;
+      border-radius: 50%;
+      background-color: #fff;
+      border: 1px solid #1450d9;
+    }
+    &.topRight {
+      right: -5px !important;
+      top: -5px !important;
+      cursor: nesw-resize !important;
+    }
+    &.topLeft {
+      left: -5px !important;
+      top: -5px !important;
+      cursor: nwse-resize !important;
+    }
+    &.bottomRight {
+      right: -5px !important;
+      bottom: -5px !important;
+      cursor: nwse-resize !important;
+    }
+    &.bottomLeft {
+      left: -5px !important;
+      bottom: -5px !important;
+      cursor: nesw-resize !important;
+    }
   }
 }
