@@ -57,6 +57,7 @@ const RectHighlightTmpl = observer(() => {
       curHorizontalCenter >= parentRect.right ||
       curRect.top <= parentRect.top ||
       curRect.top >= parentRect.bottom - curRect.height;
+
     if (isOutOfBound) {
       return null;
     }
@@ -67,13 +68,26 @@ const RectHighlightTmpl = observer(() => {
       y1: parentRect.top,
       y2: curRect.top,
     };
-    return <line {...topLineProps} />;
+
+    return (
+      <>
+        <line {...topLineProps} />
+        <text
+          x={curHorizontalCenter}
+          y={(curRect.top - parentRect.top) / 2 + parentRect.top}
+          fill="red"
+        >
+          {Math.ceil(curRect.top - parentRect.top)}
+        </text>
+      </>
+    );
   };
 
   const renderLeftLine = () => {
     const isOutOfBound =
       curVerticalCenter >= parentRect.bottom || curRect.left <= parentRect.left;
     curRect.left >= Math.abs(parentRect.right - curRect.width);
+
     if (isOutOfBound) {
       return <></>;
     }
@@ -84,7 +98,18 @@ const RectHighlightTmpl = observer(() => {
       y1: curVerticalCenter,
       y2: curVerticalCenter,
     };
-    return <line {...leftLineProps} />;
+    return (
+      <>
+        <line {...leftLineProps} />;
+        <text
+          x={(curRect.left - parentRect.left) / 2 + parentRect.left}
+          y={curVerticalCenter}
+          fill="red"
+        >
+          {Math.ceil(curRect.left - parentRect.left)}
+        </text>
+      </>
+    );
   };
 
   const renderParentVerticalLine = () => {
@@ -124,8 +149,8 @@ const RectHighlightTmpl = observer(() => {
   const wrapperStyle: CSSProperties = {
     position: "absolute",
     pointerEvents: "none",
-    width: '100vw',
-    height: '100vh'
+    width: "100vw",
+    height: "100vh",
   };
 
   return (
