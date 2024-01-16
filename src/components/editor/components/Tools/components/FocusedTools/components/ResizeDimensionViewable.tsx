@@ -14,7 +14,7 @@ const ResizeDimensionViewableComp: FC<ResizeDimensionViewableProps> = ({
         position: "absolute",
         left: `${rect.width / 2}px`,
         top: `${rect.height}px`,
-        background: "#4af",
+        background: "#1450d9",
         borderRadius: "2px",
         padding: "2px 4px",
         color: "white",
