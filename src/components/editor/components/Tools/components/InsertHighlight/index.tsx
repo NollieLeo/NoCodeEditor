@@ -2,10 +2,15 @@ import { observer } from "mobx-react-lite";
 import { isNil } from "lodash-es";
 import { useEditorInsertTarget } from "@/components/editor/hooks/useEditorInsertTarget";
 import { CSSProperties, memo } from "react";
-import { useToolsContext } from "../../hooks/useToolsContext";
+import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 
 const InsertHighlightComp = observer(() => {
-  const { panState } = useToolsContext();
+  const {
+    editorStore: {
+      panState: { scale },
+    },
+  } = useEditorContext();
+
   const getInsertInfo = useEditorInsertTarget();
   const insertInfo = getInsertInfo();
 
@@ -31,7 +36,7 @@ const InsertHighlightComp = observer(() => {
     left,
     position: "absolute",
     background: "red",
-    transform: `scale(${panState.scale})`,
+    transform: `scale(${scale})`,
   };
 
   return <div style={style} />;

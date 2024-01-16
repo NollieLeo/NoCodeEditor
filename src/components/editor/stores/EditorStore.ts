@@ -17,7 +17,7 @@ export interface EditorState {
   /** 页面上被hover的元素id */
   hoveredNodeId: string | null;
   /** 面板的信息，包括缩放大小/位移信息 */
-  panState: PanState | null;
+  panState: PanState;
   /** 面板是否在缩放/移动 */
   isPanTransforming: boolean;
   /** 被拖拽的元素信息 */
@@ -53,7 +53,11 @@ export const useEditorStore = () => {
     overInfo: null,
     focusedInfo: null,
     hoveredNodeId: null,
-    panState: null,
+    panState: {
+      scale: 1,
+      positionX: 1,
+      positionY: 1,
+    },
     isPanTransforming: false,
     draggingInfo: null,
     nodesMap: cloneDeep(mocks),

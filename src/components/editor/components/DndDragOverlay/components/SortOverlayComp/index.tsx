@@ -9,18 +9,20 @@ import { CompTree } from "@/components/editor/components/CompTree";
  */
 const SortOverlayCompTmpl: FC = observer(() => {
   const { editorStore } = useEditorContext();
-  const { draggingInfo, panState } = editorStore;
+  const {
+    draggingInfo,
+    panState: { scale },
+  } = editorStore;
 
   const dragId = draggingInfo?.id;
   const dragOrigin = draggingInfo?.from;
-  const panScale = panState?.scale || 1;
 
   const wrapperStyle: CSSProperties = useMemo(
     () => ({
-      transform: `scale(${panScale})`,
+      transform: `scale(${scale})`,
       position: "relative",
     }),
-    [panScale]
+    [scale]
   );
 
   if (!dragId || dragOrigin !== DragOrigin.SORT) {

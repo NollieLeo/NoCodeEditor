@@ -3,16 +3,17 @@ import { useEditorContext } from "./useEditorContext";
 
 export default function useEditorDndModifiers() {
   const {
-    editorStore: { panState },
+    editorStore: {
+      panState: { scale },
+    },
   } = useEditorContext();
 
   const scaledTransformerModifier: Modifier = (args) => {
     const { transform } = args;
-    const curPanScale = panState?.scale || 1;
     const res = {
       ...transform,
-      scaleX: transform.scaleX * curPanScale,
-      scaleY: transform.scaleY * curPanScale,
+      scaleX: transform.scaleX * scale,
+      scaleY: transform.scaleY * scale,
     };
     return res;
   };

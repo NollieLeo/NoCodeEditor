@@ -3,23 +3,19 @@ import { memo } from "react";
 import { ToolsContext } from "./context";
 import { ToolsContent } from "./Content";
 import { useEditorContext } from "../../hooks/useEditorContext";
-import { isNil, keys } from "lodash-es";
+import { keys } from "lodash-es";
 
 const ToolsComp = observer(() => {
   const {
-    editorStore: { panState, nodesMap, isPanTransforming },
+    editorStore: { nodesMap, isPanTransforming },
   } = useEditorContext();
 
-  if (isNil(panState) || !keys(nodesMap).length || isPanTransforming) {
+  if (!keys(nodesMap).length || isPanTransforming) {
     return <></>;
   }
 
   return (
-    <ToolsContext.Provider
-      value={{
-        panState,
-      }}
-    >
+    <ToolsContext.Provider value={{}}>
       <ToolsContent />
     </ToolsContext.Provider>
   );

@@ -5,7 +5,9 @@ import { useRafState } from "ahooks";
 export function useMoveDnd() {
   const {
     editorStore,
-    editorStore: { panState },
+    editorStore: {
+      panState: { scale },
+    },
   } = useEditorContext();
 
   const [dragParentRect, setDragParentRect] = useRafState<DOMRect | null>(null);
@@ -32,7 +34,6 @@ export function useMoveDnd() {
     if (!dragRect || !dragId || !dragParentRect) {
       return;
     }
-    const scale = panState?.scale || 1;
     const computedTop = (dragRect.top - dragParentRect.top) / scale;
     const computedLeft = (dragRect.left - dragParentRect.left) / scale;
     const style = {
