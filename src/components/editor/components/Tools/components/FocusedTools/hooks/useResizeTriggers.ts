@@ -10,7 +10,7 @@ function isAbsoluteOrFixed(dom?: HTMLElement | null) {
   return false;
 }
 
-export default function useFocusedResize(targetId?: string) {
+export default function useResizeTriggers(targetId?: string) {
   const { editorStore } = useEditorContext();
   const [resizeKey, setResizeKey] = useState(uniqueId());
 
