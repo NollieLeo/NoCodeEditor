@@ -21,6 +21,7 @@ const SortOverlayCompTmpl: FC = observer(() => {
     () => ({
       transform: `scale(${scale})`,
       position: "relative",
+      opacity: 0.8,
     }),
     [scale]
   );
