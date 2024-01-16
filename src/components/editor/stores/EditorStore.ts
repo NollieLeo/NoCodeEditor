@@ -39,7 +39,10 @@ export interface EditorAction {
 
   // ----------- node operations -----------
   addNode(data: SchemaData, target: string, idx?: number): void;
-  updateNodeStyle(styles: CSSProperties, target: string): void;
+  updateNodeStyle(
+    styles: CSSProperties | ((preStyles: CSSProperties) => CSSProperties),
+    target: string
+  ): void;
   movePos(parentId: string, from: string, to: string): void;
 }
 
@@ -116,12 +119,15 @@ export const useEditorStore = () => {
       childNodes.push(...newChildNodes);
     },
 
-    updateNodeStyle(styles, target) {
-      const updateTarget = this.nodesMap[target];
+    updateNodeStyle(styles, targetId) {
+      const updateTarget = this.nodesMap[targetId];
       if (!updateTarget) {
-        throw new Error(`update failed: node ${target} does not exist`);
+        throw new Error(`update failed: node ${targetId} does not exist`);
       }
-      updateTarget.data.style = { ...updateTarget.data.style, ...styles };
+      const preStyle = updateTarget.data.style;
+      const updateStyle =
+        typeof styles === "function" ? styles(preStyle) : styles;
+      updateTarget.data.style = { ...preStyle, ...updateStyle };
     },
   }));
 };

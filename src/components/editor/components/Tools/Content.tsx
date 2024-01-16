@@ -1,5 +1,5 @@
 import { FC, memo } from "react";
-import { FocusedHighlight } from "./components/FocusedHighlight";
+import { FocusedTools } from "./components/FocusedTools";
 import { TOOL_WRAPPER_ID } from "./constants";
 import { HoveredNodeTool } from "./components/HoveredNodeTool";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
@@ -21,11 +21,11 @@ const ToolsContentComps: FC = observer(() => {
     return <OverHighlight draggingInfo={draggingInfo} />;
   };
 
-  const renderFocusedHighlight = () => {
+  const renderFocusedTools = () => {
     if (!focusedInfo) {
       return <></>;
     }
-    return <FocusedHighlight focusedInfo={focusedInfo} />;
+    return <FocusedTools focusedInfo={focusedInfo} />;
   };
 
   const renderHoveredHighlight = () => {
@@ -40,7 +40,7 @@ const ToolsContentComps: FC = observer(() => {
       {renderOverHighlight()}
       <InsertHighlight />
       <RectHighlight />
-      {renderFocusedHighlight()}
+      {renderFocusedTools()}
       {renderHoveredHighlight()}
     </div>
   );
