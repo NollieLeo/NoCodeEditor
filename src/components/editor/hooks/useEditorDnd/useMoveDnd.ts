@@ -25,8 +25,9 @@ export function useMoveDnd() {
     setDragParentRect(parentRect);
   };
 
-  const onDragEnd = () => {
+  const onDragEnd = (dragInfo: DragInfoFromPanMove) => {
     setDragParentRect(null);
+    editorStore.setFocusedInfo({ id: dragInfo.id });
   };
 
   const onDragMove = (dragInfo: DragInfoFromPanMove) => {

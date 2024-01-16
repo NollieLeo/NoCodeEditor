@@ -19,16 +19,18 @@ export function useSideDnd() {
     }
   };
 
-  const onDragEnd = (dragInfo: DragInfoFromSideAdd, dropInfo: DropInfo) => {
+  const onDragEnd = (dragInfo: DragInfoFromSideAdd, dropInfo?: DropInfo | null) => {
     const { type } = dragInfo;
-    const { id: parentId } = dropInfo;
     const insertInfo = getInsertInfo();
-    const newNode = createNewNode(type, parentId);
-    editorStore.addNode(newNode, parentId, insertInfo?.insertIdx);
-    requestIdleCallback(() => {
-      editorStore.setFocusedInfo({ id: newNode.id });
-      editorStore.setOverInfo(null);
-    });
+    if (insertInfo && dropInfo) {
+      const { id: parentId } = dropInfo;
+      const newNode = createNewNode(type, parentId);
+      editorStore.addNode(newNode, parentId, insertInfo?.insertIdx);
+      requestIdleCallback(() => {
+        editorStore.setFocusedInfo({ id: newNode.id });
+        editorStore.setOverInfo(null);
+      });
+    }
   };
 
   return {

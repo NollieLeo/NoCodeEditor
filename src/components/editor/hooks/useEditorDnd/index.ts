@@ -52,40 +52,6 @@ export default function useEditorDnd() {
     }
   };
 
-  const onDragEnd = ({ active, over }: DragEndEvent) => {
-    const { data: activeData } = active;
-    if (!activeData.current) {
-      throw new Error("dragging item must bind data");
-    }
-
-    const dragInfo = activeData.current as DragInfo;
-    const dropInfo = over ? (over.data.current as DropInfo) : null;
-
-    transaction(() => {
-      editorStore.setDraggingInfo(null);
-      editorStore.setOverInfo(null);
-      editorStore.setFocusedInfo({ id: dragInfo.id });
-    });
-
-    if (!dropInfo) {
-      return;
-    }
-
-    switch (dragInfo.from) {
-      case DragOrigin.SIDE_ADD:
-        onSideDragEnd(dragInfo, dropInfo);
-        break;
-      case DragOrigin.SORT:
-        onPanDragEnd(dragInfo);
-        break;
-      case DragOrigin.MOVE:
-        onPanMoveEnd();
-        break;
-      default:
-        throw new Error(`unsupported drag origin`);
-    }
-  };
-
   const onDragOver = ({ over, active }: DragOverEvent) => {
     const { data: activeData, rect: activeRect } = active;
     if (!activeData.current) {
@@ -144,6 +110,35 @@ export default function useEditorDnd() {
         break;
       case DragOrigin.MOVE:
         onPanDragMove(dragInfo);
+        break;
+      default:
+        throw new Error(`unsupported drag origin`);
+    }
+  };
+
+  const onDragEnd = ({ active, over }: DragEndEvent) => {
+    const { data: activeData } = active;
+    if (!activeData.current) {
+      throw new Error("dragging item must bind data");
+    }
+
+    const dragInfo = activeData.current as DragInfo;
+    const dropInfo = over ? (over.data.current as DropInfo) : null;
+
+    transaction(() => {
+      editorStore.setDraggingInfo(null);
+      editorStore.setOverInfo(null);
+    });
+
+    switch (dragInfo.from) {
+      case DragOrigin.SIDE_ADD:
+        onSideDragEnd(dragInfo, dropInfo);
+        break;
+      case DragOrigin.SORT:
+        onPanDragEnd(dragInfo);
+        break;
+      case DragOrigin.MOVE:
+        onPanMoveEnd(dragInfo);
         break;
       default:
         throw new Error(`unsupported drag origin`);
