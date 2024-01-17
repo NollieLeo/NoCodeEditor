@@ -12,9 +12,9 @@ export function useOverlayModifiers() {
 
   const distanceFormatModifier: Modifier = useCallback(
     (args) => {
-      let modifier = restrictToWindowEdges;
-      if (draggingInfo?.from === DragOrigin.SORT) {
-        modifier = snapCenterToCursor;
+      let modifier = snapCenterToCursor;
+      if (draggingInfo?.from === DragOrigin.MOVE) {
+        modifier = restrictToWindowEdges;
       }
       const transform = modifier(args);
       const formatedTransform: Transform = {
