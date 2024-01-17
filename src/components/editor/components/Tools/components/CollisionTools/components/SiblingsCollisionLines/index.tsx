@@ -7,7 +7,7 @@ import { DEFAULT_SVG_LINE_ATTRS } from "@/components/editor/components/Tools/com
 interface SiblingsCollisionLinesProps {
   parentId: string;
   id: string;
-  dragRect: DOMRect;
+  rect: DOMRect;
   parentRect: DOMRect;
 }
 
@@ -15,7 +15,7 @@ const CollisionLinesComp = observer((props: SiblingsCollisionLinesProps) => {
   const {
     parentId,
     id,
-    dragRect: {
+    rect: {
       left: dragLeft,
       right: dragRight,
       top: dragTop,

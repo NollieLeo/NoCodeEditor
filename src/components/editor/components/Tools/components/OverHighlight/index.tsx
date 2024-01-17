@@ -1,39 +1,29 @@
 import { FC, memo, useMemo } from "react";
-import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import {
-  ComponentTypes,
-  DragInfo,
-  DragOrigin,
-} from "@/components/editor/types";
-import { observer } from "mobx-react-lite";
+import { DragInfo, DragOrigin } from "@/components/editor/types";
 import { BorderedRectangle } from "@/components/editor/components/Tools/components/BorderedRectangle";
+import { useDndContext } from "@dnd-kit/core";
 
 interface OverHighlightProps {
   draggingInfo: DragInfo;
 }
 
-export const OverHighlightComp: FC<OverHighlightProps> = observer((props) => {
-  const { draggingInfo } = props;
-  const {
-    editorStore: { nodesMap, overInfo },
-  } = useEditorContext();
+export const OverHighlightComp: FC<OverHighlightProps> = () => {
+  const { over, active } = useDndContext();
 
   const highlightDomId = useMemo(() => {
+    if (!active) {
+      return null;
+    }
+    const draggingInfo = active.data.current as DragInfo;
     if (
       draggingInfo.from === DragOrigin.SORT ||
       draggingInfo.from === DragOrigin.MOVE
     ) {
       return draggingInfo.parentId;
-    } else if (draggingInfo.from === DragOrigin.SIDE_ADD && overInfo) {
-      const { id: overId } = overInfo;
-      const { type: overType } = nodesMap[overId];
-      const isContainerBox = [
-        ComponentTypes.CONTAINER,
-        ComponentTypes.PAGE,
-      ].includes(overType);
-      return isContainerBox ? overId : overInfo.parentId;
+    } else if (draggingInfo.from === DragOrigin.SIDE_ADD && over) {
+      return over.id;
     }
-  }, [draggingInfo, nodesMap, overInfo]);
+  }, [active, over]);
 
   if (!highlightDomId) {
     return <></>;
@@ -71,6 +61,6 @@ export const OverHighlightComp: FC<OverHighlightProps> = observer((props) => {
       }}
     />
   );
-});
+};
 
 export const OverHighlight = memo(OverHighlightComp);

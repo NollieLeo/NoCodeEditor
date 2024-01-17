@@ -54,7 +54,7 @@ const CollisionToolsTmpl = observer(() => {
       )}
       {!!draggingInfo && (
         <SiblingsCollisionLines
-          dragRect={curRect}
+          rect={curRect}
           parentRect={parentRect}
           id={id}
           parentId={parentId}
