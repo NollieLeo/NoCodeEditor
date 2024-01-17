@@ -1,7 +1,5 @@
 import { FC, memo, useMemo } from "react";
 import { EditorState } from "@/components/editor/stores/EditorStore";
-import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { observer } from "mobx-react-lite";
 import Moveable, { ResizableOptions } from "react-moveable";
 import { flushSync } from "react-dom";
 import useResizeTriggers from "./hooks/useResizeTriggers";
@@ -12,15 +10,9 @@ interface FocusedToolsProps {
   focusedInfo: NonNullable<EditorState["focusedInfo"]>;
 }
 
-const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
-  const {
-    editorStore: { focusedInfo },
-  } = useEditorContext();
-
-  const focusedTargetDom = document.getElementById(String(focusedInfo?.id));
-
+const FocusedToolsComp: FC<FocusedToolsProps> = ({ focusedInfo }) => {
   const { resizeKey, onResize, onResizeEnd } = useResizeTriggers(
-    focusedInfo?.id
+    focusedInfo.id
   );
 
   const { ables, props } = useResizeAbles();
@@ -31,20 +23,20 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
       resizable: true,
       edge: ["n", "w", "s", "e"],
       throttleResize: 1,
+      keepRatio: false,
     };
   }, []);
 
   return (
     <div className="focused-resize-wrapper">
       <Moveable
-        flushSync={flushSync}
         key={resizeKey}
-        target={focusedTargetDom}
+        flushSync={flushSync}
+        target={[`#${focusedInfo?.id}`]}
         resizable={resizableOptions}
         props={props}
         ables={ables}
         linePadding={10}
-        keepRatio={false}
         draggable={false}
         rotatable={false}
         origin={false}
@@ -54,6 +46,6 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
       />
     </div>
   );
-});
+};
 
 export const FocusedTools = memo(FocusedToolsComp);

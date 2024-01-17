@@ -13,17 +13,20 @@ import { ComponentTypes } from "./types";
 import { Tools } from "./components/Tools";
 import { useEditorCollisionDetection } from "./hooks/useEditorCollisionDetection";
 import { CompTree } from "./components/CompTree";
+import useEditorDndModifiers from "./hooks/useEditorDndModifiers";
+import { useEditorMeasuring } from "./hooks/useEditorMeasuring";
 
 import "./Content.scss";
-import useEditorDndModifiers from "./hooks/useEditorDndModifiers";
 
 const ContentComp: FC<PropsWithChildren> = observer(() => {
   const sensors = useEditorDndSensors();
   const modifiers = useEditorDndModifiers();
+  const measuring = useEditorMeasuring();
+  const editorCollisionDetection = useEditorCollisionDetection();
+
   const {
     editorStore: { nodesMap },
   } = useEditorContext();
-  const editorCollisionDetection = useEditorCollisionDetection();
 
   const { onDragStart, onDragEnd, onDragOver, onDragMove } = useEditorDnd();
 
@@ -39,6 +42,7 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
     <div className="editor-wrapper">
       <DndContext
         sensors={sensors}
+        measuring={measuring}
         modifiers={modifiers}
         collisionDetection={editorCollisionDetection}
         onDragStart={onDragStart}

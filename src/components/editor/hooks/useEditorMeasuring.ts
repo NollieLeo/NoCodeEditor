@@ -1,11 +1,13 @@
-import { MeasuringConfiguration } from "@dnd-kit/core";
+import { MeasuringConfiguration, MeasuringStrategy } from "@dnd-kit/core";
+import { useMemo } from "react";
 
 export function useEditorMeasuring(): MeasuringConfiguration {
-  return {
-    draggable: {
-      measure: (node) => {
-        return node.getBoundingClientRect();
+  const config = useMemo(() => {
+    return {
+      droppable: {
+        frequency: MeasuringStrategy.WhileDragging,
       },
-    },
-  };
+    };
+  }, []);
+  return config;
 }

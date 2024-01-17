@@ -1,4 +1,5 @@
 import { Modifier } from "@dnd-kit/core";
+import { useMemo } from "react";
 
 export default function useEditorDndModifiers() {
   const distanceFormatModifier: Modifier = (args) => {
@@ -11,5 +12,5 @@ export default function useEditorDndModifiers() {
     return res;
   };
 
-  return [distanceFormatModifier];
+  return useMemo(() => [distanceFormatModifier], []);
 }
