@@ -8,12 +8,7 @@ export function useSideDnd() {
 
   const getInsertInfo = useEditorInsertTarget();
 
-  const onDragMove = (dragInfo: DragInfoFromSideAdd, overInfo: DropInfo) => {
-    const { id } = dragInfo;
-    const dragRect = document.getElementById(id)?.getBoundingClientRect();
-    if (!dragRect) {
-      return;
-    }
+  const onDragMove = (_dragInfo: DragInfoFromSideAdd, overInfo: DropInfo) => {
     if (overInfo.accepts) {
       editorStore.setOverInfo(overInfo);
     }

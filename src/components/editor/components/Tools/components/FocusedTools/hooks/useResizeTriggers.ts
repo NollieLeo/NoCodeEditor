@@ -35,11 +35,10 @@ export default function useResizeTriggers(targetId?: string) {
   };
 
   const onResizeEnd = (params: OnResizeEnd) => {
-    if (!targetId) {
+    const { lastEvent, target } = params;
+    if (!targetId || !lastEvent) {
       return;
     }
-
-    const { lastEvent, target } = params;
     const { width, height, direction, dist } = lastEvent;
     target.style.transform = "";
     forceResizeUpdate();
