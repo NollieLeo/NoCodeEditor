@@ -73,6 +73,7 @@ const CollisionLinesComp = observer((props: SiblingsCollisionLinesProps) => {
     return map(metPoints, (yPoint) => (
       <line
         {...DEFAULT_SVG_LINE_ATTRS}
+        key={yPoint}
         strokeDasharray={undefined}
         x1={parentLeft}
         x2={parentRight}
@@ -96,6 +97,7 @@ const CollisionLinesComp = observer((props: SiblingsCollisionLinesProps) => {
     return map(metPoints, (xPoint) => (
       <line
         {...DEFAULT_SVG_LINE_ATTRS}
+        key={xPoint}
         strokeDasharray={undefined}
         x1={xPoint}
         x2={xPoint}
