@@ -61,10 +61,10 @@ const CollisionLinesComp = observer((props: SiblingsCollisionLinesProps) => {
 
   const renderLinesX = () => {
     const metPoints = filter(collisionPoints.yPoints, (point) => {
-      const ceiledPoint = Math.ceil(point);
+      const ceiledPoint = Math.floor(point);
       return (
-        ceiledPoint === Math.ceil(dragTop) ||
-        ceiledPoint === Math.ceil(dragBottom)
+        ceiledPoint === Math.floor(dragTop) ||
+        ceiledPoint === Math.floor(dragBottom)
       );
     });
     if (!metPoints.length) {
@@ -85,10 +85,10 @@ const CollisionLinesComp = observer((props: SiblingsCollisionLinesProps) => {
 
   const renderLinesY = () => {
     const metPoints = filter(collisionPoints.xPoints, (point) => {
-      const ceiledPoint = Math.ceil(point);
+      const ceiledPoint = Math.floor(point);
       return (
-        ceiledPoint === Math.ceil(dragLeft) ||
-        ceiledPoint === Math.ceil(dragRight)
+        ceiledPoint === Math.floor(dragLeft) ||
+        ceiledPoint === Math.floor(dragRight)
       );
     });
     if (!metPoints.length) {

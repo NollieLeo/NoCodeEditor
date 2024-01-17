@@ -35,8 +35,10 @@ export function useMoveDnd() {
     if (!dragRect || !dragId || !dragParentRect) {
       return;
     }
-    const computedTop = (dragRect.top - dragParentRect.top) / scale;
-    const computedLeft = (dragRect.left - dragParentRect.left) / scale;
+    const computedTop = Math.floor((dragRect.top - dragParentRect.top) / scale);
+    const computedLeft = Math.floor(
+      (dragRect.left - dragParentRect.left) / scale
+    );
     const style = {
       top: computedTop,
       left: computedLeft,

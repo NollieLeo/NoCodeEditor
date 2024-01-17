@@ -38,7 +38,7 @@ const DraggingGuildLinesComp = observer((props: DraggingGuildLinesProps) => {
       y2: dragRect.top,
     };
 
-    const realDist = Math.ceil((dragRect.top - parentRect.top) / scale);
+    const realDist = Math.floor((dragRect.top - parentRect.top) / scale);
 
     return (
       <>
@@ -73,7 +73,7 @@ const DraggingGuildLinesComp = observer((props: DraggingGuildLinesProps) => {
       y2: curVerticalCenter,
     };
 
-    const realDist = Math.ceil((dragRect.left - parentRect.left) / scale);
+    const realDist = Math.floor((dragRect.left - parentRect.left) / scale);
 
     return (
       <>

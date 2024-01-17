@@ -1,19 +1,35 @@
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
+import { Modifier } from "@dnd-kit/core";
+import { Transform } from "@dnd-kit/utilities";
+import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
+import { useCallback, useMemo } from "react";
 import { DragOrigin } from "@/components/editor/types";
-import { snapCenterToCursor, restrictToWindowEdges } from "@dnd-kit/modifiers";
-import { useMemo } from "react";
 
 export function useOverlayModifiers() {
   const {
     editorStore: { draggingInfo },
   } = useEditorContext();
 
-  const overlayModifiers = useMemo(() => {
-    if (draggingInfo?.from === DragOrigin.MOVE) {
-      return [restrictToWindowEdges];
-    }
-    return [snapCenterToCursor];
-  }, [draggingInfo?.from]);
+  const distanceFormatModifier: Modifier = useCallback(
+    (args) => {
+      let modifier = restrictToWindowEdges;
+      if (draggingInfo?.from === DragOrigin.SORT) {
+        modifier = snapCenterToCursor;
+      }
+      const transform = modifier(args);
+      const formatedTransform: Transform = {
+        ...transform,
+        x: Math.floor(transform.x),
+        y: Math.floor(transform.y),
+      };
+      return formatedTransform;
+    },
+    [draggingInfo?.from]
+  );
+
+  const overlayModifiers = useMemo<Modifier[]>(() => {
+    return [distanceFormatModifier];
+  }, [distanceFormatModifier]);
 
   return overlayModifiers;
 }

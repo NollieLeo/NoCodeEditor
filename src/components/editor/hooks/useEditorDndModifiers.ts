@@ -1,22 +1,15 @@
 import { Modifier } from "@dnd-kit/core";
-import { useEditorContext } from "./useEditorContext";
 
 export default function useEditorDndModifiers() {
-  const {
-    editorStore: {
-      panState: { scale },
-    },
-  } = useEditorContext();
-
-  const scaledTransformerModifier: Modifier = (args) => {
+  const distanceFormatModifier: Modifier = (args) => {
     const { transform } = args;
     const res = {
       ...transform,
-      scaleX: transform.scaleX * scale,
-      scaleY: transform.scaleY * scale,
+      x: Math.floor(transform.x),
+      y: Math.floor(transform.y),
     };
     return res;
   };
 
-  return [scaledTransformerModifier];
+  return [distanceFormatModifier];
 }
