@@ -25,8 +25,8 @@ export const mocks = {
     type: "container",
     data: {
       style: {
-        width: 600,
-        height: 500,
+        width: 1133,
+        height: 182,
         background: "#64bb64",
         display: "flex",
         flexDirection: "column",
@@ -35,8 +35,8 @@ export const mocks = {
         flexWrap: "wrap",
         position: "absolute",
         overflow: "hidden",
-        left: 105.2276742445539,
-        top: 104.22975599573711,
+        left: 69.2265625,
+        top: 53.2265625,
       },
     },
     childNodes: [
@@ -129,8 +129,8 @@ export const mocks = {
         display: "flex",
         flexWrap: "wrap",
         position: "absolute",
-        top: 24.032051914104457,
-        left: 769.2733912155528,
+        top: 327.03125,
+        left: 70.265625,
       },
     },
     childNodes: ["text-4365", "button-2454", "textarea-4918"],
@@ -183,8 +183,8 @@ export const mocks = {
         background: "#00b9ff",
         display: "flex",
         position: "absolute",
-        left: 787.8018552327386,
-        top: 474.64798907844386,
+        left: 801.796875,
+        top: 327.640625,
       },
     },
     childNodes: [

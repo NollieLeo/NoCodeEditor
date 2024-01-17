@@ -25,7 +25,7 @@ export const DndMonitor = () => {
         `Over: Draggable item ${id} is no longer over a droppable area.`
       );
     },
-    onDragMove(){
+    onDragMove() {
       // debugger
     },
     onDragCancel(id) {
