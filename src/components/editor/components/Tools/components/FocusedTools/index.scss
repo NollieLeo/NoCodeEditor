@@ -1,24 +1,3 @@
-.focused-highlight {
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 2;
-  .highlight-line {
-    stroke-width: 2;
-    stroke-linecap: square;
-    stroke: #1450d9;
-    pointer-events: all;
-  }
-  .highlight-point {
-    stroke: #1450d9;
-    fill: #fff;
-    stroke-width: 2;
-    r: 4;
-    pointer-events: all;
-  }
-}
-
 .focused-resize-wrapper {
   position: absolute;
   pointer-events: none;
@@ -26,55 +5,15 @@
   height: 100vh;
 
   .moveable-control-box {
-    pointer-events: all;
     .moveable-control {
+      pointer-events: all;
       background-color: #fff;
       border-color: #1450d9;
     }
     .moveable-line {
+      pointer-events: all;
       height: 2px;
       background-color: #1450d9;
-    }
-  }
-
-  .focused-resize {
-    pointer-events: none;
-    // border: 2px solid #1450d9;
-    // z-index: 2;
-    box-sizing: border-box;
-    position: absolute !important;
-
-    .focused-resize-handle {
-      &.topLeft,
-      &.topRight,
-      &.bottomLeft,
-      &.bottomRight {
-        width: 8px !important;
-        height: 8px !important;
-        border-radius: 50%;
-        background-color: #fff;
-        border: 1px solid #1450d9;
-      }
-      &.topRight {
-        right: -5px !important;
-        top: -5px !important;
-        cursor: nesw-resize !important;
-      }
-      &.topLeft {
-        left: -5px !important;
-        top: -5px !important;
-        cursor: nwse-resize !important;
-      }
-      &.bottomRight {
-        right: -5px !important;
-        bottom: -5px !important;
-        cursor: nwse-resize !important;
-      }
-      &.bottomLeft {
-        left: -5px !important;
-        bottom: -5px !important;
-        cursor: nesw-resize !important;
-      }
     }
   }
 }

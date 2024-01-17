@@ -10,6 +10,7 @@ const ResizeDimensionViewableComp: FC<ResizeDimensionViewableProps> = ({
 }) => {
   return (
     <div
+      key={"dimension-viewer"}
       style={{
         position: "absolute",
         left: `${rect.width / 2}px`,

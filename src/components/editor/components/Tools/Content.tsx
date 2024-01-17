@@ -7,7 +7,7 @@ import { observer } from "mobx-react-lite";
 import { OverHighlight } from "./components/OverHighlight";
 import { InsertHighlight } from "./components/InsertHighlight";
 import "./index.scss";
-import { RectHighlight } from "./components/RectHighlight";
+import { CollisionTools } from "./components/CollisionTools";
 
 const ToolsContentComps: FC = observer(() => {
   const {
@@ -39,7 +39,7 @@ const ToolsContentComps: FC = observer(() => {
     <div className="tools-wrapper" id={TOOL_WRAPPER_ID}>
       {renderOverHighlight()}
       <InsertHighlight />
-      <RectHighlight />
+      <CollisionTools />
       {renderFocusedTools()}
       {renderHoveredHighlight()}
     </div>

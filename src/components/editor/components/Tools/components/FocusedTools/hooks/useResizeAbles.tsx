@@ -7,7 +7,7 @@ const DimensionViewable = {
   events: [],
   render(moveable: MoveableManagerInterface<unknown, unknown>) {
     const rect = moveable.getRect();
-    return <ResizeDimensionViewable rect={rect} />;
+    return <ResizeDimensionViewable key={'dimensionViewable'} rect={rect} />;
   },
 } as const;
 
