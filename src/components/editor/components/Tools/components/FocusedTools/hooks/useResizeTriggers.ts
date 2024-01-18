@@ -36,25 +36,29 @@ export default function useResizeTriggers(targetId?: string) {
 
   const onResizeEnd = (params: OnResizeEnd) => {
     const { lastEvent, target } = params;
+    target.style.transform = "";
+    forceResizeUpdate();
     if (!targetId || !lastEvent) {
       return;
     }
-    const { width, height, direction, dist } = lastEvent;
-    target.style.transform = "";
-    forceResizeUpdate();
-    editorStore.updateNodeStyle(({ top: preTop, left: preLeft }) => {
-      const updatedStyle: CSSProperties = {
-        width,
-        height,
-      };
-      if (!isNil(preTop) && !isNil(preLeft)) {
-        updatedStyle.top =
-          direction[1] === -1 ? Number(preTop) - dist[1] : preTop;
-        updatedStyle.left =
-          direction[0] === -1 ? Number(preLeft) - dist[0] : preLeft;
-      }
-      return updatedStyle;
-    }, targetId);
+    const { width, height, direction, dist, target: targetDom } = lastEvent;
+
+    const updatedStyle: CSSProperties = {
+      width,
+      height,
+    };
+    if (isAbsoluteOrFixed(targetDom)) {
+      updatedStyle.top =
+        direction[1] === -1
+          ? targetDom.offsetTop - dist[1]
+          : targetDom.offsetTop;
+      updatedStyle.left =
+        direction[0] === -1
+          ? targetDom.offsetLeft - dist[0]
+          : targetDom.offsetLeft;
+    }
+
+    editorStore.updateNodeStyle(updatedStyle, targetId);
   };
 
   return {

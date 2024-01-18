@@ -6,7 +6,7 @@ import { DndBox } from "../DndBox";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { observer } from "mobx-react-lite";
 import { isAbsoluteOrFixed } from "../../utils/layout";
-import { useGetDragData } from "../../hooks/useGetDragNode";
+import { useGetDragInfo } from "../../hooks/useGetDragInfo";
 
 interface CompTreeProps {
   rootId: string | null;
@@ -24,7 +24,7 @@ const CompTreeTmpl = observer((props: CompTreeProps) => {
     throw new Error(`root id;${rootId} does not exist`);
   }
 
-  const dragInfo = useGetDragData();
+  const dragInfo = useGetDragInfo();
 
   const { type, id, childNodes, data, parentId } = nodesMap[rootId];
 

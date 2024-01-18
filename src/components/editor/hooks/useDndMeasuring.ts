@@ -1,7 +1,7 @@
 import { MeasuringConfiguration, MeasuringStrategy } from "@dnd-kit/core";
 import { useMemo } from "react";
 
-export function useEditorMeasuring(): MeasuringConfiguration {
+export function useDndMeasuring(): MeasuringConfiguration {
   const config = useMemo(() => {
     return {
       droppable: {

@@ -2,7 +2,7 @@ import { useDndContext } from "@dnd-kit/core";
 import { DropInfo } from "../types";
 import { useMemo } from "react";
 
-export function useGetOverNode() {
+export function useGetOverInfo() {
   const { over } = useDndContext();
 
   const overInfo = useMemo(() => {

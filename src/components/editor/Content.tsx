@@ -5,23 +5,23 @@ import { observer } from "mobx-react-lite";
 import { ZoomPan } from "./components/ZoomPan";
 import { Siderbar } from "./components/Siderbar";
 import { DndMonitor } from "./components/DndMonitor";
-import useEditorDndSensors from "./hooks/useEditorDndSensors";
+import useDndSensors from "./hooks/useDndSensors";
 import { useEditorContext } from "./hooks/useEditorContext";
 import { DndDragOverlay } from "./components/DndDragOverlay";
 import { ComponentTypes } from "./types";
 import { Tools } from "./components/Tools";
-import { useEditorCollisionDetection } from "./hooks/useEditorCollisionDetection";
+import { useCollisionDetection } from "./hooks/useCollisionDetection";
 import { CompTree } from "./components/CompTree";
-import useEditorDndModifiers from "./hooks/useEditorDndModifiers";
-import { useEditorMeasuring } from "./hooks/useEditorMeasuring";
+import useDndModifiers from "./hooks/useDndModifiers";
+import { useDndMeasuring } from "./hooks/useDndMeasuring";
 
 import "./Content.scss";
 
 const ContentComp: FC<PropsWithChildren> = observer(() => {
-  const sensors = useEditorDndSensors();
-  const modifiers = useEditorDndModifiers();
-  const measuring = useEditorMeasuring();
-  const editorCollisionDetection = useEditorCollisionDetection();
+  const sensors = useDndSensors();
+  const modifiers = useDndModifiers();
+  const measuring = useDndMeasuring();
+  const editorCollisionDetection = useCollisionDetection();
 
   const {
     editorStore: { nodesMap },

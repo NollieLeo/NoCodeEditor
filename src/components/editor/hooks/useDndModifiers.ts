@@ -3,7 +3,7 @@ import { useCallback, useMemo } from "react";
 import { useEditorContext } from "./useEditorContext";
 import { DragInfo, DragOrigin } from "../types";
 
-export default function useEditorDndModifiers() {
+export default function useDndModifiers() {
   const {
     editorStore: {
       panState: { scale },

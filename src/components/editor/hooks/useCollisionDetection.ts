@@ -7,7 +7,7 @@ import {
 import { DragOrigin } from "../types";
 import { useCallback } from "react";
 
-export function useEditorCollisionDetection() {
+export function useCollisionDetection() {
   const handleCollisionDetection: CollisionDetection = useCallback((args) => {
     const { active } = args;
     if (!active.data.current) {

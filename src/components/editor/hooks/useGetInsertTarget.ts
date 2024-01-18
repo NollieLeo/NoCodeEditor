@@ -2,8 +2,8 @@ import { useCallback } from "react";
 import { indexOf, map, min } from "lodash-es";
 import { DragOrigin } from "../types";
 import { getFlexLayoutDirection } from "../utils/layout";
-import { useGetDragData } from "./useGetDragNode";
-import { useGetOverNode } from "./useGetOverNode";
+import { useGetDragInfo } from "./useGetDragInfo";
+import { useGetOverInfo } from "./useGetOverInfo";
 
 function pointRectDist(pLeft: number, pTop: number, rect: DOMRect) {
   const { left: rLeft, width: rWidth, height: rHeight, top: rTop } = rect;
@@ -12,9 +12,9 @@ function pointRectDist(pLeft: number, pTop: number, rect: DOMRect) {
   return Math.sqrt(diffX * diffX + diffY * diffY);
 }
 
-export function useEditorInsertTarget() {
-  const dragInfo = useGetDragData();
-  const overInfo = useGetOverNode();
+export function useGetInsertTarget() {
+  const dragInfo = useGetDragInfo();
+  const overInfo = useGetOverInfo();
 
   const getChildRects = useCallback(() => {
     if (!overInfo?.id || !overInfo.accepts?.length) {
@@ -29,7 +29,7 @@ export function useEditorInsertTarget() {
     });
   }, [overInfo?.accepts, overInfo?.id]);
 
-  const getDragRect = useCallback(() => {
+  const getDragCenterRect = useCallback(() => {
     if (!dragInfo) {
       return null;
     }
@@ -65,7 +65,7 @@ export function useEditorInsertTarget() {
     if (dragInfo?.from !== DragOrigin.SIDE_ADD || !overInfo) {
       return;
     }
-    const dragRect = getDragRect();
+    const dragRect = getDragCenterRect();
     if (!dragRect) {
       return;
     }

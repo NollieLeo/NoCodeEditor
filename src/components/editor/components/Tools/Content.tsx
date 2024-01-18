@@ -8,14 +8,14 @@ import { OverHighlight } from "./components/OverHighlight";
 import { InsertHighlight } from "./components/InsertHighlight";
 import "./index.scss";
 import { CollisionTools } from "./components/CollisionTools";
-import { useGetDragData } from "../../hooks/useGetDragNode";
+import { useGetDragInfo } from "../../hooks/useGetDragInfo";
 
 const ToolsContentComps: FC = observer(() => {
   const {
     editorStore: { focusedInfo, hoveredNodeId },
   } = useEditorContext();
 
-  const dragInfo = useGetDragData();
+  const dragInfo = useGetDragInfo();
 
   const renderOverHighlight = () => {
     if (!dragInfo) {

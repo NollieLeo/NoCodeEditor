@@ -1,16 +1,16 @@
 import { FC, memo, useMemo } from "react";
 import { DragInfo, DragOrigin } from "@/components/editor/types";
 import { BorderedRectangle } from "@/components/editor/components/Tools/components/BorderedRectangle";
-import { useGetDragData } from "@/components/editor/hooks/useGetDragNode";
-import { useGetOverNode } from "@/components/editor/hooks/useGetOverNode";
+import { useGetDragInfo } from "@/components/editor/hooks/useGetDragInfo";
+import { useGetOverInfo } from "@/components/editor/hooks/useGetOverInfo";
 
 interface OverHighlightProps {
   dragInfo: DragInfo;
 }
 
 export const OverHighlightComp: FC<OverHighlightProps> = () => {
-  const dragInfo = useGetDragData();
-  const overInfo = useGetOverNode();
+  const dragInfo = useGetDragInfo();
+  const overInfo = useGetOverInfo();
 
   const highlightDomId = useMemo(() => {
     if (!dragInfo) {

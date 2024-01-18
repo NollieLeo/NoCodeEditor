@@ -6,7 +6,7 @@ import { memo, useMemo } from "react";
 import { DraggingGuildLines } from "./components/DraggingGuildLines";
 import { ParentCollisionLines } from "./components/ParentCollisionLines";
 import { SiblingsCollisionLines } from "./components/SiblingsCollisionLines";
-import { useGetDragData } from "@/components/editor/hooks/useGetDragNode";
+import { useGetDragInfo } from "@/components/editor/hooks/useGetDragInfo";
 import { isAbsoluteOrFixed } from "@/components/editor/utils/layout";
 import "./index.scss";
 
@@ -15,7 +15,7 @@ const CollisionToolsTmpl = observer(() => {
     editorStore: { nodesMap, focusedInfo },
   } = useEditorContext();
 
-  const dragInfo = useGetDragData();
+  const dragInfo = useGetDragInfo();
   const nodeHasParentSchema = useMemo(() => {
     const targetId = dragInfo?.id || focusedInfo?.id;
     if (isNil(targetId)) {
@@ -28,7 +28,7 @@ const CollisionToolsTmpl = observer(() => {
     return target as { parentId: string } & SchemaData;
   }, [dragInfo?.id, focusedInfo?.id, nodesMap]);
 
-  if (!nodeHasParentSchema) {
+  if (!nodeHasParentSchema || isNil(dragInfo)) {
     return <></>;
   }
 

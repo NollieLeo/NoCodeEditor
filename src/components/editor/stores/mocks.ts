@@ -141,6 +141,7 @@ export const mocks = {
         display: "flex",
         flexShrink: 0,
         flexWrap: "wrap",
+        flexDirection: "column",
         position: "absolute",
         overflow: "hidden",
         top: 327,

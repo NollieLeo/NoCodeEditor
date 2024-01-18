@@ -1,13 +1,13 @@
 import { FC, memo, useMemo } from "react";
 import { DragOrigin } from "@/components/editor/types";
 import { COMPONENTS_INFO } from "@/components/editor/constants";
-import { useGetDragData } from "@/components/editor/hooks/useGetDragNode";
+import { useGetDragInfo } from "@/components/editor/hooks/useGetDragInfo";
 
 /**
  * 从侧边栏拖拽的时候的overlay
  */
 const SiderBarDragOverlayTmpl: FC = () => {
-  const dragInfo = useGetDragData();
+  const dragInfo = useGetDragInfo();
 
   const activeSiderBarComp = useMemo(() => {
     if (!dragInfo || dragInfo.from !== DragOrigin.SIDE_ADD) {
