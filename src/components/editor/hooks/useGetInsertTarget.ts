@@ -1,11 +1,11 @@
 import { useCallback } from "react";
-import { indexOf, map, min } from "lodash-es";
+import { forEach, indexOf, map, min } from "lodash-es";
 import { DragOrigin } from "../types";
 import { getFlexLayoutDirection } from "../utils/layout";
 import { useGetDragInfo } from "./useGetDragInfo";
 import { useGetOverInfo } from "./useGetOverInfo";
 
-function pointRectDist(pLeft: number, pTop: number, rect: DOMRect) {
+function genRectToDistance(pLeft: number, pTop: number, rect: DOMRect) {
   const { left: rLeft, width: rWidth, height: rHeight, top: rTop } = rect;
   const diffX = Math.abs(pLeft - (rLeft + rWidth / 2));
   const diffY = Math.abs(pTop - (rTop + rHeight / 2));
@@ -15,19 +15,6 @@ function pointRectDist(pLeft: number, pTop: number, rect: DOMRect) {
 export function useGetInsertTarget() {
   const dragInfo = useGetDragInfo();
   const overInfo = useGetOverInfo();
-
-  const getChildRects = useCallback(() => {
-    if (!overInfo?.id || !overInfo.accepts?.length) {
-      return null;
-    }
-    return map(overInfo.accepts, (id) => {
-      const dom = document.getElementById(id);
-      if (!dom) {
-        throw new Error(`child id: ${id} not found in dom tree`);
-      }
-      return dom.getBoundingClientRect();
-    });
-  }, [overInfo?.accepts, overInfo?.id]);
 
   const getDragCenterRect = useCallback(() => {
     if (!dragInfo) {
@@ -43,47 +30,60 @@ export function useGetInsertTarget() {
       top: top + height / 2,
       left: left + width / 2,
     };
-  }, [dragInfo]);
+  }, [dragInfo?.id]);
 
-  const getClosestDomInfo = useCallback(
-    (pLeft: number, pTop: number): [DOMRect, number] | null => {
-      const childRects = getChildRects();
-      if (!childRects) {
+  const getClosestNodeInfo = useCallback(
+    (pLeft: number, pTop: number) => {
+      if (!overInfo?.id || !overInfo.accepts?.length) {
         return null;
       }
-      const distances = map(childRects, (rect) =>
-        pointRectDist(pLeft, pTop, rect)
+      const childNodesInfo: { rect: DOMRect; index: number }[] = [];
+      forEach(overInfo.accepts, (id, index) => {
+        const dom = document.getElementById(id);
+        if (!dom) {
+          throw new Error(`child id: ${id} not found in dom tree`);
+        }
+        if (
+          dom.style.position !== "absolute" &&
+          dom.style.position !== "fixed"
+        ) {
+          childNodesInfo.push({
+            rect: dom.getBoundingClientRect(),
+            index,
+          });
+        }
+      });
+      const distances = map(childNodesInfo, ({ rect }) =>
+        genRectToDistance(pLeft, pTop, rect)
       );
+
       const minDis = min(distances);
       const idx = indexOf(distances, minDis);
-      return childRects[idx] ? [childRects[idx], idx] : null;
+      return childNodesInfo[idx] || null;
     },
-    [getChildRects]
+    [overInfo?.accepts, overInfo?.id]
   );
 
   const getInsertInfo = () => {
     if (dragInfo?.from !== DragOrigin.SIDE_ADD || !overInfo) {
       return;
     }
-    const dragRect = getDragCenterRect();
-    if (!dragRect) {
+    const centerRect = getDragCenterRect();
+    if (!centerRect) {
       return;
     }
-    const targetInfo = getClosestDomInfo(dragRect.left, dragRect.top);
+    const targetInfo = getClosestNodeInfo(centerRect.left, centerRect.top);
     if (!targetInfo) {
       return;
     }
-    const [targetRect, targetIdx] = targetInfo;
-    if (targetIdx === -1) {
-      return;
-    }
+    const { rect: targetRect, index: targetIdx } = targetInfo;
 
     const direction = getFlexLayoutDirection(
       document.getElementById(overInfo.id)
     );
 
     if (direction === "vertical") {
-      const { top: dragTop } = dragRect;
+      const { top: dragTop } = centerRect;
       const {
         top: targetTop,
         height: targetHeight,
@@ -105,7 +105,7 @@ export function useGetInsertTarget() {
         direction,
       };
     } else if (direction === "horizontal") {
-      const { left: dragLeft } = dragRect;
+      const { left: dragLeft } = centerRect;
       const {
         top: targetTop,
         height: targetHeight,
