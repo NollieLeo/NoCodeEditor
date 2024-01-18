@@ -1,9 +1,10 @@
 import { useCallback } from "react";
-import { forEach, indexOf, map, min } from "lodash-es";
+import { forEach, indexOf, isNil, map, min } from "lodash-es";
 import { DragOrigin } from "../types";
 import { getFlexLayoutDirection } from "../utils/layout";
 import { useGetDragInfo } from "./useGetDragInfo";
 import { useGetOverInfo } from "./useGetOverInfo";
+import { useDndContext } from "@dnd-kit/core";
 
 function genRectToDistance(pLeft: number, pTop: number, rect: DOMRect) {
   const { left: rLeft, width: rWidth, height: rHeight, top: rTop } = rect;
@@ -13,24 +14,20 @@ function genRectToDistance(pLeft: number, pTop: number, rect: DOMRect) {
 }
 
 export function useGetInsertTarget() {
+  const { active } = useDndContext();
   const dragInfo = useGetDragInfo();
   const overInfo = useGetOverInfo();
 
   const getDragCenterRect = useCallback(() => {
-    if (!dragInfo) {
+    if (!active?.rect.current.translated) {
       return null;
     }
-    const { id } = dragInfo;
-    const draggingDom = document.getElementById(id);
-    if (!draggingDom) {
-      return null;
-    }
-    const { top, height, width, left } = draggingDom.getBoundingClientRect();
+    const { top, height, width, left } = active.rect.current.translated;
     return {
       top: top + height / 2,
       left: left + width / 2,
     };
-  }, [dragInfo?.id]);
+  }, [active?.rect.current.translated]);
 
   const getClosestNodeInfo = useCallback(
     (pLeft: number, pTop: number) => {
@@ -69,61 +66,52 @@ export function useGetInsertTarget() {
       return;
     }
     const centerRect = getDragCenterRect();
-    if (!centerRect) {
+    if (isNil(centerRect)) {
       return;
     }
-    const targetInfo = getClosestNodeInfo(centerRect.left, centerRect.top);
-    if (!targetInfo) {
+    const insetTargetInfo = getClosestNodeInfo(centerRect.left, centerRect.top);
+    if (isNil(insetTargetInfo)) {
       return;
     }
-    const { rect: targetRect, index: targetIdx } = targetInfo;
+    const { rect: insertTarget, index: targetIdx } = insetTargetInfo;
+    const {
+      top: insertTop,
+      height: insertHeight,
+      left: insertLeft,
+      width: insertWdith,
+      bottom: inertBottom,
+      right: insertRight,
+    } = insertTarget;
+
+    const { left: centerLeft, top: centerTop } = centerRect;
+    const targetCenterTop = insertTop + insertHeight / 2;
+    const targetCenterLeft = insertLeft + insertWdith / 2;
 
     const direction = getFlexLayoutDirection(
       document.getElementById(overInfo.id)
     );
 
     if (direction === "vertical") {
-      const { top: dragTop } = centerRect;
-      const {
-        top: targetTop,
-        height: targetHeight,
-        left: targetLeft,
-        width: targetWidth,
-      } = targetRect;
-
-      const targetCenterTop = targetTop + targetHeight / 2;
-
-      const insertIdx = dragTop > targetCenterTop ? targetIdx + 1 : targetIdx;
+      const isNearTop = centerTop > targetCenterTop;
       const insertRect = {
-        ...targetRect,
-        left: targetLeft + targetWidth / 2,
-        top: dragTop > targetCenterTop ? targetTop + targetHeight : targetTop,
+        ...insertTarget,
+        left: targetCenterLeft,
+        top: isNearTop ? inertBottom : insertTop,
       };
       return {
-        insertIdx,
+        insertIdx: isNearTop ? targetIdx + 1 : targetIdx,
         insertRect,
         direction,
       };
     } else if (direction === "horizontal") {
-      const { left: dragLeft } = centerRect;
-      const {
-        top: targetTop,
-        height: targetHeight,
-        left: targetLeft,
-        width: targetWidth,
-      } = targetRect;
-
-      const targetCenterLeft = targetLeft + targetWidth / 2;
-
-      const insertIdx = dragLeft > targetCenterLeft ? targetIdx + 1 : targetIdx;
+      const isNearLeft = centerLeft > targetCenterLeft;
       const insertRect = {
-        ...targetRect,
-        top: targetTop + targetHeight / 2,
-        left:
-          dragLeft > targetCenterLeft ? targetLeft + targetWidth : targetLeft,
+        ...insertTarget,
+        top: targetCenterTop,
+        left: isNearLeft ? insertRight : insertLeft,
       };
       return {
-        insertIdx,
+        insertIdx: isNearLeft ? targetIdx + 1 : targetIdx,
         insertRect,
         direction,
       };
