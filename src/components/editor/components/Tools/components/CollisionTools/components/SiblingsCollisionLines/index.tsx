@@ -1,9 +1,9 @@
-import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { filter, forEach, map } from "lodash-es";
+import { filter, map } from "lodash-es";
 import { observer } from "mobx-react-lite";
 import { memo, useMemo } from "react";
-import { DEFAULT_SVG_LINE_ATTRS } from "@/components/editor/components/Tools/components/CollisionTools/constants/index";
 import { ClientRect } from "@dnd-kit/core";
+import { useCollisionPoints } from "@/components/editor/hooks/useCollisionPoints";
+import { DEFAULT_SVG_LINE_ATTRS } from "@/components/editor/components/Tools/components/CollisionTools/constants/index";
 
 interface SiblingsCollisionLinesProps {
   parentId: string;
@@ -14,7 +14,6 @@ interface SiblingsCollisionLinesProps {
 
 const CollisionLinesComp = observer((props: SiblingsCollisionLinesProps) => {
   const {
-    parentId,
     id,
     rect: {
       left: dragLeft,
@@ -29,36 +28,13 @@ const CollisionLinesComp = observer((props: SiblingsCollisionLinesProps) => {
       bottom: parentBottom,
     },
   } = props;
-  const {
-    editorStore: { nodesMap },
-  } = useEditorContext();
 
-  const siblingIds = useMemo(() => {
-    const { childNodes } = nodesMap[parentId];
-    return filter(childNodes, (childId) => childId !== id);
-  }, [id, nodesMap, parentId]);
+  const getCollisitionPoints = useCollisionPoints();
 
-  const siblingRects = useMemo(() => {
-    return map(siblingIds, (id) => {
-      const dom = document.getElementById(id);
-      if (!dom) {
-        throw new Error(`target dom :${id} does not exist`);
-      }
-      return dom.getBoundingClientRect();
-    });
-  }, [siblingIds]);
-
-  const collisionPoints = useMemo(() => {
-    const xPoints: number[] = [];
-    const yPoints: number[] = [];
-    forEach(siblingRects, ({ left, right, top, bottom }) => {
-      xPoints.push(left);
-      xPoints.push(right);
-      yPoints.push(top);
-      yPoints.push(bottom);
-    });
-    return { xPoints, yPoints };
-  }, [siblingRects]);
+  const collisionPoints = useMemo(
+    () => getCollisitionPoints(id),
+    [getCollisitionPoints, id]
+  );
 
   const renderLinesX = () => {
     const metPoints = filter(collisionPoints.yPoints, (point) => {

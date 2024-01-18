@@ -31,7 +31,6 @@ export default function useResizeTriggers(targetId?: string) {
       target.style.width = `${width}px`;
       target.style.height = `${height}px`;
     }
-    editorStore.setFocusedInfo({ id: targetId });
   };
 
   const onResizeEnd = (params: OnResizeEnd) => {

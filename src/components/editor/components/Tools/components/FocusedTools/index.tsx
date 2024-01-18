@@ -5,6 +5,7 @@ import { flushSync } from "react-dom";
 import useResizeTriggers from "./hooks/useResizeTriggers";
 import "./index.scss";
 import useResizeAbles from "./hooks/useResizeAbles";
+import { useCollisionPoints } from "@/components/editor/hooks/useCollisionPoints";
 
 interface FocusedToolsProps {
   focusedInfo: NonNullable<EditorState["focusedInfo"]>;
@@ -15,7 +16,14 @@ const FocusedToolsComp: FC<FocusedToolsProps> = ({ focusedInfo }) => {
     focusedInfo.id
   );
 
+  const getCollisitionPoints = useCollisionPoints();
+
   const { ables, props } = useResizeAbles();
+
+  const collisionPoints = useMemo(
+    () => getCollisitionPoints(focusedInfo.id),
+    [focusedInfo.id, getCollisitionPoints]
+  );
 
   const resizableOptions = useMemo<ResizableOptions>(() => {
     return {
@@ -37,12 +45,17 @@ const FocusedToolsComp: FC<FocusedToolsProps> = ({ focusedInfo }) => {
         props={props}
         ables={ables}
         linePadding={10}
+        dragTargetSelf
         draggable={false}
         rotatable={false}
         origin={false}
         useResizeObserver
         onResize={onResize}
         onResizeEnd={onResizeEnd}
+        snappable
+        snapThreshold={1}
+        horizontalGuidelines={collisionPoints.yPoints}
+        verticalGuidelines={collisionPoints.xPoints}
       />
     </div>
   );
