@@ -8,7 +8,6 @@ import { DndMonitor } from "./components/DndMonitor";
 import useEditorDndSensors from "./hooks/useEditorDndSensors";
 import { useEditorContext } from "./hooks/useEditorContext";
 import { DndDragOverlay } from "./components/DndDragOverlay";
-import useEditorDnd from "./hooks/useEditorDnd";
 import { ComponentTypes } from "./types";
 import { Tools } from "./components/Tools";
 import { useEditorCollisionDetection } from "./hooks/useEditorCollisionDetection";
@@ -28,8 +27,6 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
     editorStore: { nodesMap },
   } = useEditorContext();
 
-  const { onDragStart, onDragEnd, onDragOver, onDragMove } = useEditorDnd();
-
   const rootId = useMemo(() => {
     const root = find(nodesMap, ({ type }) => type === ComponentTypes.PAGE);
     if (!root) {
@@ -45,10 +42,6 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
         measuring={measuring}
         modifiers={modifiers}
         collisionDetection={editorCollisionDetection}
-        onDragStart={onDragStart}
-        onDragOver={onDragOver}
-        onDragEnd={onDragEnd}
-        onDragMove={onDragMove}
       >
         {/* -------------- Helper Tools -------------- */}
         {<Tools />}

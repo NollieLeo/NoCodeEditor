@@ -8,17 +8,20 @@ import { OverHighlight } from "./components/OverHighlight";
 import { InsertHighlight } from "./components/InsertHighlight";
 import "./index.scss";
 import { CollisionTools } from "./components/CollisionTools";
+import { useGetDragData } from "../../hooks/useGetDragNode";
 
 const ToolsContentComps: FC = observer(() => {
   const {
-    editorStore: { draggingInfo, focusedInfo, hoveredNodeId },
+    editorStore: { focusedInfo, hoveredNodeId },
   } = useEditorContext();
 
+  const dragInfo = useGetDragData();
+
   const renderOverHighlight = () => {
-    if (!draggingInfo) {
+    if (!dragInfo) {
       return <></>;
     }
-    return <OverHighlight draggingInfo={draggingInfo} />;
+    return <OverHighlight dragInfo={dragInfo} />;
   };
 
   const renderFocusedTools = () => {
@@ -29,7 +32,7 @@ const ToolsContentComps: FC = observer(() => {
   };
 
   const renderHoveredHighlight = () => {
-    if (!hoveredNodeId || hoveredNodeId === focusedInfo?.id) {
+    if (!!dragInfo || !hoveredNodeId || hoveredNodeId === focusedInfo?.id) {
       return <></>;
     }
     return <HoveredNodeTool hoveredNodeId={hoveredNodeId} />;

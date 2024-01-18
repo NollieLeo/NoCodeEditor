@@ -5,7 +5,7 @@ export function useEditorMeasuring(): MeasuringConfiguration {
   const config = useMemo(() => {
     return {
       droppable: {
-        frequency: MeasuringStrategy.WhileDragging,
+        frequency: MeasuringStrategy.Always,
       },
     };
   }, []);

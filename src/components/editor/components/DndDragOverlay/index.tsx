@@ -12,9 +12,6 @@ const DndDragOverlayComp = observer(() => {
   const overlayModifiers = useOverlayModifiers();
 
   const dragOverlayDefaultStyle: CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
     width: "fit-content",
     height: "fit-content",
   };

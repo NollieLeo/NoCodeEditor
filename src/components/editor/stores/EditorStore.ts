@@ -2,7 +2,7 @@ import { ReactZoomPanPinchState } from "react-zoom-pan-pinch";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useLocalStore } from "mobx-react-lite";
 import { cloneDeep, findIndex, isUndefined } from "lodash-es";
-import { DragInfo, DropInfo, SchemaData } from "../types";
+import { SchemaData } from "../types";
 import { mocks } from "./mocks";
 import { CSSProperties } from "react";
 
@@ -10,8 +10,6 @@ export interface PanState
   extends Omit<ReactZoomPanPinchState, "previousScale"> {}
 
 export interface EditorState {
-  /** 拖拽时候经过的元素信息 */
-  overInfo: DropInfo | null;
   /** 页面被点击激活的元素id */
   focusedInfo: { id: string } | null;
   /** 页面上被hover的元素id */
@@ -20,21 +18,17 @@ export interface EditorState {
   panState: PanState;
   /** 面板是否在缩放/移动 */
   isPanTransforming: boolean;
-  /** 被拖拽的元素信息 */
-  draggingInfo: DragInfo | null;
   /** 所有的元素 */
   nodesMap: Record<string, SchemaData>;
 }
 
 export interface EditorAction {
-  setOverInfo(over: EditorState["overInfo"]): void;
   setFocusedInfo(id: EditorState["focusedInfo"]): void;
   setHoverNodeId(id: EditorState["hoveredNodeId"]): void;
   setPanState(panState: EditorState["panState"]): void;
   setPanIsTransforming(
     isPanTransforming: EditorState["isPanTransforming"]
   ): void;
-  setDraggingInfo(node: EditorState["draggingInfo"]): void;
   cleanUpHelperNode(): void;
 
   // ----------- node operations -----------
@@ -50,7 +44,6 @@ export type EditorStore = EditorState & EditorAction;
 
 export const useEditorStore = () => {
   return useLocalStore<EditorStore>(() => ({
-    overInfo: null,
     focusedInfo: null,
     hoveredNodeId: null,
     panState: {
@@ -59,11 +52,7 @@ export const useEditorStore = () => {
       positionY: 1,
     },
     isPanTransforming: false,
-    draggingInfo: null,
     nodesMap: cloneDeep(mocks),
-    setOverInfo(overInfo) {
-      this.overInfo = overInfo;
-    },
     setFocusedInfo(focusedInfo) {
       this.focusedInfo = focusedInfo;
     },
@@ -76,13 +65,9 @@ export const useEditorStore = () => {
     setPanIsTransforming(isPanTransforming) {
       this.isPanTransforming = isPanTransforming;
     },
-    setDraggingInfo(info) {
-      this.draggingInfo = info;
-    },
     cleanUpHelperNode() {
       this.hoveredNodeId = null;
       this.focusedInfo = null;
-      this.overInfo = null;
     },
     /**
      * @description add node from sidebar

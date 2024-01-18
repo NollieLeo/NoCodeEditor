@@ -1,16 +1,12 @@
-import {
-  UseDraggableArguments,
-  UseDroppableArguments,
-  useDraggable,
-  useDroppable,
-} from "@dnd-kit/core";
+import { useDraggable, useDroppable } from "@dnd-kit/core";
 import classNames from "classnames";
 import { observer } from "mobx-react-lite";
-import { FC, ReactNode, memo, useMemo } from "react";
+import { FC, ReactNode, memo } from "react";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { DragOrigin } from "@/components/editor/types";
 
 import "./index.scss";
+import { CSS } from "@dnd-kit/utilities";
 
 export interface CompWrapperProps {
   id: string;
@@ -18,73 +14,56 @@ export interface CompWrapperProps {
   childIds: string[] | null;
   droppable?: boolean;
   draggable?: boolean;
+  draggableOrigin: DragOrigin;
   children: (params: any) => ReactNode;
 }
 
 const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
-  const { draggable = true, id, parentId, childIds, children } = props;
   const {
-    editorStore,
-    editorStore: { draggingInfo, nodesMap },
-  } = useEditorContext();
+    draggable = true,
+    id,
+    parentId,
+    childIds,
+    draggableOrigin,
+    droppable,
+    children,
+  } = props;
 
-  const draggableOrigin = useMemo(() => {
-    const curDetail = nodesMap[id];
-    let from = DragOrigin.SORT;
-    if (
-      curDetail.data.style.position &&
-      ["absolute", "fixed"].includes(curDetail.data.style.position)
-    ) {
-      from = DragOrigin.MOVE;
-    }
-    return from;
-  }, [id, nodesMap]);
-
-  const draggableConfig = useMemo<UseDraggableArguments>(
-    () => ({
-      id,
-      disabled: !draggable,
-      data: {
-        id,
-        parentId,
-        from: draggableOrigin,
-      },
-    }),
-    [draggable, id, parentId, draggableOrigin]
-  );
+  const { editorStore } = useEditorContext();
 
   const {
     setNodeRef: setDragRef,
     attributes,
     listeners,
-  } = useDraggable(draggableConfig);
-
-  const droppableDisabled = useMemo(() => {
-    if (!draggingInfo) {
-      return false;
-    }
-    if (draggingInfo.from === DragOrigin.SIDE_ADD) {
-      return !childIds;
-    }
-    return draggingInfo.parentId !== parentId;
-  }, [childIds, draggingInfo, parentId]);
-
-  const droppableConfig = useMemo<UseDroppableArguments>(
-    () => ({
+    transform,
+  } = useDraggable({
+    id,
+    disabled: !draggable,
+    data: {
       id,
-      data: {
-        id,
-        parentId,
-        accepts: childIds,
-      },
-      disabled: droppableDisabled,
-    }),
-    [childIds, droppableDisabled, id, parentId]
-  );
+      parentId,
+      from: draggableOrigin,
+    },
+  });
 
-  const { setNodeRef: setDropRef } = useDroppable(droppableConfig);
+  const { setNodeRef: setDropRef } = useDroppable({
+    id,
+    data: {
+      id,
+      parentId,
+      accepts: childIds,
+    },
+    disabled: !droppable,
+  });
 
   const dropZoomCls = classNames("editor-dropzoom");
+
+  const dragAppendStyle =
+    draggableOrigin === DragOrigin.MOVE
+      ? {
+          transform: CSS.Transform.toString(transform),
+        }
+      : {};
 
   const onClick = (e: Event) => {
     e.stopPropagation();
@@ -95,9 +74,7 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
 
   const onMouseOver = (e: Event) => {
     e.stopPropagation();
-    if (!draggingInfo) {
-      editorStore.setHoverNodeId(id);
-    }
+    editorStore.setHoverNodeId(id);
   };
 
   const onMouseLeave = (e: MouseEvent) => {
@@ -110,6 +87,7 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
     ...listeners,
     id,
     className: dropZoomCls,
+    style: dragAppendStyle,
     ref(nodeRef: HTMLElement) {
       setDragRef(nodeRef);
       setDropRef(nodeRef);

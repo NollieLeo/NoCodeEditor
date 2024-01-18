@@ -1,29 +1,30 @@
 import { FC, memo, useMemo } from "react";
 import { DragInfo, DragOrigin } from "@/components/editor/types";
 import { BorderedRectangle } from "@/components/editor/components/Tools/components/BorderedRectangle";
-import { useDndContext } from "@dnd-kit/core";
+import { useGetDragData } from "@/components/editor/hooks/useGetDragNode";
+import { useGetOverNode } from "@/components/editor/hooks/useGetOverNode";
 
 interface OverHighlightProps {
-  draggingInfo: DragInfo;
+  dragInfo: DragInfo;
 }
 
 export const OverHighlightComp: FC<OverHighlightProps> = () => {
-  const { over, active } = useDndContext();
+  const dragInfo = useGetDragData();
+  const overInfo = useGetOverNode();
 
   const highlightDomId = useMemo(() => {
-    if (!active) {
+    if (!dragInfo) {
       return null;
     }
-    const draggingInfo = active.data.current as DragInfo;
     if (
-      draggingInfo.from === DragOrigin.SORT ||
-      draggingInfo.from === DragOrigin.MOVE
+      dragInfo.from === DragOrigin.SORT ||
+      dragInfo.from === DragOrigin.MOVE
     ) {
-      return draggingInfo.parentId;
-    } else if (draggingInfo.from === DragOrigin.SIDE_ADD && over) {
-      return over.id;
+      return dragInfo.parentId;
+    } else if (dragInfo.from === DragOrigin.SIDE_ADD && overInfo) {
+      return overInfo.id;
     }
-  }, [active, over]);
+  }, [dragInfo, overInfo]);
 
   if (!highlightDomId) {
     return <></>;
@@ -39,7 +40,6 @@ export const OverHighlightComp: FC<OverHighlightProps> = () => {
     width: domWidth,
     height: domHeight,
     top: domTop,
-    bottom: domBottom,
     left: domLeft,
   } = highlightTarget.getBoundingClientRect();
 
@@ -47,7 +47,6 @@ export const OverHighlightComp: FC<OverHighlightProps> = () => {
     width: domWidth,
     height: domHeight,
     top: domTop,
-    bottom: domBottom,
     zIndex: 3,
     left: domLeft,
   };

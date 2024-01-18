@@ -3,11 +3,12 @@ import { filter, forEach, map } from "lodash-es";
 import { observer } from "mobx-react-lite";
 import { memo, useMemo } from "react";
 import { DEFAULT_SVG_LINE_ATTRS } from "@/components/editor/components/Tools/components/CollisionTools/constants/index";
+import { ClientRect } from "@dnd-kit/core";
 
 interface SiblingsCollisionLinesProps {
   parentId: string;
   id: string;
-  rect: DOMRect;
+  rect: ClientRect;
   parentRect: DOMRect;
 }
 

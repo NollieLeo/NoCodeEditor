@@ -1,25 +1,20 @@
 import { useCallback } from "react";
-import { useEditorContext } from "./useEditorContext";
 import { indexOf, map, min } from "lodash-es";
 import { DragOrigin } from "../types";
 import { getFlexLayoutDirection } from "../utils/layout";
+import { useGetDragData } from "./useGetDragNode";
+import { useGetOverNode } from "./useGetOverNode";
 
 function pointRectDist(pLeft: number, pTop: number, rect: DOMRect) {
   const { left: rLeft, width: rWidth, height: rHeight, top: rTop } = rect;
-  //   const cx = Math.max(Math.min(pLeft, rLeft + rWidth), rLeft);
-  //   const cy = Math.max(Math.min(pTop, rTop + rHeight), rTop);
-  //   const diffX = Math.abs(pLeft - cx);
-  //   const diffY = Math.abs(pTop - cy);
   const diffX = Math.abs(pLeft - (rLeft + rWidth / 2));
   const diffY = Math.abs(pTop - (rTop + rHeight / 2));
-
   return Math.sqrt(diffX * diffX + diffY * diffY);
 }
 
 export function useEditorInsertTarget() {
-  const {
-    editorStore: { overInfo, draggingInfo },
-  } = useEditorContext();
+  const dragInfo = useGetDragData();
+  const overInfo = useGetOverNode();
 
   const getChildRects = useCallback(() => {
     if (!overInfo?.id || !overInfo.accepts?.length) {
@@ -32,13 +27,13 @@ export function useEditorInsertTarget() {
       }
       return dom.getBoundingClientRect();
     });
-  }, [overInfo?.id]);
+  }, [overInfo?.accepts, overInfo?.id]);
 
   const getDragRect = useCallback(() => {
-    if (!draggingInfo) {
+    if (!dragInfo) {
       return null;
     }
-    const { id } = draggingInfo;
+    const { id } = dragInfo;
     const draggingDom = document.getElementById(id);
     if (!draggingDom) {
       return null;
@@ -48,7 +43,7 @@ export function useEditorInsertTarget() {
       top: top + height / 2,
       left: left + width / 2,
     };
-  }, [draggingInfo]);
+  }, [dragInfo]);
 
   const getClosestDomInfo = useCallback(
     (pLeft: number, pTop: number): [DOMRect, number] | null => {
@@ -67,11 +62,7 @@ export function useEditorInsertTarget() {
   );
 
   const getInsertInfo = () => {
-    if (
-      draggingInfo?.from !== DragOrigin.SIDE_ADD ||
-      !overInfo ||
-      !overInfo.rect
-    ) {
+    if (dragInfo?.from !== DragOrigin.SIDE_ADD || !overInfo) {
       return;
     }
     const dragRect = getDragRect();

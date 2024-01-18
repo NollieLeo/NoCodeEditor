@@ -3,31 +3,30 @@ import { SchemaData } from "@/components/editor/types";
 import { isNil } from "lodash-es";
 import { observer } from "mobx-react-lite";
 import { memo, useMemo } from "react";
-import "./index.scss";
 import { DraggingGuildLines } from "./components/DraggingGuildLines";
 import { ParentCollisionLines } from "./components/ParentCollisionLines";
 import { SiblingsCollisionLines } from "./components/SiblingsCollisionLines";
+import { useGetDragData } from "@/components/editor/hooks/useGetDragNode";
+import { isAbsoluteOrFixed } from "@/components/editor/utils/layout";
+import "./index.scss";
 
 const CollisionToolsTmpl = observer(() => {
   const {
-    editorStore: { nodesMap, focusedInfo, draggingInfo },
+    editorStore: { nodesMap, focusedInfo },
   } = useEditorContext();
 
+  const dragInfo = useGetDragData();
   const nodeHasParentSchema = useMemo(() => {
-    const targetId = draggingInfo?.id || focusedInfo?.id;
+    const targetId = dragInfo?.id || focusedInfo?.id;
     if (isNil(targetId)) {
       return null;
     }
     const target = nodesMap[targetId];
-    if (
-      isNil(target?.parentId) ||
-      (target.data.style.position !== "fixed" &&
-        target.data.style.position !== "absolute")
-    ) {
+    if (isNil(target?.parentId) || !isAbsoluteOrFixed(target.data.style)) {
       return null;
     }
     return target as { parentId: string } & SchemaData;
-  }, [draggingInfo?.id, focusedInfo?.id, nodesMap]);
+  }, [dragInfo?.id, focusedInfo?.id, nodesMap]);
 
   if (!nodeHasParentSchema) {
     return <></>;
@@ -49,10 +48,10 @@ const CollisionToolsTmpl = observer(() => {
       className="collision-lines"
     >
       <DraggingGuildLines dragRect={curRect} parentRect={parentRect} />
-      {!!draggingInfo && (
+      {!!dragInfo && (
         <ParentCollisionLines dragRect={curRect} parentRect={parentRect} />
       )}
-      {!!draggingInfo && (
+      {!!dragInfo && (
         <SiblingsCollisionLines
           rect={curRect}
           parentRect={parentRect}
