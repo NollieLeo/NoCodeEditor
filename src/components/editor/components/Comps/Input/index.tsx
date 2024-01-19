@@ -5,7 +5,7 @@ import { Input as ZInput } from "zui-pro";
 export const Input = forwardRef<any, ComponentRenderData>((props, ref) => {
   return (
     <div {...props} ref={ref}>
-      <ZInput style={{ height: "100%", width: "100%" }} />
+      <ZInput style={{ height: "100%", width: "100%", pointerEvents: "none" }} />
     </div>
   );
 });

@@ -6,6 +6,7 @@ export enum ComponentTypes {
   INPUT = "input",
   TEXTAREA = "textarea",
   CONTAINER = "container",
+  SELECT = "select",
   PAGE = "page",
 }
 

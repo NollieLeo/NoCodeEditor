@@ -2,6 +2,7 @@ import { Button } from "../components/Comps/Button";
 import { Container } from "../components/Comps/Container";
 import { Input } from "../components/Comps/Input";
 import { Page } from "../components/Comps/Page";
+import { Select } from "../components/Comps/Select";
 import { Text } from "../components/Comps/Text";
 import { Textarea } from "../components/Comps/Textarea";
 import { ComponentTypes } from "../types";
@@ -57,6 +58,19 @@ export const COMPONENTS_INFO = {
         display: "block",
       },
       placeholder: "输入框",
+    },
+  },
+  [ComponentTypes.SELECT]: {
+    name: "选择框",
+    render: Select,
+    type: ComponentTypes.SELECT,
+    defaultData: {
+      style: {
+        width: 120,
+        height: 32,
+        display: "block",
+      },
+      placeholder: "选择框",
     },
   },
   [ComponentTypes.CONTAINER]: {

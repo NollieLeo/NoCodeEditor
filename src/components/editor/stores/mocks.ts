@@ -489,11 +489,16 @@ export const mocks = {
         height: 299,
         background: "#666",
         display: "flex",
+        flexWrap: "wrap",
+        placeContent: "flex-start",
+        gap: 10,
       },
     },
     childNodes: [
       "button-11528",
+      "select-311",
       "button-4816",
+      "button-443",
       "button-11883",
       "text-12716",
       "text-11240",
@@ -600,6 +605,32 @@ export const mocks = {
   },
   "button-5263": {
     id: "button-5263",
+    parentId: "container-10543",
+    type: "button",
+    data: {
+      style: {
+        width: 120,
+        height: 32,
+        display: "block",
+      },
+      children: "按钮",
+    },
+  },
+  "select-311": {
+    id: "select-311",
+    parentId: "container-10543",
+    type: "select",
+    data: {
+      style: {
+        width: 120,
+        height: 32,
+        display: "block",
+      },
+      placeholder: "输入框",
+    },
+  },
+  "button-443": {
+    id: "button-443",
     parentId: "container-10543",
     type: "button",
     data: {
