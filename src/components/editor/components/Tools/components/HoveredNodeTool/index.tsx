@@ -1,16 +1,15 @@
 import { FC, memo } from "react";
 import { BorderedRectangle } from "../BorderedRectangle";
+import { useGetElement } from "@/components/editor/hooks/useGetElement";
 
 interface HoveredHightlightProps {
   hoveredNodeId: string;
 }
 
 const HoveredNodeToolComp: FC<HoveredHightlightProps> = ({ hoveredNodeId }) => {
-  const hoveredNodeDom = document.getElementById(String(hoveredNodeId));
+  const { getElement } = useGetElement();
 
-  if (!hoveredNodeDom) {
-    return <></>;
-  }
+  const hoveredNodeDom = getElement(hoveredNodeId);
 
   const {
     width: domWidth,

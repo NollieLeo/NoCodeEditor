@@ -5,6 +5,7 @@ import { getFlexLayoutDirection } from "../utils/layout";
 import { useGetDragInfo } from "./useGetDragInfo";
 import { useGetOverInfo } from "./useGetOverInfo";
 import { useDndContext } from "@dnd-kit/core";
+import { useGetElement } from "./useGetElement";
 
 function genRectToDistance(pLeft: number, pTop: number, rect: DOMRect) {
   const { left: rLeft, width: rWidth, height: rHeight, top: rTop } = rect;
@@ -17,6 +18,7 @@ export function useGetInsertTarget() {
   const { active } = useDndContext();
   const dragInfo = useGetDragInfo();
   const overInfo = useGetOverInfo();
+  const { getElement } = useGetElement();
 
   const getDragCenterRect = useCallback(() => {
     if (!active?.rect.current.translated) {
@@ -36,10 +38,7 @@ export function useGetInsertTarget() {
       }
       const childNodesInfo: { rect: DOMRect; index: number }[] = [];
       forEach(overInfo.accepts, (id, index) => {
-        const dom = document.getElementById(id);
-        if (!dom) {
-          throw new Error(`child id: ${id} not found in dom tree`);
-        }
+        const dom = getElement(id);
         if (
           dom.style.position !== "absolute" &&
           dom.style.position !== "fixed"
@@ -58,7 +57,7 @@ export function useGetInsertTarget() {
       const idx = indexOf(distances, minDis);
       return childNodesInfo[idx] || null;
     },
-    [overInfo?.accepts, overInfo?.id]
+    [getElement, overInfo?.accepts, overInfo?.id]
   );
 
   const getInsertInfo = () => {
@@ -87,9 +86,7 @@ export function useGetInsertTarget() {
     const targetCenterTop = insertTop + insertHeight / 2;
     const targetCenterLeft = insertLeft + insertWdith / 2;
 
-    const direction = getFlexLayoutDirection(
-      document.getElementById(overInfo.id)
-    );
+    const direction = getFlexLayoutDirection(getElement(overInfo.id));
 
     if (direction === "vertical") {
       const isNearTop = centerTop > targetCenterTop;

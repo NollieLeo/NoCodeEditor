@@ -7,34 +7,40 @@ import "./index.scss";
 import useResizeAbles from "./hooks/useResizeAbles";
 import { useSnapPoints } from "@/components/editor/hooks/useSnapPoints";
 import { SNAP_THRESHOLD } from "@/components/editor/constants";
-import useGetSiblings from "@/components/editor/hooks/useGetSiblings";
 import { map } from "lodash-es";
+import { useGetNodeId } from "@/components/editor/hooks/useGetNodeId";
+import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
+import { observer } from "mobx-react-lite";
 
 interface FocusedToolsProps {
   focusedInfo: NonNullable<EditorState["focusedInfo"]>;
 }
 
-const FocusedToolsComp: FC<FocusedToolsProps> = ({ focusedInfo }) => {
+const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
+  const {
+    editorStore: { focusedInfo },
+  } = useEditorContext();
+
   const { resizeKey, onResize, onResizeEnd } = useResizeTriggers(
-    focusedInfo.id
+    focusedInfo?.id
   );
 
   const moveableRef = useRef<Moveable>(null);
 
   const getSnapPoints = useSnapPoints();
 
-  const getSiblingIds = useGetSiblings();
+  const { getSiblingIds } = useGetNodeId();
 
   const { ables, props } = useResizeAbles();
 
   const snapPoints = useMemo(
-    () => getSnapPoints(focusedInfo.id),
-    [focusedInfo.id, getSnapPoints]
+    () => (focusedInfo?.id ? getSnapPoints(focusedInfo?.id) : null),
+    [focusedInfo?.id, getSnapPoints]
   );
 
   const siblingIds = useMemo(() => {
-    return getSiblingIds(focusedInfo.id);
-  }, [focusedInfo.id, getSiblingIds]);
+    return focusedInfo?.id ? getSiblingIds(focusedInfo?.id) : [];
+  }, [focusedInfo?.id, getSiblingIds]);
 
   const resizableOptions = useMemo<ResizableOptions>(() => {
     return {
@@ -46,28 +52,36 @@ const FocusedToolsComp: FC<FocusedToolsProps> = ({ focusedInfo }) => {
     };
   }, []);
 
+  const horizontalGuidelines = useMemo(() => {
+    return snapPoints ? snapPoints.yPoints : [];
+  }, [snapPoints]);
+
+  const verticalGuidelines = useMemo(() => {
+    return snapPoints ? snapPoints.xPoints : [];
+  }, [snapPoints]);
+
+  if (!focusedInfo?.id) {
+    return <></>;
+  }
+
   return (
     <div className="focused-resize-wrapper">
       <Moveable
         ref={moveableRef}
         key={`${resizeKey}`}
-        flushSync={flushSync}
         target={[`#${focusedInfo?.id}`]}
         resizable={resizableOptions}
         props={props}
         ables={ables}
         linePadding={10}
         dragTargetSelf
-        draggable={false}
         rotatable={false}
         origin={false}
         useResizeObserver
-        onResize={onResize}
-        onResizeEnd={onResizeEnd}
         snappable
         snapThreshold={SNAP_THRESHOLD}
-        horizontalGuidelines={snapPoints.yPoints}
-        verticalGuidelines={snapPoints.xPoints}
+        horizontalGuidelines={horizontalGuidelines}
+        verticalGuidelines={verticalGuidelines}
         elementSnapDirections={{
           top: true,
           left: true,
@@ -78,9 +92,12 @@ const FocusedToolsComp: FC<FocusedToolsProps> = ({ focusedInfo }) => {
         }}
         elementGuidelines={map(siblingIds, (id) => `#${id}`)}
         maxSnapElementGuidelineDistance={50}
+        flushSync={flushSync}
+        onResize={onResize}
+        onResizeEnd={onResizeEnd}
       />
     </div>
   );
-};
+});
 
 export const FocusedTools = memo(FocusedToolsComp);

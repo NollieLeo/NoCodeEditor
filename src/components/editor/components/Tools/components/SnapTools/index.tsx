@@ -1,5 +1,5 @@
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { SchemaData } from "@/components/editor/types";
+import { DragOrigin, SchemaData } from "@/components/editor/types";
 import { isNil } from "lodash-es";
 import { observer } from "mobx-react-lite";
 import { memo, useMemo } from "react";
@@ -8,25 +8,31 @@ import { ParentSnapLines } from "./components/ParentSnapLines";
 import { SiblingsSnapLines } from "./components/SiblingsSnapLines";
 import { useGetDragInfo } from "@/components/editor/hooks/useGetDragInfo";
 import { isAbsoluteOrFixed } from "@/components/editor/utils/layout";
-import "./index.scss";
+import { useGetNodeInfo } from "@/components/editor/hooks/useGetNodeInfo";
 
-const CollisionToolsTmpl = observer(() => {
+import "./index.scss";
+import { useGetElement } from "@/components/editor/hooks/useGetElement";
+
+const SnapToolsCompTmpl = observer(() => {
   const {
-    editorStore: { nodesMap, focusedInfo },
+    editorStore: { focusedInfo },
   } = useEditorContext();
 
   const dragInfo = useGetDragInfo();
+  const { getNodeInfo } = useGetNodeInfo();
+  const { getElement } = useGetElement();
+
   const nodeHasParentSchema = useMemo(() => {
     const targetId = dragInfo?.id || focusedInfo?.id;
-    if (isNil(targetId)) {
+    if (isNil(targetId) || dragInfo?.from !== DragOrigin.MOVE) {
       return null;
     }
-    const target = nodesMap[targetId];
+    const target = getNodeInfo(targetId);
     if (isNil(target?.parentId) || !isAbsoluteOrFixed(target.data.style)) {
       return null;
     }
     return target as { parentId: string } & SchemaData;
-  }, [dragInfo?.id, focusedInfo?.id, nodesMap]);
+  }, [dragInfo?.from, dragInfo?.id, focusedInfo?.id, getNodeInfo]);
 
   if (!nodeHasParentSchema || isNil(dragInfo)) {
     return <></>;
@@ -34,12 +40,8 @@ const CollisionToolsTmpl = observer(() => {
 
   const { parentId, id } = nodeHasParentSchema;
 
-  const parentRect = document.getElementById(parentId)?.getBoundingClientRect();
-  const curRect = document.getElementById(id)?.getBoundingClientRect();
-
-  if (!parentRect || !curRect) {
-    return <></>;
-  }
+  const parentRect = getElement(parentId).getBoundingClientRect();
+  const curRect = getElement(id).getBoundingClientRect();
 
   return (
     <svg
@@ -63,4 +65,4 @@ const CollisionToolsTmpl = observer(() => {
   );
 });
 
-export const CollisionTools = memo(CollisionToolsTmpl);
+export const SnapTools = memo(SnapToolsCompTmpl);

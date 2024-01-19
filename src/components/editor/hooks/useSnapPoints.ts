@@ -1,42 +1,35 @@
-import { forEach, map, uniq } from "lodash-es";
+import { forEach, isNil, map, uniq } from "lodash-es";
 import { useCallback } from "react";
-import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import useGetSiblings from "./useGetSiblings";
+import { useGetNodeId } from "./useGetNodeId";
+import { useGetElement } from "./useGetElement";
 
 export function useSnapPoints() {
-  const {
-    editorStore: { nodesMap },
-  } = useEditorContext();
-
-  const getSiblingIds = useGetSiblings();
+  const { getNodeParentId } = useGetNodeId();
+  const { getSiblingElements } = useGetElement();
 
   const getSiblingRects = useCallback(
     (targetId: string) => {
-      const siblingIds = getSiblingIds(targetId);
-      return map(siblingIds, (id) => {
-        const dom = document.getElementById(id);
-        if (!dom) {
-          throw new Error(`target dom :${id} does not exist`);
-        }
+      const siblingEles = getSiblingElements(targetId);
+      return map(siblingEles, (dom) => {
         return dom.getBoundingClientRect();
       });
     },
-    [getSiblingIds]
+    [getSiblingElements]
   );
 
   const getParentRect = useCallback(
     (targetId: string) => {
-      const target = nodesMap[targetId];
-      if (!target || !target.parentId) {
+      const parentId = getNodeParentId(targetId);
+      if (isNil(parentId)) {
         return null;
       }
-      const dom = document.getElementById(target.parentId);
+      const dom = document.getElementById(parentId);
       if (!dom) {
         return null;
       }
       return dom.getBoundingClientRect();
     },
-    [nodesMap]
+    [getNodeParentId]
   );
 
   const getParentSnapPoints = useCallback(

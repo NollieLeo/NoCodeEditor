@@ -6,7 +6,7 @@ export const Select = forwardRef<any, ComponentRenderData>((props, ref) => {
   const { style } = props;
   return (
     <div ref={ref} {...props} style={style}>
-      <ZSelect style={{ height: "100%", width: "100%", pointerEvents: "none" }}>
+      <ZSelect style={{ height: "100%", width: "100%" }}>
         {props.children}
       </ZSelect>
     </div>

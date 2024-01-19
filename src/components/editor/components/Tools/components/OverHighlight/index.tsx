@@ -3,6 +3,7 @@ import { DragInfo, DragOrigin } from "@/components/editor/types";
 import { BorderedRectangle } from "@/components/editor/components/Tools/components/BorderedRectangle";
 import { useGetDragInfo } from "@/components/editor/hooks/useGetDragInfo";
 import { useGetOverInfo } from "@/components/editor/hooks/useGetOverInfo";
+import { useGetElement } from "@/components/editor/hooks/useGetElement";
 
 interface OverHighlightProps {
   dragInfo: DragInfo;
@@ -11,6 +12,7 @@ interface OverHighlightProps {
 export const OverHighlightComp: FC<OverHighlightProps> = () => {
   const dragInfo = useGetDragInfo();
   const overInfo = useGetOverInfo();
+  const { getElement } = useGetElement();
 
   const highlightDomId = useMemo(() => {
     if (!dragInfo) {
@@ -30,11 +32,7 @@ export const OverHighlightComp: FC<OverHighlightProps> = () => {
     return <></>;
   }
 
-  const highlightTarget = document.getElementById(String(highlightDomId));
-
-  if (!highlightTarget) {
-    return <></>;
-  }
+  const highlightTarget = getElement(highlightDomId);
 
   const {
     width: domWidth,

@@ -1,12 +1,12 @@
-import { isNil, map } from "lodash-es";
+import { isNil, join, map } from "lodash-es";
 import { CSSProperties, Fragment, memo, useMemo } from "react";
 import { COMPONENTS_INFO } from "@/components/editor/constants";
 import { ComponentTypes, DragOrigin } from "@/components/editor/types";
 import { DndBox } from "../DndBox";
-import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { observer } from "mobx-react-lite";
 import { isAbsoluteOrFixed } from "../../utils/layout";
 import { useGetDragInfo } from "../../hooks/useGetDragInfo";
+import { useGetNodeInfo } from "../../hooks/useGetNodeInfo";
 
 interface CompTreeProps {
   rootId: string | null;
@@ -16,17 +16,14 @@ interface CompTreeProps {
 
 const CompTreeTmpl = observer((props: CompTreeProps) => {
   const { rootId, withDnd = true, style } = props;
-  const {
-    editorStore: { nodesMap },
-  } = useEditorContext();
-
   if (isNil(rootId)) {
     throw new Error(`root id;${rootId} does not exist`);
   }
 
   const dragInfo = useGetDragInfo();
+  const { getNodeInfo } = useGetNodeInfo();
 
-  const { type, id, childNodes, data, parentId } = nodesMap[rootId];
+  const { type, id, childNodes, data, parentId } = getNodeInfo(rootId);
 
   const { render: Component } = COMPONENTS_INFO[type];
 
@@ -50,7 +47,7 @@ const CompTreeTmpl = observer((props: CompTreeProps) => {
       );
     }
     return parentId === dragInfo?.parentId;
-  }, [childNodes, dragInfo?.from, nodesMap, parentId, type]);
+  }, [childNodes, dragInfo, parentId, type]);
 
   const childComps = useMemo(
     () =>
@@ -61,7 +58,7 @@ const CompTreeTmpl = observer((props: CompTreeProps) => {
             </Fragment>
           ))
         : data.children,
-    [childNodes?.length, childNodes?.join("-"), data.children, withDnd]
+    [childNodes, join(childNodes, "-"), data.children, withDnd]
   );
 
   const renderDndTree = () => {

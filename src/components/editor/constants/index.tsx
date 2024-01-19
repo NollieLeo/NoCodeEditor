@@ -7,7 +7,7 @@ import { Text } from "../components/Comps/Text";
 import { Textarea } from "../components/Comps/Textarea";
 import { ComponentTypes } from "../types";
 
-export const SNAP_THRESHOLD = 1;
+export const SNAP_THRESHOLD = 0;
 
 export const COMPONENTS_INFO = {
   [ComponentTypes.BUTTON]: {
