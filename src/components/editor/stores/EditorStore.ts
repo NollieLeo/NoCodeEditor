@@ -1,13 +1,9 @@
-import { ReactZoomPanPinchState } from "react-zoom-pan-pinch";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useLocalStore } from "mobx-react-lite";
 import { cloneDeep, findIndex, isUndefined } from "lodash-es";
 import { SchemaData } from "../types";
-import { mocks } from "./mocks";
+import { mockBreakpoints, mocks } from "./mocks";
 import { CSSProperties } from "react";
-
-export interface PanState
-  extends Omit<ReactZoomPanPinchState, "previousScale"> {}
 
 export interface EditorState {
   /** 页面被点击激活的元素id */
@@ -20,6 +16,14 @@ export interface EditorState {
   isPanTransforming: boolean;
   /** 所有的元素 */
   nodesMap: Record<string, SchemaData>;
+  /** 断点 */
+  breakpoints: Record<
+    string,
+    {
+      height: number;
+      width: number;
+    }
+  >;
 }
 
 export interface EditorAction {
@@ -48,6 +52,7 @@ export const useEditorStore = () => {
     hoveredNodeId: null,
     zoom: 1,
     isPanTransforming: false,
+    breakpoints: cloneDeep(mockBreakpoints),
     nodesMap: cloneDeep(mocks),
     setFocusedInfo(focusedInfo) {
       this.focusedInfo = focusedInfo;

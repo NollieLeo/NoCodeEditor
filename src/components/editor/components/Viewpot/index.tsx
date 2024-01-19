@@ -28,6 +28,7 @@ const ViewportComp: FC<PropsWithChildren> = observer((props) => {
         useWheelPinch
         useWheelScroll
         useAutoZoom
+        useMouseDrag={false}
         pinchThreshold={50}
         threshold={0}
         zoom={zoom}

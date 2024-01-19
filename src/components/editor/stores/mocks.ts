@@ -655,3 +655,14 @@ export const mocks = {
     },
   },
 } as any;
+
+export const mockBreakpoints = {
+  "1": {
+    width: 1440,
+    height: 1080,
+  },
+  "2": {
+    width: 1280,
+    height: 720,
+  },
+};
