@@ -62,6 +62,7 @@ export default function useResizeTriggers(targetId?: string) {
 
   return {
     resizeKey,
+    forceResizeUpdate,
     onResize,
     onResizeEnd,
   };

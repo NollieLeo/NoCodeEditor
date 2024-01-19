@@ -1,4 +1,4 @@
-import { FC, memo, useMemo } from "react";
+import { FC, memo, useMemo, useRef } from "react";
 import { EditorState } from "@/components/editor/stores/EditorStore";
 import Moveable, { ResizableOptions } from "react-moveable";
 import { flushSync } from "react-dom";
@@ -7,6 +7,8 @@ import "./index.scss";
 import useResizeAbles from "./hooks/useResizeAbles";
 import { useSnapPoints } from "@/components/editor/hooks/useSnapPoints";
 import { SNAP_THRESHOLD } from "@/components/editor/constants";
+import useGetSiblings from "@/components/editor/hooks/useGetSiblings";
+import { map } from "lodash-es";
 
 interface FocusedToolsProps {
   focusedInfo: NonNullable<EditorState["focusedInfo"]>;
@@ -17,7 +19,11 @@ const FocusedToolsComp: FC<FocusedToolsProps> = ({ focusedInfo }) => {
     focusedInfo.id
   );
 
+  const moveableRef = useRef<Moveable>(null);
+
   const getSnapPoints = useSnapPoints();
+
+  const getSiblingIds = useGetSiblings();
 
   const { ables, props } = useResizeAbles();
 
@@ -25,6 +31,10 @@ const FocusedToolsComp: FC<FocusedToolsProps> = ({ focusedInfo }) => {
     () => getSnapPoints(focusedInfo.id),
     [focusedInfo.id, getSnapPoints]
   );
+
+  const siblingIds = useMemo(() => {
+    return getSiblingIds(focusedInfo.id);
+  }, [focusedInfo.id, getSiblingIds]);
 
   const resizableOptions = useMemo<ResizableOptions>(() => {
     return {
@@ -39,7 +49,8 @@ const FocusedToolsComp: FC<FocusedToolsProps> = ({ focusedInfo }) => {
   return (
     <div className="focused-resize-wrapper">
       <Moveable
-        key={resizeKey}
+        ref={moveableRef}
+        key={`${resizeKey}`}
         flushSync={flushSync}
         target={[`#${focusedInfo?.id}`]}
         resizable={resizableOptions}
@@ -57,6 +68,16 @@ const FocusedToolsComp: FC<FocusedToolsProps> = ({ focusedInfo }) => {
         snapThreshold={SNAP_THRESHOLD}
         horizontalGuidelines={snapPoints.yPoints}
         verticalGuidelines={snapPoints.xPoints}
+        elementSnapDirections={{
+          top: true,
+          left: true,
+          bottom: true,
+          right: true,
+          center: true,
+          middle: true,
+        }}
+        elementGuidelines={map(siblingIds, (id) => `#${id}`)}
+        maxSnapElementGuidelineDistance={50}
       />
     </div>
   );

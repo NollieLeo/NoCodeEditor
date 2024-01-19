@@ -1,23 +1,14 @@
-import { filter, forEach, map, uniq } from "lodash-es";
+import { forEach, map, uniq } from "lodash-es";
 import { useCallback } from "react";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
+import useGetSiblings from "./useGetSiblings";
 
 export function useSnapPoints() {
   const {
     editorStore: { nodesMap },
   } = useEditorContext();
 
-  const getSiblingIds = useCallback(
-    (targetId: string) => {
-      const target = nodesMap[targetId];
-      if (!target || !target.parentId) {
-        return [];
-      }
-      const { childNodes } = nodesMap[target.parentId];
-      return filter(childNodes, (childId) => childId !== targetId);
-    },
-    [nodesMap]
-  );
+  const getSiblingIds = useGetSiblings();
 
   const getSiblingRects = useCallback(
     (targetId: string) => {
