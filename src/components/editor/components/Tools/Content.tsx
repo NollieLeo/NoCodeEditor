@@ -7,7 +7,7 @@ import { observer } from "mobx-react-lite";
 import { OverHighlight } from "./components/OverHighlight";
 import { InsertHighlight } from "./components/InsertHighlight";
 import "./index.scss";
-import { CollisionTools } from "./components/CollisionTools";
+import { CollisionTools } from "./components/SnapTools";
 import { useGetDragInfo } from "../../hooks/useGetDragInfo";
 
 const ToolsContentComps: FC = observer(() => {

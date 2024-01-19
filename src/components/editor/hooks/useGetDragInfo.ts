@@ -7,7 +7,7 @@ export function useGetDragInfo() {
 
   const dragInfo = useMemo(() => {
     return active?.data.current as DragInfo | null;
-  }, [active?.data]);
+  }, [active?.id, active?.data]);
 
   return dragInfo;
 }

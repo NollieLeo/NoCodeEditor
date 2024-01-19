@@ -14,8 +14,6 @@ export default function useDndModifiers() {
       const { transform, active } = args;
       const formatTransform = {
         ...transform,
-        x: Math.floor(transform.x),
-        y: Math.floor(transform.y),
       };
       if (active) {
         const { from } = active.data.current as DragInfo;

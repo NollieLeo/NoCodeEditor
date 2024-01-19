@@ -50,7 +50,7 @@ const CompTreeTmpl = observer((props: CompTreeProps) => {
       );
     }
     return parentId === dragInfo?.parentId;
-  }, [childNodes, dragInfo, parentId, type]);
+  }, [childNodes, dragInfo?.from, nodesMap, parentId, type]);
 
   const childComps = useMemo(
     () =>

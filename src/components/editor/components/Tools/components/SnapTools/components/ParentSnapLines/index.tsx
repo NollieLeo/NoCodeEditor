@@ -1,12 +1,12 @@
 import { FC, SVGLineElementAttributes, memo } from "react";
 import { DEFAULT_SVG_LINE_ATTRS, DISTANTCE_THRESHOLD } from "../../constants";
 
-interface ParentCollisionLinesProps {
+interface ParentSnapLinesProps {
   dragRect: DOMRect;
   parentRect: DOMRect;
 }
 
-const ParentCollisionLinesComp: FC<ParentCollisionLinesProps> = (props) => {
+const ParentSnapLinesComp: FC<ParentSnapLinesProps> = (props) => {
   const { dragRect, parentRect } = props;
 
   const curHorizontalCenter = dragRect.left + dragRect.width / 2;
@@ -60,4 +60,4 @@ const ParentCollisionLinesComp: FC<ParentCollisionLinesProps> = (props) => {
   );
 };
 
-export const ParentCollisionLines = memo(ParentCollisionLinesComp);
+export const ParentSnapLines = memo(ParentSnapLinesComp);

@@ -82,7 +82,8 @@ export const useEditorStore = () => {
       if (!childNodes) {
         target.childNodes = [data.id];
       } else {
-        const targetIdx = isUndefined(idx) ? childNodes?.length - 1 : idx;
+        const targetIdx =
+          isUndefined(idx) || idx === -1 ? childNodes?.length - 1 : idx;
         childNodes.splice(targetIdx, 0, data.id);
       }
     },

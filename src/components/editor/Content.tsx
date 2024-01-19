@@ -32,6 +32,7 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
     if (!root) {
       return null;
     }
+    console.log("nodesMap", nodesMap);
     return root.id;
   }, [nodesMap]);
 

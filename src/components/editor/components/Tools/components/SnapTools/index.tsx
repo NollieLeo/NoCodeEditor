@@ -4,8 +4,8 @@ import { isNil } from "lodash-es";
 import { observer } from "mobx-react-lite";
 import { memo, useMemo } from "react";
 import { DraggingGuildLines } from "./components/DraggingGuildLines";
-import { ParentCollisionLines } from "./components/ParentCollisionLines";
-import { SiblingsCollisionLines } from "./components/SiblingsCollisionLines";
+import { ParentSnapLines } from "./components/ParentSnapLines";
+import { SiblingsSnapLines } from "./components/SiblingsSnapLines";
 import { useGetDragInfo } from "@/components/editor/hooks/useGetDragInfo";
 import { isAbsoluteOrFixed } from "@/components/editor/utils/layout";
 import "./index.scss";
@@ -49,10 +49,10 @@ const CollisionToolsTmpl = observer(() => {
     >
       <DraggingGuildLines dragRect={curRect} parentRect={parentRect} />
       {!!dragInfo && (
-        <ParentCollisionLines dragRect={curRect} parentRect={parentRect} />
+        <ParentSnapLines dragRect={curRect} parentRect={parentRect} />
       )}
       {!!dragInfo && (
-        <SiblingsCollisionLines
+        <SiblingsSnapLines
           rect={curRect}
           parentRect={parentRect}
           id={id}

@@ -1,8 +1,8 @@
-import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { filter, forEach, map } from "lodash-es";
+import { filter, forEach, map, uniq } from "lodash-es";
 import { useCallback } from "react";
+import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 
-export function useCollisionPoints() {
+export function useSnapPoints() {
   const {
     editorStore: { nodesMap },
   } = useEditorContext();
@@ -48,7 +48,7 @@ export function useCollisionPoints() {
     [nodesMap]
   );
 
-  const getParentCollisionPoints = useCallback(
+  const getParentSnapPoints = useCallback(
     (targetId: string) => {
       const parentRect = getParentRect(targetId);
       const xPoints: number[] = [];
@@ -59,14 +59,14 @@ export function useCollisionPoints() {
         yPoints.push(...[top, bottom, top + height / 2]);
       }
       return {
-        xPoints,
-        yPoints,
+        xPoints: uniq(xPoints),
+        yPoints: uniq(yPoints),
       };
     },
     [getParentRect]
   );
 
-  const getSiblingCollisionPoints = useCallback(
+  const getSiblingSnapPoints = useCallback(
     (targetId: string) => {
       const xPoints: number[] = [];
       const yPoints: number[] = [];
@@ -78,24 +78,24 @@ export function useCollisionPoints() {
         yPoints.push(bottom);
       });
       return {
-        xPoints,
-        yPoints,
+        xPoints: uniq(xPoints),
+        yPoints: uniq(yPoints),
       };
     },
     [getSiblingRects]
   );
 
-  const getCollisionPoints = useCallback(
+  const getSnapPoints = useCallback(
     (targetId: string) => {
-      const siblingPoints = getSiblingCollisionPoints(targetId);
-      const parentPoints = getParentCollisionPoints(targetId);
+      const siblingPoints = getSiblingSnapPoints(targetId);
+      const parentPoints = getParentSnapPoints(targetId);
       return {
         xPoints: [...siblingPoints.xPoints, ...parentPoints.xPoints],
         yPoints: [...siblingPoints.yPoints, ...parentPoints.yPoints],
       };
     },
-    [getParentCollisionPoints, getSiblingCollisionPoints]
+    [getParentSnapPoints, getSiblingSnapPoints]
   );
 
-  return getCollisionPoints;
+  return getSnapPoints;
 }

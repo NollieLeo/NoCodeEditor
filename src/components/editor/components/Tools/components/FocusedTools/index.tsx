@@ -5,7 +5,8 @@ import { flushSync } from "react-dom";
 import useResizeTriggers from "./hooks/useResizeTriggers";
 import "./index.scss";
 import useResizeAbles from "./hooks/useResizeAbles";
-import { useCollisionPoints } from "@/components/editor/hooks/useCollisionPoints";
+import { useSnapPoints } from "@/components/editor/hooks/useSnapPoints";
+import { SNAP_THRESHOLD } from "@/components/editor/constants";
 
 interface FocusedToolsProps {
   focusedInfo: NonNullable<EditorState["focusedInfo"]>;
@@ -16,13 +17,13 @@ const FocusedToolsComp: FC<FocusedToolsProps> = ({ focusedInfo }) => {
     focusedInfo.id
   );
 
-  const getCollisitionPoints = useCollisionPoints();
+  const getSnapPoints = useSnapPoints();
 
   const { ables, props } = useResizeAbles();
 
-  const collisionPoints = useMemo(
-    () => getCollisitionPoints(focusedInfo.id),
-    [focusedInfo.id, getCollisitionPoints]
+  const snapPoints = useMemo(
+    () => getSnapPoints(focusedInfo.id),
+    [focusedInfo.id, getSnapPoints]
   );
 
   const resizableOptions = useMemo<ResizableOptions>(() => {
@@ -53,9 +54,9 @@ const FocusedToolsComp: FC<FocusedToolsProps> = ({ focusedInfo }) => {
         onResize={onResize}
         onResizeEnd={onResizeEnd}
         snappable
-        snapThreshold={1}
-        horizontalGuidelines={collisionPoints.yPoints}
-        verticalGuidelines={collisionPoints.xPoints}
+        snapThreshold={SNAP_THRESHOLD}
+        horizontalGuidelines={snapPoints.yPoints}
+        verticalGuidelines={snapPoints.xPoints}
       />
     </div>
   );

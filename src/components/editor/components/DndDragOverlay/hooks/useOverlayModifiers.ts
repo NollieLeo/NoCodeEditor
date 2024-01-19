@@ -16,8 +16,6 @@ export function useOverlayModifiers() {
       const transform = modifier(args);
       const formatedTransform: Transform = {
         ...transform,
-        x: Math.floor(transform.x),
-        y: Math.floor(transform.y),
       };
       return formatedTransform;
     },

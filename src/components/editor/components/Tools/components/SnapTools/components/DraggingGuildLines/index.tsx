@@ -1,7 +1,7 @@
 import { SVGLineElementAttributes, memo } from "react";
 import { observer } from "mobx-react-lite";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { DEFAULT_SVG_LINE_ATTRS } from "@/components/editor/components/Tools/components/CollisionTools/constants";
+import { DEFAULT_SVG_LINE_ATTRS } from "@/components/editor/components/Tools/components/SnapTools/constants";
 
 interface DraggingGuildLinesProps {
   dragRect: DOMRect;

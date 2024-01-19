@@ -2,17 +2,18 @@ import { filter, map } from "lodash-es";
 import { observer } from "mobx-react-lite";
 import { memo, useMemo } from "react";
 import { ClientRect } from "@dnd-kit/core";
-import { useCollisionPoints } from "@/components/editor/hooks/useCollisionPoints";
-import { DEFAULT_SVG_LINE_ATTRS } from "@/components/editor/components/Tools/components/CollisionTools/constants/index";
+import { useSnapPoints } from "@/components/editor/hooks/useSnapPoints";
+import { DEFAULT_SVG_LINE_ATTRS } from "@/components/editor/components/Tools/components/SnapTools/constants/index";
+import { SNAP_THRESHOLD } from "@/components/editor/constants";
 
-interface SiblingsCollisionLinesProps {
+interface SiblingsSnapLinesProps {
   parentId: string;
   id: string;
   rect: ClientRect;
   parentRect: DOMRect;
 }
 
-const CollisionLinesComp = observer((props: SiblingsCollisionLinesProps) => {
+const SnapLinesComp = observer((props: SiblingsSnapLinesProps) => {
   const {
     id,
     rect: {
@@ -29,19 +30,18 @@ const CollisionLinesComp = observer((props: SiblingsCollisionLinesProps) => {
     },
   } = props;
 
-  const getCollisitionPoints = useCollisionPoints();
+  const getSnapPoints = useSnapPoints();
 
-  const collisionPoints = useMemo(
-    () => getCollisitionPoints(id),
-    [getCollisitionPoints, id]
+  const snapPoints = useMemo(
+    () => getSnapPoints(id),
+    [getSnapPoints, id]
   );
 
   const renderLinesX = () => {
-    const metPoints = filter(collisionPoints.yPoints, (point) => {
-      const ceiledPoint = Math.floor(point);
+    const metPoints = filter(snapPoints.yPoints, (point) => {
       return (
-        ceiledPoint === Math.floor(dragTop) ||
-        ceiledPoint === Math.floor(dragBottom)
+        Math.abs(point - dragTop) <= SNAP_THRESHOLD ||
+        Math.abs(point - dragBottom) <= SNAP_THRESHOLD
       );
     });
     if (!metPoints.length) {
@@ -61,11 +61,10 @@ const CollisionLinesComp = observer((props: SiblingsCollisionLinesProps) => {
   };
 
   const renderLinesY = () => {
-    const metPoints = filter(collisionPoints.xPoints, (point) => {
-      const ceiledPoint = Math.floor(point);
+    const metPoints = filter(snapPoints.xPoints, (point) => {
       return (
-        ceiledPoint === Math.floor(dragLeft) ||
-        ceiledPoint === Math.floor(dragRight)
+        Math.abs(point - dragRight) <= SNAP_THRESHOLD ||
+        Math.abs(point - dragLeft) <= SNAP_THRESHOLD
       );
     });
     if (!metPoints.length) {
@@ -92,4 +91,4 @@ const CollisionLinesComp = observer((props: SiblingsCollisionLinesProps) => {
   );
 });
 
-export const SiblingsCollisionLines = memo(CollisionLinesComp);
+export const SiblingsSnapLines = memo(SnapLinesComp);
