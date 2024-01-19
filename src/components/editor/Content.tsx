@@ -2,7 +2,7 @@ import { FC, memo, PropsWithChildren, useMemo } from "react";
 import { DndContext } from "@dnd-kit/core";
 import { find } from "lodash-es";
 import { observer } from "mobx-react-lite";
-import { ZoomPan } from "./components/ZoomPan";
+import { Viewport } from "./components/Viewpot";
 import { Siderbar } from "./components/Siderbar";
 import { DndMonitor } from "./components/DndMonitor";
 import useDndSensors from "./hooks/useDndSensors";
@@ -49,9 +49,9 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
         {/* --------- Siderbar for editor --------- */}
         <Siderbar />
         {/* --------- Editor's zoom pan --------- */}
-        <ZoomPan>
+        <Viewport>
           <CompTree rootId={rootId} />
-        </ZoomPan>
+        </Viewport>
         {/* --------- Dnd overlays for editor's global drag overlay  ---------- */}
         <DndDragOverlay />
         {/* --------- Dnd monitor for editor's global Dnd events  ---------- */}

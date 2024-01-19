@@ -6,7 +6,7 @@ import { useViewerTriggers } from "./hooks/useViewTriggers";
 
 import "./index.scss";
 
-const ZoomPanComp: FC<PropsWithChildren> = observer((props) => {
+const ViewportComp: FC<PropsWithChildren> = observer((props) => {
   const { children } = props;
   const {
     editorStore: { zoom },
@@ -17,13 +17,13 @@ const ZoomPanComp: FC<PropsWithChildren> = observer((props) => {
 
   return (
     <div
-      className="editor-pane"
+      className="editor-viewport"
       onContextMenu={onContextMenu}
       onClick={onClick}
     >
       <InfiniteViewer
         ref={viewRef}
-        className="editor-pane-viewer"
+        className="editor-viewport-infinity"
         usePinch
         useWheelPinch
         useWheelScroll
@@ -35,10 +35,10 @@ const ZoomPanComp: FC<PropsWithChildren> = observer((props) => {
         onScroll={onScroll}
         useOverflowScroll={false}
       >
-        {children}
+        <div className="editor-viewport-container">{children}</div>
       </InfiniteViewer>
     </div>
   );
 });
 
-export const ZoomPan = memo(ZoomPanComp);
+export const Viewport = memo(ViewportComp);

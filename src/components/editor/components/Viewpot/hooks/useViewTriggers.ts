@@ -39,7 +39,7 @@ export function useViewerTriggers() {
   };
 
   useEffect(() => {
-    viewRef.current?.scrollCenter();
+    requestAnimationFrame(() => viewRef.current?.scrollCenter());
   }, []);
 
   return {
