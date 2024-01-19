@@ -6,9 +6,7 @@ import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 
 const InsertHighlightComp = observer(() => {
   const {
-    editorStore: {
-      panState: { scale },
-    },
+    editorStore: { zoom },
   } = useEditorContext();
 
   const getInsertInfo = useGetInsertTarget();
@@ -36,7 +34,7 @@ const InsertHighlightComp = observer(() => {
     left,
     position: "absolute",
     background: "red",
-    transform: `scale(${scale})`,
+    transform: `scale(${zoom})`,
   };
 
   return <div style={style} />;

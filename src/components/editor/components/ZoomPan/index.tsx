@@ -1,58 +1,42 @@
-import {
-  TransformWrapper,
-  TransformComponent,
-  ReactZoomPanPinchRef,
-} from "react-zoom-pan-pinch";
 import { observer } from "mobx-react-lite";
-import { FC, MouseEventHandler, PropsWithChildren, memo, useRef } from "react";
+import { FC, PropsWithChildren, memo } from "react";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { DEFAULT_PANE_PROPS } from "./constants";
-import { usePanMoveAndZoomEvent } from "./hooks/usePanMoveAndZoomEvent";
+import InfiniteViewer from "react-infinite-viewer";
+import { useViewerTriggers } from "./hooks/useViewTriggers";
 
 import "./index.scss";
 
 const ZoomPanComp: FC<PropsWithChildren> = observer((props) => {
   const { children } = props;
-  const { editorStore } = useEditorContext();
-  const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const {
+    editorStore: { zoom },
+  } = useEditorContext();
 
-  const { onTransformed, onInit } = usePanMoveAndZoomEvent(
-    wrapperRef,
-    transformComponentRef
-  );
-
-  const onContextMenu: MouseEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault();
-    const targetDom = e.target as HTMLDivElement;
-    if (targetDom) {
-      editorStore.setFocusedInfo({ id: targetDom.id });
-    }
-  };
+  const { viewRef, onPinch, onScroll, onContextMenu, onClick } =
+    useViewerTriggers();
 
   return (
     <div
       className="editor-pane"
-      ref={wrapperRef}
       onContextMenu={onContextMenu}
-      onClick={() => {
-        editorStore.cleanUpHelperNode();
-      }}
+      onClick={onClick}
     >
-      <TransformWrapper
-        {...DEFAULT_PANE_PROPS}
-        ref={transformComponentRef}
-        onInit={onInit}
-        onTransformed={onTransformed}
+      <InfiniteViewer
+        ref={viewRef}
+        className="editor-pane-viewer"
+        usePinch
+        useWheelPinch
+        useWheelScroll
+        useAutoZoom
+        pinchThreshold={50}
+        threshold={0}
+        zoom={zoom}
+        onPinch={onPinch}
+        onScroll={onScroll}
+        useOverflowScroll={false}
       >
-        {/* -------------- Real ZoomPan Transformer -------------- */}
-        <TransformComponent
-          wrapperClass="editor-pane-wrapper"
-          contentClass="editor-pane-content"
-        >
-          {children}
-        </TransformComponent>
-      </TransformWrapper>
+        {children}
+      </InfiniteViewer>
     </div>
   );
 });

@@ -33,7 +33,7 @@ export const mocks = {
     type: "container",
     data: {
       style: {
-        width: 832,
+        width: 697,
         height: 252,
         background: "#64bb64",
         display: "flex",
@@ -44,14 +44,14 @@ export const mocks = {
         flexWrap: "wrap",
         position: "absolute",
         overflow: "hidden",
-        left: 414,
+        left: 549,
         top: 192,
       },
     },
     childNodes: [
-      "container-257",
       "container-299",
       "container-560",
+      "container-257",
       "container-621",
       "container-1106",
     ],
@@ -272,8 +272,8 @@ export const mocks = {
     type: "button",
     data: {
       style: {
-        width: 120,
-        height: 25,
+        width: 90,
+        height: 50,
         display: "block",
       },
       children: "按钮",
@@ -420,8 +420,8 @@ export const mocks = {
     type: "button",
     data: {
       style: {
-        width: 248,
-        height: 77,
+        width: 213,
+        height: 71,
         display: "block",
       },
       children: "按钮",
@@ -500,6 +500,7 @@ export const mocks = {
       "button-4816",
       "button-443",
       "button-11883",
+      "text-470",
       "text-12716",
       "text-11240",
       "button-5263",
@@ -640,6 +641,17 @@ export const mocks = {
         display: "block",
       },
       children: "按钮",
+    },
+  },
+  "text-470": {
+    id: "text-470",
+    parentId: "container-10543",
+    type: "text",
+    data: {
+      style: {
+        display: "block",
+      },
+      children: "Go fuck yourself",
     },
   },
 } as any;

@@ -11,9 +11,7 @@ import { observer } from "mobx-react-lite";
 const SiderBarDragOverlayTmpl: FC = observer(() => {
   const dragInfo = useGetDragInfo();
   const {
-    editorStore: {
-      panState: { scale },
-    },
+    editorStore: { zoom },
   } = useEditorContext();
 
   const activeSiderBarComp = useMemo(() => {
@@ -28,13 +26,13 @@ const SiderBarDragOverlayTmpl: FC = observer(() => {
           {...defaultData}
           style={{
             ...defaultData.style,
-            transform: `scale(${scale})`,
+            transform: `scale(${zoom})`,
           }}
           id={id}
         />
       );
     }
-  }, [dragInfo, scale]);
+  }, [dragInfo, zoom]);
 
   return activeSiderBarComp;
 });

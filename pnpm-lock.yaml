@@ -41,12 +41,12 @@ dependencies:
   react-dom:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
+  react-infinite-viewer:
+    specifier: ^0.28.1
+    version: 0.28.1
   react-moveable:
     specifier: ^0.56.0
     version: 0.56.0
-  react-zoom-pan-pinch:
-    specifier: ^3.3.0
-    version: 3.3.0(react-dom@18.2.0)(react@18.2.0)
   zui-pro:
     specifier: 1.0.0-alpha.0.20
     version: 1.0.0-alpha.0.20(@babel/core@7.23.6)(react-is@18.2.0)
@@ -2188,6 +2188,17 @@ packages:
     engines: {node: '>=0.8.19'}
     dev: true
 
+  /infinite-viewer@0.29.1:
+    resolution: {integrity: sha512-/ZWsJxgB5Atg/M3rb2HlYY33XrRkOcRIRlRTZoCWsORO/xvFSprm7gq2gB8DZvkjlkRnIOeR9TjZSLn8LFK19w==}
+    dependencies:
+      '@daybrush/utils': 1.13.0
+      '@egjs/agent': 2.4.3
+      '@scena/event-emitter': 1.0.5
+      css-styled: 1.0.8
+      framework-utils: 1.1.0
+      gesto: 1.19.4
+    dev: false
+
   /inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
     dependencies:
@@ -3242,6 +3253,12 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
+  /react-infinite-viewer@0.28.1:
+    resolution: {integrity: sha512-SnNJz1+UZe9C5QibhrAClLK3w3IpWjyF+Kx//HcCGG7DYgp30yYDioW/13Fsj4uvyI7od5MuQwOI6aM9GXRQig==}
+    dependencies:
+      infinite-viewer: 0.29.1
+    dev: false
+
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: false
@@ -3277,17 +3294,6 @@ packages:
     resolution: {integrity: sha512-Ubik7kWSnZyQEBNro+1k38hZaI1tJarE+5aD/qsqCOA1uUBSjgKVBy3EWRzGIbdmVex7DcxznFZLec/6KZNvwQ==}
     dependencies:
       selecto: 1.26.3
-    dev: false
-
-  /react-zoom-pan-pinch@3.3.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-vy1h8aenDzXye+HRqANZaSA8IPHoqOiuDPFBkswoyPUH8uMfsmbeH6gFI4r4BhEJa0xIlcA+FbvhidRWKGUrOg==}
-    engines: {node: '>=8', npm: '>=5'}
-    peerDependencies:
-      react: '*'
-      react-dom: '*'
-    dependencies:
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /react@16.14.0:

@@ -14,8 +14,8 @@ export interface EditorState {
   focusedInfo: { id: string } | null;
   /** 页面上被hover的元素id */
   hoveredNodeId: string | null;
-  /** 面板的信息，包括缩放大小/位移信息 */
-  panState: PanState;
+  /** 面板的缩放大小 */
+  zoom: number;
   /** 面板是否在缩放/移动 */
   isPanTransforming: boolean;
   /** 所有的元素 */
@@ -25,7 +25,7 @@ export interface EditorState {
 export interface EditorAction {
   setFocusedInfo(id: EditorState["focusedInfo"]): void;
   setHoverNodeId(id: EditorState["hoveredNodeId"]): void;
-  setPanState(panState: EditorState["panState"]): void;
+  setZoom(zoom: EditorState["zoom"]): void;
   setPanIsTransforming(
     isPanTransforming: EditorState["isPanTransforming"]
   ): void;
@@ -46,11 +46,7 @@ export const useEditorStore = () => {
   return useLocalStore<EditorStore>(() => ({
     focusedInfo: null,
     hoveredNodeId: null,
-    panState: {
-      scale: 1,
-      positionX: 1,
-      positionY: 1,
-    },
+    zoom: 1,
     isPanTransforming: false,
     nodesMap: cloneDeep(mocks),
     setFocusedInfo(focusedInfo) {
@@ -59,8 +55,8 @@ export const useEditorStore = () => {
     setHoverNodeId(id) {
       this.hoveredNodeId = id;
     },
-    setPanState(state) {
-      this.panState = state;
+    setZoom(zoom) {
+      this.zoom = zoom;
     },
     setPanIsTransforming(isPanTransforming) {
       this.isPanTransforming = isPanTransforming;

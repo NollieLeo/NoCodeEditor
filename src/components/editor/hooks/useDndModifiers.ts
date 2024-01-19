@@ -5,9 +5,7 @@ import { DragInfo, DragOrigin } from "../types";
 
 export default function useDndModifiers() {
   const {
-    editorStore: {
-      panState: { scale },
-    },
+    editorStore: { zoom },
   } = useEditorContext();
   const distanceFormatModifier: Modifier = useCallback(
     (args) => {
@@ -18,13 +16,13 @@ export default function useDndModifiers() {
       if (active) {
         const { from } = active.data.current as DragInfo;
         if (from === DragOrigin.MOVE) {
-          formatTransform.x = formatTransform.x / scale;
-          formatTransform.y = formatTransform.y / scale;
+          formatTransform.x = formatTransform.x / zoom;
+          formatTransform.y = formatTransform.y / zoom;
         }
       }
       return formatTransform;
     },
-    [scale]
+    [zoom]
   );
 
   return useMemo(() => [distanceFormatModifier], [distanceFormatModifier]);

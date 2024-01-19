@@ -10,9 +10,7 @@ import { useGetDragInfo } from "@/components/editor/hooks/useGetDragInfo";
  */
 const SortOverlayCompTmpl: FC = observer(() => {
   const {
-    editorStore: {
-      panState: { scale },
-    },
+    editorStore: { zoom },
   } = useEditorContext();
   const dragInfo = useGetDragInfo();
 
@@ -22,11 +20,11 @@ const SortOverlayCompTmpl: FC = observer(() => {
   const wrapperStyle: CSSProperties = useMemo(
     () => ({
       transformOrigin: "0 0",
-      transform: `scale(${scale})`,
+      transform: `scale(${zoom})`,
       position: "relative",
       opacity: 0.8,
     }),
-    [scale]
+    [zoom]
   );
 
   if (!dragId || dragOrigin !== DragOrigin.SORT) {

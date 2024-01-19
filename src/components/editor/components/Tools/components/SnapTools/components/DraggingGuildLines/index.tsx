@@ -11,9 +11,7 @@ interface DraggingGuildLinesProps {
 const DraggingGuildLinesComp = observer((props: DraggingGuildLinesProps) => {
   const { dragRect, parentRect } = props;
   const {
-    editorStore: {
-      panState: { scale },
-    },
+    editorStore: { zoom },
   } = useEditorContext();
 
   const curHorizontalCenter = dragRect.left + dragRect.width / 2;
@@ -38,7 +36,7 @@ const DraggingGuildLinesComp = observer((props: DraggingGuildLinesProps) => {
       y2: dragRect.top,
     };
 
-    const realDist = Math.floor((dragRect.top - parentRect.top) / scale);
+    const realDist = Math.floor((dragRect.top - parentRect.top) / zoom);
 
     return (
       <>
@@ -73,7 +71,7 @@ const DraggingGuildLinesComp = observer((props: DraggingGuildLinesProps) => {
       y2: curVerticalCenter,
     };
 
-    const realDist = Math.floor((dragRect.left - parentRect.left) / scale);
+    const realDist = Math.floor((dragRect.left - parentRect.left) / zoom);
 
     return (
       <>

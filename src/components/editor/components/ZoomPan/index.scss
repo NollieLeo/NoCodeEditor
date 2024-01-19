@@ -2,15 +2,10 @@
   flex: 1;
   height: 100% !important;
   position: relative;
-  overflow: hidden;
-  .editor-pane-wrapper {
+  transform-style: preserve-3d;
+  .editor-pane-viewer {
     width: 100%;
     height: 100%;
     background-color: #ccc;
-  }
-  .editor-pane-content {
-    display: flex;
-    gap: 20px;
-    flex-wrap: nowrap;
   }
 }
