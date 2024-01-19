@@ -17,24 +17,19 @@ export interface DragInfoDefault {
 
 export interface DragInfoFromSideAdd extends DragInfoDefault {
   type: ComponentTypes;
-  name: string;
   from: DragOrigin.SIDE_ADD;
 }
 
 export interface DragInfoFromPanSort extends DragInfoDefault {
-  parentId: string | null;
   from: DragOrigin.SORT;
 }
 
 export interface DragInfoFromPanMove extends DragInfoDefault {
-  parentId: string | null;
   from: DragOrigin.MOVE;
 }
 
 export type DragInfo = DragInfoFromSideAdd | DragInfoFromPanSort | DragInfoFromPanMove;
 
 export interface DropInfo {
-  parentId?: string | null;
   id: string;
-  accepts: string[] | null;
 }

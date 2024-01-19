@@ -1,8 +1,10 @@
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
+import { useGetNodeInfo } from "@/components/editor/hooks/useGetNodeInfo";
 import { DragInfoFromPanSort, DropInfo } from "@/components/editor/types";
 
 export function usePanSortDnd() {
   const { editorStore } = useEditorContext();
+  const { getNodeParentInfo } = useGetNodeInfo();
 
   const onDragOver = (
     dragInfo: DragInfoFromPanSort,
@@ -11,20 +13,19 @@ export function usePanSortDnd() {
     if (!overInfo || dragInfo.id === overInfo.id) {
       return;
     }
-    const { parentId: dragParentId, id: fromId } = dragInfo;
-    const { id: toId, parentId: dropParentId } = overInfo;
+    const { id: fromId } = dragInfo;
+    const { id: toId } = overInfo;
+    const dragParent = getNodeParentInfo(fromId);
+    const dropParent = getNodeParentInfo(toId);
     // 确保其为同层级拖拽排序
-    if (!dropParentId || !dragParentId || dropParentId !== dragParentId) {
+    if (!dragParent || !dropParent || dragParent.id !== dropParent?.id) {
       return;
     }
-    editorStore.movePos(dropParentId, fromId, toId);
+    editorStore.movePos(dropParent.id, fromId, toId);
   };
 
   const onDragEnd = (dragInfo: DragInfoFromPanSort) => {
-    const { parentId, id } = dragInfo;
-    if (!parentId) {
-      return;
-    }
+    const { id } = dragInfo;
     editorStore.setFocusedInfo({ id });
   };
 

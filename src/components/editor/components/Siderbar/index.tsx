@@ -22,9 +22,8 @@ export const SiderBarItem: FC<SiderBarItemProps> = (props) => {
 
   const id = useRef(uniqueId());
 
-  const dragData: Omit<DragInfoFromSideAdd, "rect"> = {
+  const dragData: DragInfoFromSideAdd = {
     type,
-    name,
     id: id.current,
     from: DragOrigin.SIDE_ADD,
   };

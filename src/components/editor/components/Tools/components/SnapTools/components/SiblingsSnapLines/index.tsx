@@ -7,7 +7,6 @@ import { DEFAULT_SVG_LINE_ATTRS } from "@/components/editor/components/Tools/com
 import { SNAP_THRESHOLD } from "@/components/editor/constants";
 
 interface SiblingsSnapLinesProps {
-  parentId: string;
   id: string;
   rect: ClientRect;
   parentRect: DOMRect;

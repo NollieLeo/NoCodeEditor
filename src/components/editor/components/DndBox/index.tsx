@@ -3,18 +3,22 @@ import classNames from "classnames";
 import { observer } from "mobx-react-lite";
 import { FC, ReactNode, memo } from "react";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { DragOrigin } from "@/components/editor/types";
+import {
+  DragInfoFromPanMove,
+  DragInfoFromPanSort,
+  DragOrigin,
+  DropInfo,
+} from "@/components/editor/types";
 
 import "./index.scss";
 import { CSS } from "@dnd-kit/utilities";
 
 export interface CompWrapperProps {
   id: string;
-  parentId: string | null;
-  childIds: string[] | null;
   droppable?: boolean;
   draggable?: boolean;
-  draggableOrigin: DragOrigin;
+  draggableData: DragInfoFromPanMove | DragInfoFromPanSort;
+  droppableData: DropInfo;
   children: (params: any) => ReactNode;
 }
 
@@ -22,9 +26,8 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
   const {
     draggable = true,
     id,
-    parentId,
-    childIds,
-    draggableOrigin,
+    draggableData,
+    droppableData,
     droppable,
     children,
   } = props;
@@ -39,27 +42,19 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
   } = useDraggable({
     id,
     disabled: !draggable,
-    data: {
-      id,
-      parentId,
-      from: draggableOrigin,
-    },
+    data: draggableData,
   });
 
   const { setNodeRef: setDropRef } = useDroppable({
     id,
-    data: {
-      id,
-      parentId,
-      accepts: childIds,
-    },
+    data: droppableData,
     disabled: !droppable,
   });
 
   const dropZoomCls = classNames("editor-dropzoom");
 
   const dragAppendStyle =
-    draggableOrigin === DragOrigin.MOVE
+    draggableData.from === DragOrigin.MOVE
       ? {
           transform: CSS.Transform.toString(transform),
         }

@@ -6,6 +6,7 @@ import { useGetDragInfo } from "./useGetDragInfo";
 import { useGetOverInfo } from "./useGetOverInfo";
 import { useDndContext } from "@dnd-kit/core";
 import { useGetElement } from "./useGetElement";
+import { useGetNodeInfo } from "./useGetNodeInfo";
 
 function genRectToDistance(pLeft: number, pTop: number, rect: DOMRect) {
   const { left: rLeft, width: rWidth, height: rHeight, top: rTop } = rect;
@@ -18,6 +19,7 @@ export function useGetInsertTarget() {
   const { active } = useDndContext();
   const dragInfo = useGetDragInfo();
   const overInfo = useGetOverInfo();
+  const { getNodeInfo } = useGetNodeInfo();
   const { getElement } = useGetElement();
 
   const getDragCenterRect = useCallback(() => {
@@ -33,11 +35,12 @@ export function useGetInsertTarget() {
 
   const getClosestNodeInfo = useCallback(
     (pLeft: number, pTop: number) => {
-      if (!overInfo?.id || !overInfo.accepts?.length) {
+      if (!overInfo?.id) {
         return null;
       }
+      const overNodeSchema = getNodeInfo(overInfo.id);
       const childNodesInfo: { rect: DOMRect; index: number }[] = [];
-      forEach(overInfo.accepts, (id, index) => {
+      forEach(overNodeSchema.childNodes, (id, index) => {
         const dom = getElement(id);
         if (
           dom.style.position !== "absolute" &&
@@ -57,7 +60,7 @@ export function useGetInsertTarget() {
       const idx = indexOf(distances, minDis);
       return childNodesInfo[idx] || null;
     },
-    [getElement, overInfo?.accepts, overInfo?.id]
+    [getElement, getNodeInfo, overInfo?.id]
   );
 
   const getInsertInfo = () => {

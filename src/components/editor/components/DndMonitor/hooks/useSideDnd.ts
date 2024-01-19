@@ -15,9 +15,9 @@ export function useSideDnd() {
     const insertInfo = getInsertInfo();
 
     if (dropInfo) {
-      const { id: parentId } = dropInfo;
-      const newNode = createNewNode(type, parentId);
-      editorStore.addNode(newNode, parentId, insertInfo?.insertIdx);
+      const { id } = dropInfo;
+      const newNode = createNewNode(type, id);
+      editorStore.addNode(newNode, id, insertInfo?.insertIdx);
       requestIdleCallback(() => {
         editorStore.setFocusedInfo({ id: newNode.id });
       });
