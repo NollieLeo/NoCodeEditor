@@ -1,16 +1,17 @@
-import { FC, memo, useMemo, useRef } from "react";
-import { EditorState } from "@/components/editor/stores/EditorStore";
-import Moveable, { ResizableOptions } from "react-moveable";
-import { flushSync } from "react-dom";
-import useResizeTriggers from "./hooks/useResizeTriggers";
-import "./index.scss";
-import useResizeAbles from "./hooks/useResizeAbles";
-import { useSnapPoints } from "@/components/editor/hooks/useSnapPoints";
-import { SNAP_THRESHOLD } from "@/components/editor/constants";
 import { map } from "lodash-es";
+import { flushSync } from "react-dom";
+import { observer } from "mobx-react-lite";
+import { FC, memo, useMemo, useRef } from "react";
+import useResizeAbles from "./hooks/useResizeAbles";
+import useResizeTriggers from "./hooks/useResizeTriggers";
+import Moveable, { ResizableOptions } from "react-moveable";
+import { useSnapPoints } from "@/components/editor/hooks/useSnapPoints";
+import { EditorState } from "@/components/editor/stores/EditorStore";
+import { SNAP_THRESHOLD } from "@/components/editor/constants";
 import { useGetNodeId } from "@/components/editor/hooks/useGetNodeId";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { observer } from "mobx-react-lite";
+
+import "./index.scss";
 
 interface FocusedToolsProps {
   focusedInfo: NonNullable<EditorState["focusedInfo"]>;
