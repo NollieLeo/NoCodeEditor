@@ -1,10 +1,11 @@
-import { Button } from "../components/Comps/Button";
-import { Container } from "../components/Comps/Container";
-import { Input } from "../components/Comps/Input";
-import { Page } from "../components/Comps/Page";
-import { Select } from "../components/Comps/Select";
-import { Text } from "../components/Comps/Text";
-import { Textarea } from "../components/Comps/Textarea";
+import {
+  Button,
+  Container,
+  Input,
+  Select,
+  Textarea,
+  Text,
+} from "../components/MetaComponents";
 import { ComponentTypes } from "../types";
 
 export const SNAP_THRESHOLD = 0;
@@ -99,7 +100,7 @@ export const COMPONENTS_INFO = {
   },
   [ComponentTypes.PAGE]: {
     name: "页面",
-    render: Page,
+    render: Container,
     type: ComponentTypes.PAGE,
     attrs: {
       style: {
