@@ -2,11 +2,11 @@ import { useCallback } from "react";
 import { forEach, indexOf, isNil, map, min } from "lodash-es";
 import { DragOrigin } from "../types";
 import { getFlexLayoutDirection } from "../utils/layout";
-import { useGetDragInfo } from "./useGetDragInfo";
-import { useGetOverInfo } from "./useGetOverInfo";
+import { useDragInfo } from "./useDragInfo";
+import { useDragOverInfo } from "./useDragOverInfo";
 import { useDndContext } from "@dnd-kit/core";
-import { useGetElement } from "./useGetElement";
-import { useGetNodeInfo } from "./useGetNodeInfo";
+import { useDom } from "./useDom";
+import { useComponentInfo } from "./useComponentInfo";
 
 function genRectToDistance(pLeft: number, pTop: number, rect: DOMRect) {
   const { left: rLeft, width: rWidth, height: rHeight, top: rTop } = rect;
@@ -15,12 +15,12 @@ function genRectToDistance(pLeft: number, pTop: number, rect: DOMRect) {
   return Math.sqrt(diffX * diffX + diffY * diffY);
 }
 
-export function useGetInsertTarget() {
+export function useInsertTarget() {
   const { active } = useDndContext();
-  const dragInfo = useGetDragInfo();
-  const overInfo = useGetOverInfo();
-  const { getNodeInfo } = useGetNodeInfo();
-  const { getElement } = useGetElement();
+  const dragInfo = useDragInfo();
+  const overInfo = useDragOverInfo();
+  const { getComponentInfo } = useComponentInfo();
+  const { getDom } = useDom();
 
   const getDragCenterRect = useCallback(() => {
     if (!active?.rect.current.translated) {
@@ -38,10 +38,10 @@ export function useGetInsertTarget() {
       if (!overInfo?.id) {
         return null;
       }
-      const overNodeSchema = getNodeInfo(overInfo.id);
+      const overNodeSchema = getComponentInfo(overInfo.id);
       const childNodesInfo: { rect: DOMRect; index: number }[] = [];
-      forEach(overNodeSchema.childNodes, (id, index) => {
-        const dom = getElement(id);
+      forEach(overNodeSchema.childsId, (id, index) => {
+        const dom = getDom(id);
         if (
           dom.style.position !== "absolute" &&
           dom.style.position !== "fixed"
@@ -60,7 +60,7 @@ export function useGetInsertTarget() {
       const idx = indexOf(distances, minDis);
       return childNodesInfo[idx] || null;
     },
-    [getElement, getNodeInfo, overInfo?.id]
+    [getDom, getComponentInfo, overInfo?.id]
   );
 
   const getInsertInfo = () => {
@@ -89,7 +89,7 @@ export function useGetInsertTarget() {
     const targetCenterTop = insertTop + insertHeight / 2;
     const targetCenterLeft = insertLeft + insertWdith / 2;
 
-    const direction = getFlexLayoutDirection(getElement(overInfo.id));
+    const direction = getFlexLayoutDirection(getDom(overInfo.id));
 
     if (direction === "vertical") {
       const isNearTop = centerTop > targetCenterTop;

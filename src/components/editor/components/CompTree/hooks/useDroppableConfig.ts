@@ -1,18 +1,18 @@
-import { useGetDragInfo } from "@/components/editor/hooks/useGetDragInfo";
-import { useGetNodeInfo } from "@/components/editor/hooks/useGetNodeInfo";
+import { useDragInfo } from "@/components/editor/hooks/useDragInfo";
+import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
 import {
   DragOrigin,
   ComponentTypes,
   DropInfo,
-  SchemaData,
+  ComponentInfo,
 } from "@/components/editor/types";
 import { useMemo } from "react";
 
-export const useDroppableConfig = (schemaData: SchemaData) => {
-  const { childNodes, parentId, type, id } = schemaData;
-  const { getNodeInfo } = useGetNodeInfo();
+export const useDroppableConfig = (schemaData: ComponentInfo) => {
+  const { childsId, parentId, type, id } = schemaData;
+  const { getComponentInfo } = useComponentInfo();
 
-  const dragInfo = useGetDragInfo();
+  const dragInfo = useDragInfo();
 
   const droppable = useMemo(() => {
     if (!dragInfo) {
@@ -21,12 +21,12 @@ export const useDroppableConfig = (schemaData: SchemaData) => {
     if (dragInfo?.from === DragOrigin.SIDE_ADD) {
       return (
         [ComponentTypes.PAGE, ComponentTypes.CONTAINER].includes(type) &&
-        !!childNodes
+        !!childsId
       );
     }
-    const dragSchema = getNodeInfo(dragInfo.id);
+    const dragSchema = getComponentInfo(dragInfo.id);
     return parentId === dragSchema.parentId;
-  }, [childNodes, dragInfo, getNodeInfo, parentId, type]);
+  }, [childsId, dragInfo, getComponentInfo, parentId, type]);
 
   const droppableData = useMemo<DropInfo>(() => {
     return {

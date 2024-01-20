@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { isNil } from "lodash-es";
-import { useGetInsertTarget } from "@/components/editor/hooks/useGetInsertTarget";
+import { useInsertTarget } from "@/components/editor/hooks/useInsertTarget";
 import { CSSProperties, memo } from "react";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 
@@ -9,7 +9,7 @@ const InsertHighlightComp = observer(() => {
     editorStore: { zoom },
   } = useEditorContext();
 
-  const getInsertInfo = useGetInsertTarget();
+  const getInsertInfo = useInsertTarget();
   const insertInfo = getInsertInfo();
 
   if (isNil(insertInfo)) {

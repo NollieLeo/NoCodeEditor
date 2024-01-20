@@ -1,16 +1,16 @@
 import { useCallback } from "react";
-import { useGetNodeInfo } from "./useGetNodeInfo";
+import { useComponentInfo } from "./useComponentInfo";
 import { filter, isNil } from "lodash-es";
 
-export const useGetNodeId = () => {
-  const { getNodeInfo, getNodeParentInfo } = useGetNodeInfo();
+export const useComponentId = () => {
+  const { getComponentInfo, getNodeParentInfo } = useComponentInfo();
 
   const getNodeParentId = useCallback(
     (targetId: string) => {
-      const { parentId } = getNodeInfo(targetId);
+      const { parentId } = getComponentInfo(targetId);
       return parentId;
     },
-    [getNodeInfo]
+    [getComponentInfo]
   );
 
   const getSiblingIds = useCallback(
@@ -19,7 +19,7 @@ export const useGetNodeId = () => {
       if (isNil(parentInfo)) {
         return [];
       }
-      return filter(parentInfo.childNodes, (id) => id !== targetId);
+      return filter(parentInfo.childsId, (id) => id !== targetId);
     },
     [getNodeParentInfo]
   );

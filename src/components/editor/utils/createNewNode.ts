@@ -12,7 +12,7 @@ export function createNewNode(type: ComponentTypes, parentId: string) {
     data: newNodeDefaultData.defaultData,
   };
   if ([ComponentTypes.CONTAINER].includes(type)) {
-    newNode.childNodes = [];
+    newNode.childsId = [];
   }
   return newNode;
 }

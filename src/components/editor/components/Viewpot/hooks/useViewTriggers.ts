@@ -1,6 +1,6 @@
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { Timeout } from "ahooks/lib/useRequest/src/types";
-import { MouseEventHandler, useEffect, useRef } from "react";
+import { MouseEventHandler, useRef } from "react";
 import InfiniteViewer, { OnPinch } from "react-infinite-viewer";
 
 export function useViewerTriggers() {
@@ -37,10 +37,6 @@ export function useViewerTriggers() {
     e.stopPropagation();
     editorStore.cleanUpHelperNode();
   };
-
-  useEffect(() => {
-    requestAnimationFrame(() => viewRef.current?.scrollCenter());
-  }, []);
 
   return {
     onScroll,

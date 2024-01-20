@@ -8,14 +8,14 @@ import { OverHighlight } from "./components/OverHighlight";
 import { InsertHighlight } from "./components/InsertHighlight";
 import "./index.scss";
 import { SnapTools } from "./components/SnapTools";
-import { useGetDragInfo } from "../../hooks/useGetDragInfo";
+import { useDragInfo } from "../../hooks/useDragInfo";
 
 const ToolsContentComps: FC = observer(() => {
   const {
     editorStore: { focusedInfo, hoveredNodeId },
   } = useEditorContext();
 
-  const dragInfo = useGetDragInfo();
+  const dragInfo = useDragInfo();
 
   const renderOverHighlight = () => {
     if (!dragInfo) {

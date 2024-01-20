@@ -1,7 +1,7 @@
 import { Fragment, memo, useMemo } from "react";
 import { CompTreeProps } from "../types";
 import { COMPONENTS_INFO } from "@/components/editor/constants";
-import { useGetNodeInfo } from "@/components/editor/hooks/useGetNodeInfo";
+import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
 import { isNil, map } from "lodash-es";
 import { observer } from "mobx-react-lite";
 
@@ -11,28 +11,28 @@ const CompTreeDefaultComp = observer((props: Pick<CompTreeProps, "rootId">) => {
     throw new Error(`root id;${rootId} does not exist`);
   }
 
-  const { getNodeInfo } = useGetNodeInfo();
+  const { getComponentInfo } = useComponentInfo();
 
-  const schemaData = getNodeInfo(rootId);
+  const schemaData = getComponentInfo(rootId);
 
-  const { type, childNodes, data } = schemaData;
+  const { type, childsId, attrs } = schemaData;
 
   const { render: Component } = COMPONENTS_INFO[type];
 
   const childComps = useMemo(
     () =>
-      childNodes?.length
-        ? map(childNodes, (childId) => (
+      childsId?.length
+        ? map(childsId, (childId) => (
             <Fragment key={childId}>
               <CompTreeDefault rootId={childId} />
             </Fragment>
           ))
-        : data.children,
-    [childNodes, data.children]
+        : attrs.children,
+    [childsId, attrs.children]
   );
 
   return (
-    <Component {...data} style={{ ...data.style }} children={childComps} />
+    <Component {...attrs} style={{ ...attrs.style }} children={childComps} />
   );
 });
 

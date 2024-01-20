@@ -1,8 +1,7 @@
 import { arrayMove } from "@dnd-kit/sortable";
 import { useLocalStore } from "mobx-react-lite";
-import { cloneDeep, findIndex, isUndefined } from "lodash-es";
-import { SchemaData } from "../types";
-import { mockBreakpoints, mocks } from "./mocks";
+import { findIndex, forEach, isUndefined } from "lodash-es";
+import { ComponentInfo } from "../types";
 import { CSSProperties } from "react";
 
 export interface EditorState {
@@ -14,19 +13,12 @@ export interface EditorState {
   zoom: number;
   /** 面板是否在缩放/移动 */
   isPanTransforming: boolean;
-  /** 所有的元素 */
-  nodesMap: Record<string, SchemaData>;
-  /** 断点 */
-  breakpoints: Record<
-    string,
-    {
-      height: number;
-      width: number;
-    }
-  >;
+  /** components info */
+  componentsInfo: Record<ComponentInfo["id"], ComponentInfo>;
 }
 
 export interface EditorAction {
+  setComponentsInfo(info: EditorState["componentsInfo"]): void;
   setFocusedInfo(id: EditorState["focusedInfo"]): void;
   setHoverNodeId(id: EditorState["hoveredNodeId"]): void;
   setZoom(zoom: EditorState["zoom"]): void;
@@ -36,7 +28,7 @@ export interface EditorAction {
   cleanUpHelperNode(): void;
 
   // ----------- node operations -----------
-  addNode(data: SchemaData, target: string, idx?: number): void;
+  addNode(data: ComponentInfo, target: string, idx?: number): void;
   updateNodeStyle(
     styles: CSSProperties | ((preStyles: CSSProperties) => CSSProperties),
     target: string
@@ -52,8 +44,13 @@ export const useEditorStore = () => {
     hoveredNodeId: null,
     zoom: 1,
     isPanTransforming: false,
-    breakpoints: cloneDeep(mockBreakpoints),
-    nodesMap: cloneDeep(mocks),
+    componentsInfo: {},
+
+    setComponentsInfo(info) {
+      forEach(info, (value, key) => {
+        this.componentsInfo[key] = value;
+      });
+    },
     setFocusedInfo(focusedInfo) {
       this.focusedInfo = focusedInfo;
     },
@@ -71,54 +68,51 @@ export const useEditorStore = () => {
       this.focusedInfo = null;
     },
     /**
-     * @description add node from sidebar
+     * @description add component from sidebar
      */
-    addNode(data, targetId, idx) {
-      const target = this.nodesMap[targetId];
-      if (!target) {
-        return;
-      }
-      this.nodesMap[data.id] = data;
-      const { childNodes } = target;
-      if (!childNodes) {
-        target.childNodes = [data.id];
+    addNode(componentInfo, parentId, idx) {
+      const parentComponent = this.componentsInfo[parentId];
+
+      this.componentsInfo[componentInfo.id] = componentInfo;
+      const { childsId } = parentComponent;
+      if (!childsId) {
+        parentComponent.childsId = [componentInfo.id];
       } else {
         const targetIdx =
-          isUndefined(idx) || idx === -1 ? childNodes?.length - 1 : idx;
-        childNodes.splice(targetIdx, 0, data.id);
+          isUndefined(idx) || idx === -1 ? childsId?.length - 1 : idx;
+        childsId.splice(targetIdx, 0, componentInfo.id);
       }
     },
     /**
-     * @description move node in a sortable container
+     * @description move component in a sortable container
      */
     movePos(parentId: string, fromId: string, toId: string) {
-      const parent = this.nodesMap[parentId];
-      if (!parent || !parent.childNodes) {
+      const parentComp = this.componentsInfo[parentId];
+      if (!parent || !parentComp.childsId) {
         throw new Error(`move failed: node ${parentId} does not exist`);
       }
       if (fromId === toId) {
         return;
       }
-      const { childNodes } = parent;
-      const fromIdx = findIndex(childNodes, (id) => id === fromId);
-      const toIdx = findIndex(childNodes, (id) => id === toId);
+      const { childsId } = parentComp;
+      const fromIdx = findIndex(childsId, (id) => id === fromId);
+      const toIdx = findIndex(childsId, (id) => id === toId);
       if (fromIdx === -1 || toIdx === -1) {
         return;
       }
-      const newChildNodes = arrayMove(childNodes, fromIdx, toIdx);
-      childNodes.length = 0;
-      childNodes.push(...newChildNodes);
+      const newChildNodes = arrayMove(childsId, fromIdx, toIdx);
+      childsId.length = 0;
+      childsId.push(...newChildNodes);
     },
 
     updateNodeStyle(styles, targetId) {
-      const updateTarget = this.nodesMap[targetId];
-      if (!updateTarget) {
+      const targetComponent = this.componentsInfo[targetId];
+      if (!targetComponent) {
         throw new Error(`update failed: node ${targetId} does not exist`);
       }
-      const preStyle = updateTarget.data.style;
-      const updateStyle =
-        typeof styles === "function" ? styles(preStyle) : styles;
-      updateTarget.data.style = { ...preStyle, ...updateStyle };
+      const preStyle = targetComponent.attrs.style;
+      const newStyle = typeof styles === "function" ? styles(preStyle) : styles;
+      targetComponent.attrs.style = { ...preStyle, ...newStyle };
     },
   }));
 };

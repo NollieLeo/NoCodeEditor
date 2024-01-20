@@ -1,7 +1,7 @@
 import { FC, memo, useMemo } from "react";
 import { DragOrigin } from "@/components/editor/types";
 import { COMPONENTS_INFO } from "@/components/editor/constants";
-import { useGetDragInfo } from "@/components/editor/hooks/useGetDragInfo";
+import { useDragInfo } from "@/components/editor/hooks/useDragInfo";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { observer } from "mobx-react-lite";
 
@@ -9,7 +9,7 @@ import { observer } from "mobx-react-lite";
  * 从侧边栏拖拽的时候的overlay
  */
 const SiderBarDragOverlayTmpl: FC = observer(() => {
-  const dragInfo = useGetDragInfo();
+  const dragInfo = useDragInfo();
   const {
     editorStore: { zoom },
   } = useEditorContext();
@@ -20,12 +20,12 @@ const SiderBarDragOverlayTmpl: FC = observer(() => {
     }
     const { type, id } = dragInfo;
     if (type) {
-      const { render: Component, defaultData } = COMPONENTS_INFO[type];
+      const { render: Component, attrs } = COMPONENTS_INFO[type];
       return (
         <Component
-          {...defaultData}
+          {...attrs}
           style={{
-            ...defaultData.style,
+            ...attrs.style,
             transform: `scale(${zoom})`,
           }}
           id={id}

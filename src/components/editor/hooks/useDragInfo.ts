@@ -2,7 +2,7 @@ import { useDndContext } from "@dnd-kit/core";
 import { DragInfo } from "../types";
 import { useMemo } from "react";
 
-export function useGetDragInfo() {
+export function useDragInfo() {
   const { active } = useDndContext();
 
   const dragInfo = useMemo(() => {

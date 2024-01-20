@@ -14,11 +14,12 @@ export const COMPONENTS_INFO = {
     name: "按钮",
     type: ComponentTypes.BUTTON,
     render: Button,
-    defaultData: {
+    attrs: {
       style: {
         width: 120,
         height: 32,
         display: "block",
+        flexShrink: 0,
       },
       children: "按钮",
     },
@@ -27,9 +28,10 @@ export const COMPONENTS_INFO = {
     name: "文本",
     type: ComponentTypes.TEXT,
     render: Text,
-    defaultData: {
+    attrs: {
       style: {
         display: "block",
+        flexShrink: 0,
       },
       children: "Go fuck yourself",
     },
@@ -38,11 +40,12 @@ export const COMPONENTS_INFO = {
     name: "输入框",
     render: Input,
     type: ComponentTypes.INPUT,
-    defaultData: {
+    attrs: {
       style: {
         width: 120,
         height: 32,
         display: "block",
+        flexShrink: 0,
       },
       placeholder: "输入框",
     },
@@ -51,11 +54,12 @@ export const COMPONENTS_INFO = {
     name: "长文本输入框",
     render: Textarea,
     type: ComponentTypes.TEXTAREA,
-    defaultData: {
+    attrs: {
       style: {
         width: 120,
         height: 32,
         display: "block",
+        flexShrink: 0,
       },
       placeholder: "输入框",
     },
@@ -64,11 +68,12 @@ export const COMPONENTS_INFO = {
     name: "选择框",
     render: Select,
     type: ComponentTypes.SELECT,
-    defaultData: {
+    attrs: {
       style: {
         width: 120,
         height: 32,
         display: "block",
+        flexShrink: 0,
       },
       placeholder: "选择框",
     },
@@ -77,12 +82,18 @@ export const COMPONENTS_INFO = {
     name: "容器",
     render: Container,
     type: ComponentTypes.CONTAINER,
-    defaultData: {
+    attrs: {
       style: {
         width: 350,
         height: 200,
-        background: "#666",
-        display: "block",
+        background: (function () {
+          return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+        })(),
+        display: "flex",
+        overflow: "hidden",
+        flexShrink: 0,
+        placeContent: "baseline start",
+        flexFlow: "wrap",
       },
     },
   },
@@ -90,12 +101,13 @@ export const COMPONENTS_INFO = {
     name: "页面",
     render: Page,
     type: ComponentTypes.PAGE,
-    defaultData: {
+    attrs: {
       style: {
         width: 1280,
         height: 720,
         background: "#fff",
-        display: "block",
+        display: "flex",
+        flexShrink: 0,
       },
     },
   },

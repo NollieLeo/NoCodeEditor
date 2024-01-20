@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { DragOrigin } from "@/components/editor/types";
 import { CompTree } from "@/components/editor/components/CompTree";
-import { useGetDragInfo } from "@/components/editor/hooks/useGetDragInfo";
+import { useDragInfo } from "@/components/editor/hooks/useDragInfo";
 
 /**
  * @description 面板内部拖拽元素的时候的overlay
@@ -12,7 +12,7 @@ const SortOverlayCompTmpl: FC = observer(() => {
   const {
     editorStore: { zoom },
   } = useEditorContext();
-  const dragInfo = useGetDragInfo();
+  const dragInfo = useDragInfo();
 
   const dragId = dragInfo?.id;
   const dragOrigin = dragInfo?.from;

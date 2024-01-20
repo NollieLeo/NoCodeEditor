@@ -1,12 +1,15 @@
 import { DragInfoFromSideAdd, DropInfo } from "@/components/editor/types";
-import { createNewNode } from "@/components/editor/utils/createNewNode";
-import { useGetInsertTarget } from "@/components/editor/hooks/useGetInsertTarget";
+import { useInsertTarget } from "@/components/editor/hooks/useInsertTarget";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { DragEndEvent } from "@dnd-kit/core";
+import { createMeta } from "@/components/editor/utils/Meta";
+import { genComponentInfo } from "@/components/editor/utils/Components";
+import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
 
 export function useSideDnd() {
   const { editorStore } = useEditorContext();
-  const getInsertInfo = useGetInsertTarget();
+  const getInsertInfo = useInsertTarget();
+  const { getComponentInfo } = useComponentInfo();
 
   const onDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
@@ -15,11 +18,13 @@ export function useSideDnd() {
     const insertInfo = getInsertInfo();
 
     if (dropInfo) {
-      const { id } = dropInfo;
-      const newNode = createNewNode(type, id);
-      editorStore.addNode(newNode, id, insertInfo?.insertIdx);
+      const { id: parentId, scopeId, meta } = getComponentInfo(dropInfo.id);
+
+      const newMeta = createMeta({ type, parentId: meta.id });
+      const newComponent = genComponentInfo(newMeta, scopeId);
+      editorStore.addNode(newComponent, parentId, insertInfo?.insertIdx);
       requestIdleCallback(() => {
-        editorStore.setFocusedInfo({ id: newNode.id });
+        editorStore.setFocusedInfo({ id: newComponent.id });
       });
     }
   };

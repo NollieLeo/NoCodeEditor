@@ -1,6 +1,5 @@
-import { FC, memo, PropsWithChildren, useMemo } from "react";
+import { FC, memo, PropsWithChildren, useEffect } from "react";
 import { DndContext } from "@dnd-kit/core";
-import { find } from "lodash-es";
 import { observer } from "mobx-react-lite";
 import { Viewport } from "./components/Viewpot";
 import { Siderbar } from "./components/Siderbar";
@@ -8,12 +7,13 @@ import { DndMonitor } from "./components/DndMonitor";
 import useDndSensors from "./hooks/useDndSensors";
 import { useEditorContext } from "./hooks/useEditorContext";
 import { DndDragOverlay } from "./components/DndDragOverlay";
-import { ComponentTypes } from "./types";
 import { Tools } from "./components/Tools";
 import { useCollisionDetection } from "./hooks/useCollisionDetection";
-import { CompTree } from "./components/CompTree";
 import useDndModifiers from "./hooks/useDndModifiers";
 import { useDndMeasuring } from "./hooks/useDndMeasuring";
+import { useGenComponentsInfo } from "./hooks/ussGenComponentsInfo";
+import { mocks } from "./stores/mocks";
+import { Frames } from "./components/Frames";
 
 import "./Content.scss";
 
@@ -23,18 +23,19 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
   const measuring = useDndMeasuring();
   const editorCollisionDetection = useCollisionDetection();
 
-  const {
-    editorStore: { nodesMap },
-  } = useEditorContext();
+  const { isGenerating, genComponentsInfo } = useGenComponentsInfo();
 
-  const rootId = useMemo(() => {
-    const root = find(nodesMap, ({ type }) => type === ComponentTypes.PAGE);
-    if (!root) {
-      return null;
-    }
-    console.log("nodesMap", nodesMap);
-    return root.id;
-  }, [nodesMap]);
+  const { editorStore } = useEditorContext();
+
+  async function genComponents() {
+    const res = await genComponentsInfo(mocks);
+    console.log(res);
+    editorStore.setComponentsInfo(res);
+  }
+
+  useEffect(() => {
+    genComponents();
+  }, []);
 
   return (
     <div className="editor-wrapper">
@@ -49,9 +50,7 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
         {/* --------- Siderbar for editor --------- */}
         <Siderbar />
         {/* --------- Editor's zoom pan --------- */}
-        <Viewport>
-          <CompTree rootId={rootId} />
-        </Viewport>
+        <Viewport>{!isGenerating && <Frames />}</Viewport>
         {/* --------- Dnd overlays for editor's global drag overlay  ---------- */}
         <DndDragOverlay />
         {/* --------- Dnd monitor for editor's global Dnd events  ---------- */}

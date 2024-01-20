@@ -8,10 +8,11 @@ import Moveable, { ResizableOptions } from "react-moveable";
 import { useSnapPoints } from "@/components/editor/hooks/useSnapPoints";
 import { EditorState } from "@/components/editor/stores/EditorStore";
 import { SNAP_THRESHOLD } from "@/components/editor/constants";
-import { useGetNodeId } from "@/components/editor/hooks/useGetNodeId";
+import { useComponentId } from "@/components/editor/hooks/useComponentId";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 
 import "./index.scss";
+import { useDom } from "@/components/editor/hooks/useDom";
 
 interface FocusedToolsProps {
   focusedInfo: NonNullable<EditorState["focusedInfo"]>;
@@ -22,17 +23,19 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
     editorStore: { focusedInfo },
   } = useEditorContext();
 
-  const { resizeKey, onResize, onResizeEnd } = useResizeTriggers(
-    focusedInfo?.id
-  );
+  const { onResize, onResizeEnd } = useResizeTriggers(focusedInfo?.id);
 
   const moveableRef = useRef<Moveable>(null);
 
   const getSnapPoints = useSnapPoints();
 
-  const { getSiblingIds } = useGetNodeId();
+  const { getSiblingIds } = useComponentId();
 
   const { ables, props } = useResizeAbles();
+
+  const { getDom } = useDom();
+
+  const targetEle = focusedInfo?.id ? getDom(focusedInfo?.id) : undefined;
 
   const snapPoints = useMemo(
     () => (focusedInfo?.id ? getSnapPoints(focusedInfo?.id) : null),
@@ -69,8 +72,8 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
     <div className="focused-resize-wrapper">
       <Moveable
         ref={moveableRef}
-        key={`${resizeKey}`}
-        target={[`#${focusedInfo?.id}`]}
+        key={`${focusedInfo?.id}`}
+        target={targetEle}
         resizable={resizableOptions}
         props={props}
         ables={ables}
@@ -91,7 +94,7 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
           center: true,
           middle: true,
         }}
-        elementGuidelines={map(siblingIds, (id) => `#${id}`)}
+        elementGuidelines={map(siblingIds, (id) => getDom(id))}
         maxSnapElementGuidelineDistance={50}
         flushSync={flushSync}
         onResize={onResize}

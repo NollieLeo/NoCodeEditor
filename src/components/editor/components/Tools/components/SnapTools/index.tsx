@@ -1,47 +1,47 @@
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { DragOrigin, SchemaData } from "@/components/editor/types";
+import { ComponentInfo, DragOrigin } from "@/components/editor/types";
 import { isNil } from "lodash-es";
 import { observer } from "mobx-react-lite";
 import { memo, useMemo } from "react";
 import { DraggingGuildLines } from "./components/DraggingGuildLines";
 import { ParentSnapLines } from "./components/ParentSnapLines";
 import { SiblingsSnapLines } from "./components/SiblingsSnapLines";
-import { useGetDragInfo } from "@/components/editor/hooks/useGetDragInfo";
+import { useDragInfo } from "@/components/editor/hooks/useDragInfo";
 import { isAbsoluteOrFixed } from "@/components/editor/utils/layout";
-import { useGetNodeInfo } from "@/components/editor/hooks/useGetNodeInfo";
+import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
 
 import "./index.scss";
-import { useGetElement } from "@/components/editor/hooks/useGetElement";
+import { useDom } from "@/components/editor/hooks/useDom";
 
 const SnapToolsCompTmpl = observer(() => {
   const {
     editorStore: { focusedInfo },
   } = useEditorContext();
 
-  const dragInfo = useGetDragInfo();
-  const { getNodeInfo } = useGetNodeInfo();
-  const { getElement } = useGetElement();
+  const dragInfo = useDragInfo();
+  const { getComponentInfo } = useComponentInfo();
+  const { getDom } = useDom();
 
-  const nodeHasParentSchema = useMemo(() => {
+  const compInfoWithParent = useMemo(() => {
     const targetId = dragInfo?.id || focusedInfo?.id;
     if (isNil(targetId) || dragInfo?.from !== DragOrigin.MOVE) {
       return null;
     }
-    const target = getNodeInfo(targetId);
-    if (isNil(target?.parentId) || !isAbsoluteOrFixed(target.data.style)) {
+    const target = getComponentInfo(targetId);
+    if (isNil(target?.parentId) || !isAbsoluteOrFixed(target.attrs.style)) {
       return null;
     }
-    return target as { parentId: string } & SchemaData;
-  }, [dragInfo?.from, dragInfo?.id, focusedInfo?.id, getNodeInfo]);
+    return target as { parentId: string } & ComponentInfo;
+  }, [dragInfo?.from, dragInfo?.id, focusedInfo?.id, getComponentInfo]);
 
-  if (!nodeHasParentSchema || isNil(dragInfo)) {
+  if (!compInfoWithParent || isNil(dragInfo)) {
     return <></>;
   }
 
-  const { parentId, id } = nodeHasParentSchema;
+  const { parentId, id } = compInfoWithParent;
 
-  const parentRect = getElement(parentId).getBoundingClientRect();
-  const curRect = getElement(id).getBoundingClientRect();
+  const parentRect = getDom(parentId).getBoundingClientRect();
+  const curRect = getDom(id).getBoundingClientRect();
 
   return (
     <svg
@@ -58,7 +58,6 @@ const SnapToolsCompTmpl = observer(() => {
           rect={curRect}
           parentRect={parentRect}
           id={id}
-          parentId={parentId}
         />
       )}
     </svg>

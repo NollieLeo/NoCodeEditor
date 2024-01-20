@@ -1,15 +1,15 @@
 import {
-  SchemaData,
   ComponentTypes,
   DragOrigin,
   DragInfoFromPanMove,
   DragInfoFromPanSort,
+  ComponentInfo,
 } from "@/components/editor/types";
 import { isAbsoluteOrFixed } from "@/components/editor/utils/layout";
 import { useMemo } from "react";
 
-export const useDraggableConfig = (schema: SchemaData) => {
-  const { type, data, id } = schema;
+export const useDraggableConfig = (schema: ComponentInfo) => {
+  const { type, attrs, id } = schema;
 
   const draggable = useMemo(() => {
     return type !== ComponentTypes.PAGE;
@@ -17,11 +17,11 @@ export const useDraggableConfig = (schema: SchemaData) => {
 
   const draggableOrigin = useMemo(() => {
     let from = DragOrigin.SORT;
-    if (isAbsoluteOrFixed(data.style)) {
+    if (isAbsoluteOrFixed(attrs.style)) {
       from = DragOrigin.MOVE;
     }
     return from;
-  }, [data.style]);
+  }, [attrs.style]);
 
   const draggableData = useMemo<
     DragInfoFromPanMove | DragInfoFromPanSort

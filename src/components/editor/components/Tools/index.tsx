@@ -7,10 +7,10 @@ import { keys } from "lodash-es";
 
 const ToolsComp = observer(() => {
   const {
-    editorStore: { nodesMap, isPanTransforming },
+    editorStore: { componentsInfo, isPanTransforming },
   } = useEditorContext();
 
-  if (!keys(nodesMap).length || isPanTransforming) {
+  if (!keys(componentsInfo).length || isPanTransforming) {
     return <></>;
   }
 

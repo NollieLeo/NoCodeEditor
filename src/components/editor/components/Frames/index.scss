@@ -1,0 +1,23 @@
+.editor-frames {
+  display: flex;
+  height: fit-content;
+  width: fit-content;
+  .editor-frame {
+    display: flex;
+    align-items: center;
+    height: fit-content;
+    width: fit-content;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    .editor-frame-header {
+      color: blue;
+      width: 100%;
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+  }
+  .editor-frame + .editor-frame {
+    margin-left: 200px;
+  }
+}

@@ -1,10 +1,10 @@
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { useGetNodeInfo } from "@/components/editor/hooks/useGetNodeInfo";
+import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
 import { DragInfoFromPanSort, DropInfo } from "@/components/editor/types";
 
 export function usePanSortDnd() {
   const { editorStore } = useEditorContext();
-  const { getNodeParentInfo } = useGetNodeInfo();
+  const { getNodeParentInfo } = useComponentInfo();
 
   const onDragOver = (
     dragInfo: DragInfoFromPanSort,

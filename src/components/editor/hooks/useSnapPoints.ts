@@ -1,20 +1,20 @@
 import { forEach, isNil, map, uniq } from "lodash-es";
 import { useCallback } from "react";
-import { useGetNodeId } from "./useGetNodeId";
-import { useGetElement } from "./useGetElement";
+import { useComponentId } from "./useComponentId";
+import { useDom } from "./useDom";
 
 export function useSnapPoints() {
-  const { getNodeParentId } = useGetNodeId();
-  const { getSiblingElements } = useGetElement();
+  const { getNodeParentId } = useComponentId();
+  const { getSiblingDoms } = useDom();
 
   const getSiblingRects = useCallback(
     (targetId: string) => {
-      const siblingEles = getSiblingElements(targetId);
+      const siblingEles = getSiblingDoms(targetId);
       return map(siblingEles, (dom) => {
         return dom.getBoundingClientRect();
       });
     },
-    [getSiblingElements]
+    [getSiblingDoms]
   );
 
   const getParentRect = useCallback(
@@ -43,8 +43,8 @@ export function useSnapPoints() {
         yPoints.push(...[top, bottom, top + height / 2]);
       }
       return {
-        xPoints: uniq(xPoints),
-        yPoints: uniq(yPoints),
+        xPoints,
+        yPoints,
       };
     },
     [getParentRect]
@@ -62,8 +62,8 @@ export function useSnapPoints() {
         yPoints.push(bottom);
       });
       return {
-        xPoints: uniq(xPoints),
-        yPoints: uniq(yPoints),
+        xPoints,
+        yPoints,
       };
     },
     [getSiblingRects]
@@ -74,8 +74,8 @@ export function useSnapPoints() {
       const siblingPoints = getSiblingSnapPoints(targetId);
       const parentPoints = getParentSnapPoints(targetId);
       return {
-        xPoints: [...siblingPoints.xPoints, ...parentPoints.xPoints],
-        yPoints: [...siblingPoints.yPoints, ...parentPoints.yPoints],
+        xPoints: uniq([...siblingPoints.xPoints, ...parentPoints.xPoints]),
+        yPoints: uniq([...siblingPoints.yPoints, ...parentPoints.yPoints]),
       };
     },
     [getParentSnapPoints, getSiblingSnapPoints]

@@ -1,20 +1,20 @@
 import { FC, memo, useMemo } from "react";
 import { DragInfo, DragOrigin } from "@/components/editor/types";
 import { BorderedRectangle } from "@/components/editor/components/Tools/components/BorderedRectangle";
-import { useGetDragInfo } from "@/components/editor/hooks/useGetDragInfo";
-import { useGetOverInfo } from "@/components/editor/hooks/useGetOverInfo";
-import { useGetElement } from "@/components/editor/hooks/useGetElement";
-import { useGetNodeInfo } from "@/components/editor/hooks/useGetNodeInfo";
+import { useDragInfo } from "@/components/editor/hooks/useDragInfo";
+import { useDragOverInfo } from "@/components/editor/hooks/useDragOverInfo";
+import { useDom } from "@/components/editor/hooks/useDom";
+import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
 
 interface OverHighlightProps {
   dragInfo: DragInfo;
 }
 
 export const OverHighlightComp: FC<OverHighlightProps> = () => {
-  const dragInfo = useGetDragInfo();
-  const overInfo = useGetOverInfo();
-  const { getElement } = useGetElement();
-  const { getNodeInfo } = useGetNodeInfo();
+  const dragInfo = useDragInfo();
+  const overInfo = useDragOverInfo();
+  const { getDom } = useDom();
+  const { getComponentInfo } = useComponentInfo();
 
   const highlightDomId = useMemo(() => {
     if (!dragInfo) {
@@ -24,18 +24,18 @@ export const OverHighlightComp: FC<OverHighlightProps> = () => {
       dragInfo.from === DragOrigin.SORT ||
       dragInfo.from === DragOrigin.MOVE
     ) {
-      const dragNodeSchema = getNodeInfo(dragInfo.id);
+      const dragNodeSchema = getComponentInfo(dragInfo.id);
       return dragNodeSchema.parentId;
     } else if (dragInfo.from === DragOrigin.SIDE_ADD && overInfo) {
       return overInfo.id;
     }
-  }, [dragInfo, getNodeInfo, overInfo]);
+  }, [dragInfo, getComponentInfo, overInfo]);
 
   if (!highlightDomId) {
     return <></>;
   }
 
-  const highlightTarget = getElement(highlightDomId);
+  const highlightTarget = getDom(highlightDomId);
 
   const {
     width: domWidth,

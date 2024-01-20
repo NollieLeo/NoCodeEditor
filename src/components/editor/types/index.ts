@@ -4,7 +4,7 @@ export interface SchemaData {
   id: string;
   type: ComponentTypes;
   parentId: string | null;
-  childNodes: string[] | null;
+  childsId: string[] | null;
   data: {
     style: CSSProperties;
     children: ReactNode;

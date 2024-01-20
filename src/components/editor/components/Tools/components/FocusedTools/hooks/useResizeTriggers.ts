@@ -1,5 +1,5 @@
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { useGetElement } from "@/components/editor/hooks/useGetElement";
+import { useDom } from "@/components/editor/hooks/useDom";
 import { isNil, uniqueId } from "lodash-es";
 import { CSSProperties, useState } from "react";
 import type { OnResize, OnResizeEnd } from "react-moveable";
@@ -14,7 +14,7 @@ function isAbsoluteOrFixed(dom?: HTMLElement | null) {
 export default function useResizeTriggers(targetId?: string) {
   const { editorStore } = useEditorContext();
   const [resizeKey, setResizeKey] = useState(uniqueId());
-  const { getElement } = useGetElement();
+  const { getDom } = useDom();
 
   const forceResizeUpdate = () => {
     setResizeKey(uniqueId());
@@ -25,7 +25,7 @@ export default function useResizeTriggers(targetId?: string) {
       return;
     }
     const { target, cssText, height, width } = params;
-    const targetDom = getElement(targetId);
+    const targetDom = getDom(targetId);
 
     if (isAbsoluteOrFixed(targetDom)) {
       target.style.cssText += cssText;
