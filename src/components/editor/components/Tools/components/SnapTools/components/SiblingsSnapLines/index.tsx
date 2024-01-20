@@ -31,10 +31,7 @@ const SnapLinesComp = observer((props: SiblingsSnapLinesProps) => {
 
   const getSnapPoints = useSnapPoints();
 
-  const snapPoints = useMemo(
-    () => getSnapPoints(id),
-    [getSnapPoints, id]
-  );
+  const snapPoints = useMemo(() => getSnapPoints(id), [getSnapPoints, id]);
 
   const renderLinesX = () => {
     const metPoints = filter(snapPoints.yPoints, (point) => {
