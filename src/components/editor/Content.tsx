@@ -1,28 +1,19 @@
 import { FC, memo, PropsWithChildren, useEffect } from "react";
-import { DndContext } from "@dnd-kit/core";
 import { observer } from "mobx-react-lite";
 import { Viewport } from "./components/Viewpot";
 import { Siderbar } from "./components/Siderbar";
 import { DndMonitor } from "./components/DndMonitor";
-import useDndSensors from "./hooks/useDndSensors";
 import { useEditorContext } from "./hooks/useEditorContext";
 import { DndDragOverlay } from "./components/DndDragOverlay";
 import { Tools } from "./components/Tools";
-import { useCollisionDetection } from "./hooks/useCollisionDetection";
-import useDndModifiers from "./hooks/useDndModifiers";
-import { useDndMeasuring } from "./hooks/useDndMeasuring";
 import { useGenComponentsInfo } from "./hooks/ussGenComponentsInfo";
 import { mocks } from "./stores/mocks";
 import { Frames } from "./components/Frames";
 
 import "./Content.scss";
+import { DndContextWrapper } from "./components/DndContextWrapper";
 
 const ContentComp: FC<PropsWithChildren> = observer(() => {
-  const sensors = useDndSensors();
-  const modifiers = useDndModifiers();
-  const measuring = useDndMeasuring();
-  const editorCollisionDetection = useCollisionDetection();
-
   const { isGenerating, genComponentsInfo } = useGenComponentsInfo();
 
   const { editorStore } = useEditorContext();
@@ -39,12 +30,7 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
 
   return (
     <div className="editor-wrapper">
-      <DndContext
-        sensors={sensors}
-        measuring={measuring}
-        modifiers={modifiers}
-        collisionDetection={editorCollisionDetection}
-      >
+      <DndContextWrapper>
         {/* -------------- Helper Tools -------------- */}
         {<Tools />}
         {/* --------- Siderbar for editor --------- */}
@@ -55,7 +41,7 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
         <DndDragOverlay />
         {/* --------- Dnd monitor for editor's global Dnd events  ---------- */}
         <DndMonitor />
-      </DndContext>
+      </DndContextWrapper>
     </div>
   );
 });

@@ -4,7 +4,7 @@ import {
   rectIntersection,
   pointerWithin,
 } from "@dnd-kit/core";
-import { DragInfo, DragOrigin } from "../types";
+import { DragInfo, DragOrigin } from "../../../types";
 import { useCallback } from "react";
 
 export function useCollisionDetection() {

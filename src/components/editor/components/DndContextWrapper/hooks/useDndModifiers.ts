@@ -1,7 +1,7 @@
+import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
+import { DragInfo, DragOrigin } from "@/components/editor/types";
 import { Modifier } from "@dnd-kit/core";
 import { useCallback, useMemo } from "react";
-import { useEditorContext } from "./useEditorContext";
-import { DragInfo, DragOrigin } from "../types";
 
 export default function useDndModifiers() {
   const {
