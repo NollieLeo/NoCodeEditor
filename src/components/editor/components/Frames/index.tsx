@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
-import { useEditorContext } from "../../hooks/useEditorContext";
+import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { find, forEach, map } from "lodash-es";
-import { ComponentInfo, ComponentTypes } from "../../types";
+import { ComponentInfo, ComponentTypes } from "@/components/editor/types";
 import { Frame } from "./components/Frame";
 import { CompTree } from "../CompTree";
 import { FC, memo, useCallback } from "react";

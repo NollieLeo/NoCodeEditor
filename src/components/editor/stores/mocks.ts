@@ -1,4 +1,24 @@
 export const mocks = {
+  "page-1": {
+    type: "page",
+    id: "page-1",
+    parentId: null,
+    attrs: {
+      style: {
+        width: "1280px",
+        height: "720px",
+        background: "#fff",
+        display: "flex",
+        flexDirection: "row",
+        flexShrink: 0,
+        flexWrap: "wrap",
+        position: "relative",
+        overflow: "hidden",
+        placeContent: "baseline",
+      },
+    },
+    childsId: ["759", "588", "412", "338", "253", "183", "56"],
+  },
   "56": {
     parentId: "page-1",
     id: "56",
@@ -109,35 +129,27 @@ export const mocks = {
       children: "按钮",
     },
   },
-  "page-1": {
-    type: "page",
-    id: "page-1",
-    parentId: null,
-    attrs: {
-      style: {
-        width: "1280px",
-        height: "720px",
-        background: "#fff",
-        display: "flex",
-        flexDirection: "row",
-        flexShrink: 0,
-        flexWrap: "wrap",
-        position: "relative",
-        overflow: "hidden",
-        placeContent: "baseline",
-      },
-    },
-    childsId: ["759", "588", "412", "338", "253", "183", "56"],
-  },
 } as any;
 
 export const MOCK_SCOPE = {
   Web: {
-    width: 1280,
-    height: 720,
+    width: 1440,
+    height: 1080,
   },
-  Phone: {
-    width: 375,
-    height: 720,
+  "iPhone XR": {
+    width: 414,
+    height: 896,
+  },
+  "iPhone 14 Pro Max": {
+    width: 430,
+    height: 932,
+  },
+  "iPad Mini": {
+    width: 768,
+    height: 1024,
+  },
+  "iPad Pro": {
+    width: 1024,
+    height: 1366,
   },
 };
