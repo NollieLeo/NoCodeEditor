@@ -4,3 +4,4 @@ export { Input } from "./components/Input";
 export { Textarea } from "./components/Textarea";
 export { Select } from "./components/Select";
 export { Text } from "./components/Text";
+export { ConditionalContainer } from "./components/ConditionalContainer";

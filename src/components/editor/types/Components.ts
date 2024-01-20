@@ -10,6 +10,7 @@ export enum ComponentTypes {
   CONTAINER = "container",
   SELECT = "select",
   PAGE = "page",
+  CONDITIONAL_CONTAINER = "conditional-container",
 }
 
 export type ComponentRenderData = PropsWithChildren<
@@ -20,7 +21,7 @@ export type ComponentRenderData = PropsWithChildren<
 
 export interface ComponentAttrs extends AnyObject {
   style: CSSProperties;
-} 
+}
 
 export interface ComponentInfo {
   /** 元数据 */
@@ -41,9 +42,8 @@ export interface ComponentInfo {
   innerText?: string;
 }
 
-export type MetaComponentProps = {
-  
-}
+export type MetaComponentProps = {};
 
-
-export type MetaComponent<T> = ((props: T & MetaComponentProps) => React.ReactElement<any, any>) & { componentId: string };
+export type MetaComponent<T> = ((
+  props: T & MetaComponentProps
+) => React.ReactElement<any, any>) & { componentId: string };

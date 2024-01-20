@@ -5,6 +5,7 @@ import {
   Input,
   Select,
   Text,
+  ConditionalContainer,
 } from "../components/MetaComponents";
 import { ComponentTypes } from "../types";
 
@@ -108,6 +109,20 @@ export const COMPONENTS_INFO = {
         width: 1280,
         height: 720,
         background: "#fff",
+        display: "flex",
+        flexShrink: 0,
+      },
+    },
+  },
+  [ComponentTypes.CONDITIONAL_CONTAINER]: {
+    name: "条件容器",
+    render: ConditionalContainer,
+    type: ComponentTypes.CONDITIONAL_CONTAINER,
+    attrs: {
+      style: {
+        width: 300,
+        height: 150,
+        background: "green",
         display: "flex",
         flexShrink: 0,
       },
