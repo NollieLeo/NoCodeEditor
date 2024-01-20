@@ -40,3 +40,10 @@ export interface ComponentInfo {
   /** innerText */
   innerText?: string;
 }
+
+export type MetaComponentProps = {
+  
+}
+
+
+export type MetaComponent<T> = ((props: T & MetaComponentProps) => React.ReactElement<any, any>) & { componentId: string };

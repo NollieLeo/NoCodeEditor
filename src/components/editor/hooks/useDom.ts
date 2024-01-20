@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useComponentInfo } from "./useComponentInfo";
 import { useComponentId } from "./useComponentId";
 import { isNil, map } from "lodash-es";
+import { getDomById } from "../utils/Dom";
 
 export const useDom = () => {
   const { getComponentInfo, getNodeParentInfo } = useComponentInfo();
@@ -11,7 +12,7 @@ export const useDom = () => {
   const getDom = useCallback(
     (targetId: string) => {
       const { id } = getComponentInfo(targetId);
-      const ele = document.getElementById(id);
+      const ele = getDomById(id);
       if (isNil(ele)) {
         throw new Error(`element: ${targetId} does not exist`);
       }

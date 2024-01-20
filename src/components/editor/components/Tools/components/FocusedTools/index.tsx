@@ -35,8 +35,6 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
 
   const { getDom } = useDom();
 
-  const targetEle = focusedInfo?.id ? getDom(focusedInfo?.id) : undefined;
-
   const snapPoints = useMemo(
     () => (focusedInfo?.id ? getSnapPoints(focusedInfo?.id) : null),
     [focusedInfo?.id, getSnapPoints]
@@ -70,38 +68,36 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
 
   return (
     <div className="focused-resize-wrapper">
-      {targetEle && (
-        <Moveable
-          ref={moveableRef}
-          key={`${focusedInfo?.id}`}
-          target={targetEle}
-          resizable={resizableOptions}
-          props={props}
-          ables={ables}
-          linePadding={10}
-          dragTargetSelf
-          rotatable={false}
-          origin={false}
-          useResizeObserver
-          snappable
-          snapThreshold={SNAP_THRESHOLD}
-          horizontalGuidelines={horizontalGuidelines}
-          verticalGuidelines={verticalGuidelines}
-          elementSnapDirections={{
-            top: true,
-            left: true,
-            bottom: true,
-            right: true,
-            center: true,
-            middle: true,
-          }}
-          elementGuidelines={map(siblingIds, (id) => getDom(id))}
-          maxSnapElementGuidelineDistance={50}
-          flushSync={flushSync}
-          onResize={onResize}
-          onResizeEnd={onResizeEnd}
-        />
-      )}
+      <Moveable
+        ref={moveableRef}
+        key={`${focusedInfo?.id}`}
+        target={getDom(focusedInfo?.id)}
+        resizable={resizableOptions}
+        props={props}
+        ables={ables}
+        linePadding={10}
+        dragTargetSelf
+        rotatable={false}
+        origin={false}
+        useResizeObserver
+        snappable
+        snapThreshold={SNAP_THRESHOLD}
+        horizontalGuidelines={horizontalGuidelines}
+        verticalGuidelines={verticalGuidelines}
+        elementSnapDirections={{
+          top: true,
+          left: true,
+          bottom: true,
+          right: true,
+          center: true,
+          middle: true,
+        }}
+        elementGuidelines={map(siblingIds, (id) => getDom(id))}
+        maxSnapElementGuidelineDistance={50}
+        flushSync={flushSync}
+        onResize={onResize}
+        onResizeEnd={onResizeEnd}
+      />
     </div>
   );
 });

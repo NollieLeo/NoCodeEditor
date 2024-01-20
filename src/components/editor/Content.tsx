@@ -1,4 +1,4 @@
-import { FC, memo, PropsWithChildren } from "react";
+import { FC, memo, PropsWithChildren, useRef } from "react";
 import { observer } from "mobx-react-lite";
 import { Viewport } from "./components/Viewpot";
 import { Siderbar } from "./components/Siderbar";
@@ -12,8 +12,10 @@ import { Frames } from "./components/Frames";
 import "./Content.scss";
 import { DndContextWrapper } from "./components/DndContextWrapper";
 import { useAsyncEffect } from "ahooks";
+import { useEventListeners } from "./hooks/useEventListeners";
 
 const ContentComp: FC<PropsWithChildren> = observer(() => {
+  const editorWrapRef = useRef<HTMLDivElement>(null);
   const { isGenerating, genComponentsInfo } = useGenComponentsInfo();
 
   const { editorStore, metas } = useEditorContext();
@@ -23,8 +25,10 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
     editorStore.setComponentsInfo(res);
   }, [metas]);
 
+  useEventListeners(editorWrapRef);
+
   return (
-    <div className="editor-wrapper">
+    <div ref={editorWrapRef} className="editor-wrapper">
       <DndContextWrapper>
         {/* --------- Siderbar for editor --------- */}
         <Siderbar />

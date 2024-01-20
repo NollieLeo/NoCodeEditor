@@ -1,14 +1,15 @@
 import {
-  Button,
+  Textarea,
   Container,
+  Button,
   Input,
   Select,
-  Textarea,
   Text,
 } from "../components/MetaComponents";
 import { ComponentTypes } from "../types";
 
-export const SNAP_THRESHOLD = 0;
+export const DATA_COMPONENT_ID = "data-component-id";
+export const DATA_COMPONENT_TYPE = "data-component-type";
 
 export const COMPONENTS_INFO = {
   [ComponentTypes.BUTTON]: {

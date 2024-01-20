@@ -1,17 +1,15 @@
 import { useDraggable, useDroppable } from "@dnd-kit/core";
-import classNames from "classnames";
 import { observer } from "mobx-react-lite";
 import { FC, ReactNode, memo } from "react";
-import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import {
   DragInfoFromPanMove,
   DragInfoFromPanSort,
   DragOrigin,
   DropInfo,
 } from "@/components/editor/types";
+import { CSS } from "@dnd-kit/utilities";
 
 import "./index.scss";
-import { CSS } from "@dnd-kit/utilities";
 
 export interface CompWrapperProps {
   id: string;
@@ -32,8 +30,6 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
     children,
   } = props;
 
-  const { editorStore } = useEditorContext();
-
   const {
     setNodeRef: setDragRef,
     attributes,
@@ -51,8 +47,6 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
     disabled: !droppable,
   });
 
-  const dropZoomCls = classNames("editor-dropzoom");
-
   const dragAppendStyle =
     draggableData.from === DragOrigin.MOVE
       ? {
@@ -60,36 +54,15 @@ const DndBoxComp: FC<CompWrapperProps> = observer((props) => {
         }
       : {};
 
-  const onClick = (e: Event) => {
-    e.stopPropagation();
-    editorStore.setFocusedInfo({
-      id,
-    });
-  };
-
-  const onMouseOver = (e: Event) => {
-    e.stopPropagation();
-    editorStore.setHoverNodeId(id);
-  };
-
-  const onMouseLeave = (e: MouseEvent) => {
-    e.stopPropagation();
-    editorStore.setHoverNodeId(null);
-  };
-
   const genComps = children({
     ...attributes,
     ...listeners,
     id,
-    className: dropZoomCls,
     style: dragAppendStyle,
     ref(nodeRef: HTMLElement) {
       setDragRef(nodeRef);
       setDropRef(nodeRef);
     },
-    onClick,
-    onMouseOver,
-    onMouseLeave,
   });
 
   return genComps;

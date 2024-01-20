@@ -1,5 +1,5 @@
 import { FC, useMemo, useRef } from "react";
-import { COMPONENTS_INFO } from "../../constants";
+import { COMPONENTS_INFO } from "@/components/editor/constants";
 import { map, uniqueId, entries, filter } from "lodash-es";
 import { useDraggable } from "@dnd-kit/core";
 import {

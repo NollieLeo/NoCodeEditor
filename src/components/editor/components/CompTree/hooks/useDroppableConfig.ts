@@ -8,8 +8,8 @@ import {
 } from "@/components/editor/types";
 import { useMemo } from "react";
 
-export const useDroppableConfig = (schemaData: ComponentInfo) => {
-  const { childsId, parentId, type, id } = schemaData;
+export const useDroppableConfig = (componentInfo: ComponentInfo) => {
+  const { childsId, parentId, type, id } = componentInfo;
   const { getComponentInfo } = useComponentInfo();
 
   const dragInfo = useDragInfo();

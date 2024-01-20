@@ -1,6 +1,7 @@
 import { map } from "lodash-es";
 import { ComponentInfo } from "../types";
 import { MetaInfo } from "../types/Meta";
+import { AnyObject } from "../types/AnyObject";
 
 // TODO(wkm) 先随便处理attrs
 const genAttrs = (meta: MetaInfo) => {
@@ -29,3 +30,9 @@ export const genComponentInfo = (
     attrs: genAttrs(meta),
   };
 };
+
+export function makeMetaComponent<T = AnyObject>(id: string, component: (props: ScenaProps & T) => React.ReactElement<any, any>): ScenaFunctionComponent<T> {
+  (component as ScenaFunctionComponent<T>).scenaComponentId = id;
+
+  return component as ScenaFunctionComponent<T>;
+}

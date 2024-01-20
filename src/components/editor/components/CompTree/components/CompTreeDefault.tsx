@@ -13,9 +13,9 @@ const CompTreeDefaultComp = observer((props: Pick<CompTreeProps, "rootId">) => {
 
   const { getComponentInfo } = useComponentInfo();
 
-  const schemaData = getComponentInfo(rootId);
+  const componentInfo = getComponentInfo(rootId);
 
-  const { type, childsId, attrs } = schemaData;
+  const { type, childsId, attrs } = componentInfo;
 
   const { render: Component } = COMPONENTS_INFO[type];
 

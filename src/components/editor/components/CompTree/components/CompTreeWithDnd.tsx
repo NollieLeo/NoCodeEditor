@@ -1,4 +1,4 @@
-import { COMPONENTS_INFO } from "@/components/editor/constants";
+import { COMPONENTS_INFO, DATA_COMPONENT_ID, DATA_COMPONENT_TYPE } from "@/components/editor/constants";
 import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
 import { isNil, map, join } from "lodash-es";
 import { useMemo, Fragment, memo } from "react";
@@ -14,11 +14,11 @@ const CompTreeWithDndComp = observer((props: Pick<CompTreeProps, "rootId">) => {
     throw new Error(`root id;${rootId} does not exist`);
   }
   const { getComponentInfo } = useComponentInfo();
-  const schemaData = getComponentInfo(rootId);
-  const { type, id, childsId, attrs } = schemaData;
+  const componentInfo = getComponentInfo(rootId);
+  const { type, id, childsId, attrs } = componentInfo;
   const { render: Component } = COMPONENTS_INFO[type];
-  const { draggable, draggableData } = useDraggableConfig(schemaData);
-  const { droppable, droppableData } = useDroppableConfig(schemaData);
+  const { draggable, draggableData } = useDraggableConfig(componentInfo);
+  const { droppable, droppableData } = useDroppableConfig(componentInfo);
 
   const childComps = useMemo(
     () =>
@@ -45,6 +45,7 @@ const CompTreeWithDndComp = observer((props: Pick<CompTreeProps, "rootId">) => {
         <Component
           {...attrs}
           {...params}
+          {...{ [DATA_COMPONENT_TYPE]: type,[DATA_COMPONENT_ID]: id, }}
           style={{ ...attrs.style, ...params.style }}
           children={childComps}
         />
