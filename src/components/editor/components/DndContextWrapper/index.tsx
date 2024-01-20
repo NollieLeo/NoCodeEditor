@@ -4,8 +4,9 @@ import { useCollisionDetection } from "./hooks/useCollisionDetection";
 import { useDndMeasuring } from "./hooks/useDndMeasuring";
 import useDndModifiers from "./hooks/useDndModifiers";
 import useDndSensors from "./hooks/useDndSensors";
+import { observer } from "mobx-react-lite";
 
-export const DndContextWrapper: FC<PropsWithChildren> = (props) => {
+export const DndContextWrapper: FC<PropsWithChildren> = observer((props) => {
   const { children } = props;
   const sensors = useDndSensors();
   const modifiers = useDndModifiers();
@@ -21,4 +22,4 @@ export const DndContextWrapper: FC<PropsWithChildren> = (props) => {
       {children}
     </DndContext>
   );
-};
+});
