@@ -1,4 +1,4 @@
-import { FC, memo, PropsWithChildren, useEffect } from "react";
+import { FC, memo, PropsWithChildren } from "react";
 import { observer } from "mobx-react-lite";
 import { Viewport } from "./components/Viewpot";
 import { Siderbar } from "./components/Siderbar";
@@ -7,38 +7,33 @@ import { useEditorContext } from "./hooks/useEditorContext";
 import { DndDragOverlay } from "./components/DndDragOverlay";
 import { Tools } from "./components/Tools";
 import { useGenComponentsInfo } from "./hooks/ussGenComponentsInfo";
-import { mocks } from "./stores/mocks";
 import { Frames } from "./components/Frames";
 
 import "./Content.scss";
 import { DndContextWrapper } from "./components/DndContextWrapper";
+import { useAsyncEffect } from "ahooks";
 
 const ContentComp: FC<PropsWithChildren> = observer(() => {
   const { isGenerating, genComponentsInfo } = useGenComponentsInfo();
 
-  const { editorStore } = useEditorContext();
+  const { editorStore, metas } = useEditorContext();
 
-  async function genComponents() {
-    const res = await genComponentsInfo(mocks);
-    console.log(res);
+  useAsyncEffect(async () => {
+    const res = await genComponentsInfo(metas);
     editorStore.setComponentsInfo(res);
-  }
-
-  useEffect(() => {
-    genComponents();
-  }, []);
+  }, [metas]);
 
   return (
     <div className="editor-wrapper">
       <DndContextWrapper>
-        {/* -------------- Helper Tools -------------- */}
-        {<Tools />}
         {/* --------- Siderbar for editor --------- */}
         <Siderbar />
-        {/* --------- Editor's zoom pan --------- */}
+        {/* --------- Editor's Viewport --------- */}
         <Viewport>{!isGenerating && <Frames />}</Viewport>
         {/* --------- Dnd overlays for editor's global drag overlay  ---------- */}
         <DndDragOverlay />
+        {/* -------------- Helper Tools -------------- */}
+        {<Tools />}
         {/* --------- Dnd monitor for editor's global Dnd events  ---------- */}
         <DndMonitor />
       </DndContextWrapper>

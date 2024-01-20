@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { ReactNode, memo } from "react";
+import { FC, PropsWithChildren, memo } from "react";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import InfiniteViewer, { ScrollCenterOptions } from "react-infinite-viewer";
 import { useViewerTriggers } from "./hooks/useViewTriggers";
@@ -10,11 +10,7 @@ export interface ViewportRefs {
   scrollCenter: (options?: ScrollCenterOptions | undefined) => boolean;
 }
 
-export interface ViewportProps {
-  children: ReactNode;
-}
-
-const ViewportComp = observer((props: ViewportProps) => {
+const ViewportComp: FC<PropsWithChildren> = observer((props) => {
   const { children } = props;
   const {
     editorStore: { zoom },
@@ -43,6 +39,7 @@ const ViewportComp = observer((props: ViewportProps) => {
         onPinch={onPinch}
         onScroll={onScroll}
         useOverflowScroll={false}
+        useResizeObserver
       >
         <div className="editor-viewport-container">{children}</div>
       </InfiniteViewer>

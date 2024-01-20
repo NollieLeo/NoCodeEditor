@@ -70,36 +70,38 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
 
   return (
     <div className="focused-resize-wrapper">
-      <Moveable
-        ref={moveableRef}
-        key={`${focusedInfo?.id}`}
-        target={targetEle}
-        resizable={resizableOptions}
-        props={props}
-        ables={ables}
-        linePadding={10}
-        dragTargetSelf
-        rotatable={false}
-        origin={false}
-        useResizeObserver
-        snappable
-        snapThreshold={SNAP_THRESHOLD}
-        horizontalGuidelines={horizontalGuidelines}
-        verticalGuidelines={verticalGuidelines}
-        elementSnapDirections={{
-          top: true,
-          left: true,
-          bottom: true,
-          right: true,
-          center: true,
-          middle: true,
-        }}
-        elementGuidelines={map(siblingIds, (id) => getDom(id))}
-        maxSnapElementGuidelineDistance={50}
-        flushSync={flushSync}
-        onResize={onResize}
-        onResizeEnd={onResizeEnd}
-      />
+      {targetEle && (
+        <Moveable
+          ref={moveableRef}
+          key={`${focusedInfo?.id}`}
+          target={targetEle}
+          resizable={resizableOptions}
+          props={props}
+          ables={ables}
+          linePadding={10}
+          dragTargetSelf
+          rotatable={false}
+          origin={false}
+          useResizeObserver
+          snappable
+          snapThreshold={SNAP_THRESHOLD}
+          horizontalGuidelines={horizontalGuidelines}
+          verticalGuidelines={verticalGuidelines}
+          elementSnapDirections={{
+            top: true,
+            left: true,
+            bottom: true,
+            right: true,
+            center: true,
+            middle: true,
+          }}
+          elementGuidelines={map(siblingIds, (id) => getDom(id))}
+          maxSnapElementGuidelineDistance={50}
+          flushSync={flushSync}
+          onResize={onResize}
+          onResizeEnd={onResizeEnd}
+        />
+      )}
     </div>
   );
 });

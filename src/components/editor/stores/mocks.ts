@@ -1,4 +1,4 @@
-export const mocks = {
+export const MOCK_METAS = {
   "page-1": {
     type: "page",
     id: "page-1",

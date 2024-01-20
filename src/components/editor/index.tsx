@@ -3,7 +3,7 @@ import { useEditorStore } from "./stores/EditorStore";
 import { EditorContext } from "./context/EditorContext";
 import { observer } from "mobx-react-lite";
 import { Content } from "./Content";
-import { MOCK_SCOPE } from "./stores/mocks";
+import { MOCK_METAS, MOCK_SCOPE } from "./stores/mocks";
 
 const EditorComp: FC<PropsWithChildren> = observer(() => {
   const editorStore = useEditorStore();
@@ -11,7 +11,8 @@ const EditorComp: FC<PropsWithChildren> = observer(() => {
   const contextVal = useMemo(
     () => ({
       editorStore,
-      scope: MOCK_SCOPE
+      scope: MOCK_SCOPE,
+      metas: MOCK_METAS,
     }),
     [editorStore]
   );

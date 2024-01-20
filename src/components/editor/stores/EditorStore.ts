@@ -1,6 +1,6 @@
 import { arrayMove } from "@dnd-kit/sortable";
 import { useLocalStore } from "mobx-react-lite";
-import { findIndex, forEach, isUndefined } from "lodash-es";
+import { findIndex, isUndefined } from "lodash-es";
 import { ComponentInfo } from "../types";
 import { CSSProperties } from "react";
 
@@ -47,9 +47,7 @@ export const useEditorStore = () => {
     componentsInfo: {},
 
     setComponentsInfo(info) {
-      forEach(info, (value, key) => {
-        this.componentsInfo[key] = value;
-      });
+      this.componentsInfo = info;
     },
     setFocusedInfo(focusedInfo) {
       this.focusedInfo = focusedInfo;
