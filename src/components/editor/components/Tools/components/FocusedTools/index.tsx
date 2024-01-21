@@ -23,7 +23,7 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
     editorStore: { focusedInfo },
   } = useEditorContext();
 
-  const { onResize, onResizeEnd } = useResizeTriggers(focusedInfo?.id);
+  const { resizeKey, onResize, onResizeEnd } = useResizeTriggers(focusedInfo?.id);
 
   const moveableRef = useRef<Moveable>(null);
 
@@ -70,7 +70,7 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
     <div className="focused-resize-wrapper">
       <Moveable
         ref={moveableRef}
-        key={`${focusedInfo?.id}`}
+        key={resizeKey}
         target={getDom(focusedInfo?.id)}
         resizable={resizableOptions}
         props={props}
