@@ -35,6 +35,7 @@ export const COMPONENTS_INFO = {
       style: {
         display: "block",
         flexShrink: 0,
+        height: "32px",
       },
       children: "Go fuck yourself",
     },
