@@ -1,12 +1,13 @@
 import { useCallback } from "react";
 import { forEach, indexOf, isNil, map, min } from "lodash-es";
 import { DragOrigin } from "../types";
-import { getFlexLayoutDirection } from "../utils/layout";
+import { getFlexLayoutDirection, isAbsoluteOrFixed } from "../utils/layout";
 import { useDragInfo } from "./useDragInfo";
 import { useDragOverInfo } from "./useDragOverInfo";
 import { useDndContext } from "@dnd-kit/core";
 import { useDom } from "./useDom";
 import { useComponentInfo } from "./useComponentInfo";
+import { COMPONENTS_INFO } from "../constants";
 
 function genRectToDistance(pLeft: number, pTop: number, rect: DOMRect) {
   const { left: rLeft, width: rWidth, height: rHeight, top: rTop } = rect;
@@ -63,10 +64,25 @@ export function useInsertTarget() {
     [getDom, getComponentInfo, overInfo?.id]
   );
 
-  const getInsertInfo = () => {
+  const checkIsInsertable = () => {
     if (dragInfo?.from !== DragOrigin.SIDE_ADD || !overInfo) {
+      return false;
+    }
+    const {
+      attrs: { style },
+    } = COMPONENTS_INFO[dragInfo.type];
+
+    if (isAbsoluteOrFixed(style)) {
+      return false;
+    }
+    return true;
+  };
+
+  const getInsertInfo = () => {
+    if (!checkIsInsertable()) {
       return;
     }
+
     const centerRect = getDragCenterRect();
     if (isNil(centerRect)) {
       return;
@@ -89,7 +105,7 @@ export function useInsertTarget() {
     const targetCenterTop = insertTop + insertHeight / 2;
     const targetCenterLeft = insertLeft + insertWdith / 2;
 
-    const direction = getFlexLayoutDirection(getDom(overInfo.id));
+    const direction = getFlexLayoutDirection(getDom(overInfo!.id));
 
     if (direction === "vertical") {
       const isNearTop = centerTop > targetCenterTop;

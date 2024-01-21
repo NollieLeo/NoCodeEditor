@@ -5,15 +5,17 @@ import { MetaInfo } from "../types/Meta";
 export const createMeta = (
   params: Pick<MetaInfo, "type"> & Partial<MetaInfo>
 ): MetaInfo => {
-  const { type, parentId, ...res } = params;
-  const { attrs } = COMPONENTS_INFO[type];
+  const { type, parentId, attrs = {}, childsId = null } = params;
+  const { attrs: defaultAttrs } = COMPONENTS_INFO[type];
 
   return {
-    parentId,
     id: uniqueId(),
+    parentId,
     type,
-    childsId: null,
-    attrs,
-    ...res,
+    childsId,
+    attrs: {
+      ...defaultAttrs,
+      ...attrs,
+    },
   };
 };
