@@ -1,13 +1,12 @@
 .editor-siderbar {
   width: 200px;
   padding: 10px;
-  border-right: 1px solid #666;
   flex-shrink: 0;
   z-index: 2;
   position: relative;
   top: 0;
   left: 0;
-  background: #3842cc;
+  background: #538fa7;
 
   .editor-siderbar-container {
     display: grid;
@@ -15,7 +14,7 @@
     gap: 10px 10px;
     .editor-siderbar-item {
       height: 100px;
-      background-color: #ccc;
+      background-color: #fff;
       border-radius: 8px;
       cursor: pointer;
       display: flex;

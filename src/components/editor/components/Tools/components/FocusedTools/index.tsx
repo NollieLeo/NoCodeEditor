@@ -23,8 +23,6 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
     editorStore: { focusedInfo },
   } = useEditorContext();
 
-  const { resizeKey, onResize, onResizeEnd } = useResizeTriggers(focusedInfo?.id);
-
   const moveableRef = useRef<Moveable>(null);
 
   const getSnapPoints = useSnapPoints();
@@ -32,6 +30,9 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
   const { getSiblingIds } = useComponentId();
 
   const { ables, props } = useResizeAbles();
+  const { resizeKey, onResize, onResizeEnd } = useResizeTriggers(
+    focusedInfo?.id
+  );
 
   const { getDom } = useDom();
 

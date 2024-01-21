@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="app">
       <ConfigProvider>
-        <header className="app-header">fuck</header>
+        <header className="app-header">我他妈是个头</header>
         <Editor />
       </ConfigProvider>
     </div>

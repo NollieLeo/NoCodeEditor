@@ -11,10 +11,16 @@
     flex-direction: column;
     overflow: hidden;
     .editor-frame-header {
-      color: blue;
+      color: #0099ff;
+      background-color: rgba(0, 153, 255, 0.15);
       width: 100%;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
+      height: 50px;
+      line-height: 50px;
+      padding: 2px 4px;
+      border-radius: 14px;
       font-size: 20px;
+      text-align: center;
     }
   }
   .editor-frame + .editor-frame {

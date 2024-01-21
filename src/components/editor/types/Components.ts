@@ -28,7 +28,9 @@ export interface ComponentInfo {
   meta: MetaInfo;
   /** component id */
   id: string;
-  /** component name */
+  /** component name default to component type */
+  name?: string;
+  /** component type */
   type: ComponentTypes;
   /** 父组件 id */
   parentId?: string | null;
@@ -42,8 +44,8 @@ export interface ComponentInfo {
   innerText?: string;
 }
 
-export type MetaComponentProps = {};
+// export type MetaComponentProps = {};
 
-export type MetaComponent<T> = ((
-  props: T & MetaComponentProps
-) => React.ReactElement<any, any>) & { componentId: string };
+// export type MetaComponent<T> = ((
+//   props: T & MetaComponentProps
+// ) => React.ReactElement<any, any>) & { componentId: string };

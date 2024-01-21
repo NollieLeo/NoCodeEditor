@@ -2,7 +2,7 @@ import { DragInfoFromSideAdd, DropInfo } from "@/components/editor/types";
 import { useInsertTarget } from "@/components/editor/hooks/useInsertTarget";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { DragEndEvent } from "@dnd-kit/core";
-import { createMeta } from "@/components/editor/utils/Meta";
+import { genMeta } from "@/components/editor/utils/Meta";
 import { genComponentInfo } from "@/components/editor/utils/Components";
 import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
 import { COMPONENTS_INFO } from "@/components/editor/constants";
@@ -47,16 +47,20 @@ export function useSideDnd() {
         top: Math.floor((overlayRect.top - parentRect.top) / zoom),
       };
 
-      const newMeta = createMeta({
+      const newMeta = genMeta({
         type,
         parentId: meta.id,
         attrs: { style: { ...newStyle } },
       });
       const newComponent = genComponentInfo(newMeta, scopeId);
+
       editorStore.addNode(newComponent, parentId);
 
+      requestIdleCallback(() => {
+        editorStore.setFocusedInfo({ id: newComponent.id });
+      });
     } else {
-      const newMeta = createMeta({ type, parentId: meta.id });
+      const newMeta = genMeta({ type, parentId: meta.id });
       const newComponent = genComponentInfo(newMeta, scopeId);
       const insertInfo = getInsertInfo();
       editorStore.addNode(newComponent, parentId, insertInfo?.insertIdx);

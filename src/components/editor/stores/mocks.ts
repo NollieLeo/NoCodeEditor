@@ -46,6 +46,7 @@ export const MOCK_METAS = {
       style: {
         display: "block",
         flexShrink: 0,
+        height: 32,
       },
       children: "Go fuck yourself",
     },
@@ -74,6 +75,7 @@ export const MOCK_METAS = {
       style: {
         display: "block",
         flexShrink: 0,
+        height: 32,
       },
       children: "Go fuck yourself",
     },

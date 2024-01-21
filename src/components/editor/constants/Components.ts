@@ -121,9 +121,9 @@ export const COMPONENTS_INFO = {
     type: ComponentTypes.CONDITIONAL_CONTAINER,
     attrs: {
       style: {
-        width: 300,
-        height: 150,
-        background: "green",
+        width: 400,
+        height: 200,
+        background: "rgb(243, 243, 243)",
         display: "flex",
         flexShrink: 0,
         position: "absolute",
