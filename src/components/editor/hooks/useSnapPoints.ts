@@ -1,10 +1,10 @@
 import { forEach, isNil, map, uniq } from "lodash-es";
 import { useCallback } from "react";
-import { useComponentId } from "./useComponentId";
+import { useGetComponentId } from "./useGetComponentId";
 import { useDom } from "./useDom";
 
 export function useSnapPoints() {
-  const { getNodeParentId } = useComponentId();
+  const { getParentComponentId } = useGetComponentId();
   const { getSiblingDoms } = useDom();
 
   const getSiblingRects = useCallback(
@@ -19,7 +19,7 @@ export function useSnapPoints() {
 
   const getParentRect = useCallback(
     (targetId: string) => {
-      const parentId = getNodeParentId(targetId);
+      const parentId = getParentComponentId(targetId);
       if (isNil(parentId)) {
         return null;
       }
@@ -29,7 +29,7 @@ export function useSnapPoints() {
       }
       return dom.getBoundingClientRect();
     },
-    [getNodeParentId]
+    [getParentComponentId]
   );
 
   const getParentSnapPoints = useCallback(

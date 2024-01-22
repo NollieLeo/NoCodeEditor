@@ -11,6 +11,12 @@ export enum ComponentTypes {
   SELECT = "select",
   PAGE = "page",
   CONDITIONAL_CONTAINER = "conditional-container",
+  BLANK_CONTAINER = "blank-container",
+}
+
+export enum ComponentPosition {
+  ABSOLUTE = "absolute",
+  RELATIVE = "relative",
 }
 
 export type ComponentRenderData = PropsWithChildren<
@@ -24,8 +30,8 @@ export interface ComponentAttrs extends AnyObject {
 }
 
 export interface ComponentInfo {
-  /** 元数据 */
-  meta: MetaInfo;
+  /** 元数据id */
+  metaId: MetaInfo["id"];
   /** component id */
   id: string;
   /** component name default to component type */

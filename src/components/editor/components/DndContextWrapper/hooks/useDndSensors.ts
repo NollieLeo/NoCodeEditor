@@ -1,27 +1,14 @@
-import {
-  useSensor,
-  MouseSensor,
-  TouchSensor,
-  useSensors,
-} from "@dnd-kit/core";
+import { useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
 
 export default function useDndSensors() {
-  const mouseSensor = useSensor(MouseSensor, {
+  const mouseSensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 0,
-      delay: 300
-    },
-  });
-
-  const touchSensor = useSensor(TouchSensor, {
-    activationConstraint: {
       delay: 300,
-      tolerance: 5,
-      distance: 0,
     },
   });
 
-  const sensors = useSensors(mouseSensor, touchSensor);
+  const sensors = useSensors(mouseSensor);
 
   return sensors;
 }

@@ -1,8 +1,10 @@
 import { arrayMove } from "@dnd-kit/sortable";
 import { useLocalStore } from "mobx-react-lite";
-import { findIndex, isUndefined } from "lodash-es";
-import { ComponentInfo } from "../types";
+import { findIndex, forEach, isNil, isUndefined } from "lodash-es";
+import { ComponentInfo, ComponentPosition } from "../types";
 import { CSSProperties } from "react";
+import { MetaInfo } from "../types/Meta";
+import { Scope } from "../types/Scope";
 
 export interface EditorState {
   /** 页面被点击激活的元素id */
@@ -13,11 +15,18 @@ export interface EditorState {
   zoom: number;
   /** 面板是否在缩放/移动 */
   isPanTransforming: boolean;
+  /** meta */
+  meta: Record<string, MetaInfo>;
+  /** scope */
+  scope: Scope;
   /** components info */
   componentsInfo: Record<ComponentInfo["id"], ComponentInfo>;
+  /** 添加组件的postion mode */
+  positonMode: ComponentPosition;
 }
 
 export interface EditorAction {
+  setPositionMode(mode: ComponentPosition): void;
   setComponentsInfo(info: EditorState["componentsInfo"]): void;
   setFocusedInfo(id: EditorState["focusedInfo"]): void;
   setHoverNodeId(id: EditorState["hoveredNodeId"]): void;
@@ -27,8 +36,13 @@ export interface EditorAction {
   ): void;
   cleanUpHelperNode(): void;
 
+  addComponents(
+    componentsInfo: [ComponentInfo, ComponentInfo[] | null],
+    index?: number
+  ): void;
+  addMetas(metas: [MetaInfo, MetaInfo[] | null], index?: number): void;
+
   // ----------- node operations -----------
-  addNode(data: ComponentInfo, target: string, idx?: number): void;
   updateNodeStyle(
     styles: CSSProperties | ((preStyles: CSSProperties) => CSSProperties),
     target: string
@@ -38,14 +52,26 @@ export interface EditorAction {
 
 export type EditorStore = EditorState & EditorAction;
 
-export const useEditorStore = () => {
+export const useEditorStore = ({
+  meta,
+  scope,
+}: {
+  meta: Record<string, MetaInfo>;
+  scope: Scope;
+}) => {
   return useLocalStore<EditorStore>(() => ({
+    scope,
+    meta,
+    componentsInfo: {},
     focusedInfo: null,
     hoveredNodeId: null,
     zoom: 1,
     isPanTransforming: false,
-    componentsInfo: {},
+    positonMode: ComponentPosition.RELATIVE,
 
+    setPositionMode(mode) {
+      this.positonMode = mode;
+    },
     setComponentsInfo(info) {
       this.componentsInfo = info;
     },
@@ -65,22 +91,44 @@ export const useEditorStore = () => {
       this.hoveredNodeId = null;
       this.focusedInfo = null;
     },
-    /**
-     * @description add component from sidebar
-     */
-    addNode(componentInfo, parentId, idx) {
-      const parentComponent = this.componentsInfo[parentId];
 
-      this.componentsInfo[componentInfo.id] = componentInfo;
-      const { childsId } = parentComponent;
-      if (!childsId) {
-        parentComponent.childsId = [componentInfo.id];
-      } else {
-        const targetIdx =
-          isUndefined(idx) || idx === -1 ? childsId?.length - 1 : idx;
-        childsId.splice(targetIdx, 0, componentInfo.id);
+    addComponents([root, childs], idx) {
+      if (isNil(root.parentId)) {
+        throw new Error("parent id does not exist");
       }
+      this.componentsInfo[root.id] = root;
+      forEach(childs, (value) => {
+        this.componentsInfo[value.id] = value;
+      });
+
+      const parentComponent = this.componentsInfo[root.parentId];
+      if (!parentComponent.childsId) {
+        parentComponent.childsId = [];
+      }
+      const targetIdx =
+        isUndefined(idx) || idx === -1
+          ? parentComponent.childsId?.length - 1
+          : idx;
+      parentComponent.childsId.splice(targetIdx, 0, root.id);
     },
+
+    addMetas([root, childs], idx) {
+      if (isNil(root.parentId)) {
+        throw new Error("parent id does not exist");
+      }
+      this.meta[root.id] = root;
+      forEach(childs, (value) => {
+        this.meta[value.id] = value;
+      });
+      const parentMeta = this.meta[root.parentId];
+      if (!parentMeta.childsId) {
+        parentMeta.childsId = [];
+      }
+      const targetIdx =
+        isUndefined(idx) || idx === -1 ? parentMeta.childsId?.length - 1 : idx;
+      parentMeta.childsId.splice(targetIdx, 0, root.id);
+    },
+
     /**
      * @description move component in a sortable container
      */

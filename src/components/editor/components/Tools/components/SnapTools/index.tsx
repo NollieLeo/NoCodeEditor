@@ -8,7 +8,7 @@ import { ParentSnapLines } from "./components/ParentSnapLines";
 import { SiblingsSnapLines } from "./components/SiblingsSnapLines";
 import { useDragInfo } from "@/components/editor/hooks/useDragInfo";
 import { isAbsoluteOrFixed } from "@/components/editor/utils/layout";
-import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
+import { useGetComponentInfo } from "@/components/editor/hooks/useGetComponentInfo";
 
 import "./index.scss";
 import { useDom } from "@/components/editor/hooks/useDom";
@@ -19,7 +19,7 @@ const SnapToolsCompTmpl = observer(() => {
   } = useEditorContext();
 
   const dragInfo = useDragInfo();
-  const { getComponentInfo } = useComponentInfo();
+  const { getComponentInfo } = useGetComponentInfo();
   const { getDom } = useDom();
 
   const compInfoWithParent = useMemo(() => {

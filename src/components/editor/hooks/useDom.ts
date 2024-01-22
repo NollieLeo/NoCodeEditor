@@ -1,12 +1,12 @@
 import { useCallback } from "react";
-import { useComponentInfo } from "./useComponentInfo";
-import { useComponentId } from "./useComponentId";
+import { useGetComponentInfo } from "./useGetComponentInfo";
+import { useGetComponentId } from "./useGetComponentId";
 import { isNil, map } from "lodash-es";
 import { getDomById } from "../utils/Dom";
 
 export const useDom = () => {
-  const { getComponentInfo, getNodeParentInfo } = useComponentInfo();
-  const { getSiblingIds } = useComponentId();
+  const { getComponentInfo, getNodeParentInfo } = useGetComponentInfo();
+  const { getSiblingIds } = useGetComponentId();
 
   // TODO(wkm) 获取真实dom的方法不仅限于id，后续可能会带更多标识
   const getDom = useCallback(

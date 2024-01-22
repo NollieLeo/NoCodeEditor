@@ -6,13 +6,14 @@ import { Content } from "./Content";
 import { MOCK_METAS, MOCK_SCOPE } from "./stores/mocks";
 
 const EditorComp: FC<PropsWithChildren> = observer(() => {
-  const editorStore = useEditorStore();
+  const editorStore = useEditorStore({
+    meta: MOCK_METAS,
+    scope: MOCK_SCOPE,
+  });
 
   const contextVal = useMemo(
     () => ({
       editorStore,
-      scope: MOCK_SCOPE,
-      metas: MOCK_METAS,
     }),
     [editorStore]
   );

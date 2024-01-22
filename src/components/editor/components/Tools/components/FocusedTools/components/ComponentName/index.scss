@@ -1,0 +1,14 @@
+.editor-focused-comp-tag {
+  position: absolute;
+  left: 0;
+  top: -30px;
+  height: 20px;
+  background: #1450d9;
+  border-radius: 4px;
+  padding: 2px 4px;
+  color: white;
+  font-size: 12px;
+  white-space: nowrap;
+  font-weight: bold;
+  will-change: transform;
+}

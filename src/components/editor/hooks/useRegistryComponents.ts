@@ -6,8 +6,10 @@ import { useBoolean } from "ahooks";
 import { useCallback } from "react";
 import { genComponentId } from "../utils/Components";
 
-export const useGenComponentsInfo = () => {
-  const { scope } = useEditorContext();
+export const useRegistryComponents = () => {
+  const {
+    editorStore: { scope },
+  } = useEditorContext();
   const [isGenerating, { setTrue, setFalse }] = useBoolean(false);
 
   // TODO(wkm) 先随便处理attrs
@@ -16,7 +18,7 @@ export const useGenComponentsInfo = () => {
       const { attrs, type } = meta;
       const tempAttrs = { ...attrs } as ComponentInfo["attrs"];
 
-      // page 特殊处理
+      // page 特殊处理，获取scope的具体值
       if (type === ComponentTypes.PAGE) {
         const size = scope[scopeId];
         tempAttrs.style = { ...tempAttrs.style, ...size };
@@ -27,15 +29,14 @@ export const useGenComponentsInfo = () => {
     [scope]
   );
 
-  const registryComponent = useCallback(
+  const registryComponentByScope = useCallback(
     ({ meta, scopeId }: { meta: MetaInfo; scopeId: string }): ComponentInfo => {
       const { id, type, parentId, childsId } = meta;
-
       return {
         id: genComponentId(id, scopeId),
         type,
         parentId: parentId ? genComponentId(parentId, scopeId) : null,
-        meta,
+        metaId: meta.id,
         childsId: map(childsId, (childId) => genComponentId(childId, scopeId)),
         scopeId,
         attrs: genAttrs(meta, scopeId),
@@ -44,33 +45,36 @@ export const useGenComponentsInfo = () => {
     [genAttrs]
   );
 
-  const genComponentsInfoByScope = useCallback(
+  const registryComponentsByScope = useCallback(
     (metaRerord: Record<MetaInfo["id"], MetaInfo>, scopeId: string) => {
       const componentsInfo: Record<ComponentInfo["id"], ComponentInfo> = {};
       forEach(metaRerord, (meta) => {
-        const componentInfo = registryComponent({ meta, scopeId });
+        const componentInfo = registryComponentByScope({ meta, scopeId });
         componentsInfo[componentInfo.id] = componentInfo;
       });
       return componentsInfo;
     },
-    [registryComponent]
+    [registryComponentByScope]
   );
 
-  const genComponentsInfo = useCallback(
+  const registryComponents = useCallback(
     (metaRecord: Record<MetaInfo["id"], MetaInfo>) => {
       setTrue();
       return new Promise<Record<ComponentInfo["id"], ComponentInfo>>(
         (resolve) => {
-          const frameRecord: Record<ComponentInfo["id"], ComponentInfo> = {};
+          const componentsInfo: Record<ComponentInfo["id"], ComponentInfo> = {};
           forEach(scope, (_, scopeId) => {
-            assign(frameRecord, genComponentsInfoByScope(metaRecord, scopeId));
+            assign(
+              componentsInfo,
+              registryComponentsByScope(metaRecord, scopeId)
+            );
           });
-          resolve(frameRecord);
+          resolve(componentsInfo);
         }
       ).finally(setFalse);
     },
-    [genComponentsInfoByScope, scope, setFalse, setTrue]
+    [registryComponentsByScope, scope, setFalse, setTrue]
   );
 
-  return { isGenerating, genComponentsInfo };
+  return { isGenerating, registryComponents };
 };

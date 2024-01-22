@@ -3,7 +3,7 @@ import { useEditorContext } from "./useEditorContext";
 import { ComponentInfo } from "../types";
 import { isNil, map } from "lodash-es";
 
-export const useComponentInfo = () => {
+export const useGetComponentInfo = () => {
   const {
     editorStore: { componentsInfo },
   } = useEditorContext();

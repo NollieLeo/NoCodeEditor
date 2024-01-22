@@ -1,34 +1,20 @@
-import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
+import { useGetComponentInfo } from "@/components/editor/hooks/useGetComponentInfo";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { observer } from "mobx-react-lite";
 import { FC, memo } from "react";
+import "./index.scss";
 
 const ComponentNameTagComp: FC = observer(() => {
   const {
     editorStore: { focusedInfo },
   } = useEditorContext();
 
-  const { getComponentInfo } = useComponentInfo();
+  const { getComponentInfo } = useGetComponentInfo();
 
   const componentInfo = getComponentInfo(focusedInfo!.id);
 
   return (
-    <div
-      key="component-name-tag"
-      style={{
-        position: "absolute",
-        left: 0,
-        top: -30,
-        background: "blue",
-        borderRadius: 4,
-        padding: "2px 4px",
-        color: "white",
-        fontSize: "12px",
-        whiteSpace: "nowrap",
-        fontWeight: "bold",
-        willChange: "transform",
-      }}
-    >
+    <div className="editor-focused-comp-tag" key="component-name-tag">
       {componentInfo.name || componentInfo.type}
     </div>
   );

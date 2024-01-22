@@ -1,5 +1,5 @@
 import { COMPONENTS_INFO, DATA_COMPONENT_ID, DATA_COMPONENT_TYPE } from "@/components/editor/constants";
-import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
+import { useGetComponentInfo } from "@/components/editor/hooks/useGetComponentInfo";
 import { isNil, map, join } from "lodash-es";
 import { useMemo, Fragment, memo } from "react";
 import { observer } from "mobx-react-lite";
@@ -13,7 +13,7 @@ const CompTreeWithDndComp = observer((props: Pick<CompTreeProps, "rootId">) => {
   if (isNil(rootId)) {
     throw new Error(`root id;${rootId} does not exist`);
   }
-  const { getComponentInfo } = useComponentInfo();
+  const { getComponentInfo } = useGetComponentInfo();
   const componentInfo = getComponentInfo(rootId);
   const { type, id, childsId, attrs } = componentInfo;
   const { render: Component } = COMPONENTS_INFO[type];

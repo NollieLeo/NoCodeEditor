@@ -1,5 +1,5 @@
+import { DRAGGABLE_COMPONENTS } from "@/components/editor/constants";
 import {
-  ComponentTypes,
   DragOrigin,
   DragInfoFromPanMove,
   DragInfoFromPanSort,
@@ -12,7 +12,7 @@ export const useDraggableConfig = (schema: ComponentInfo) => {
   const { type, attrs, id } = schema;
 
   const draggable = useMemo(() => {
-    return type !== ComponentTypes.PAGE;
+    return DRAGGABLE_COMPONENTS.includes(type);
   }, [type]);
 
   const draggableOrigin = useMemo(() => {

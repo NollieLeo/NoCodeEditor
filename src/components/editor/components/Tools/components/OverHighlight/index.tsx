@@ -4,7 +4,7 @@ import { BorderedRectangle } from "@/components/editor/components/Tools/componen
 import { useDragInfo } from "@/components/editor/hooks/useDragInfo";
 import { useDragOverInfo } from "@/components/editor/hooks/useDragOverInfo";
 import { useDom } from "@/components/editor/hooks/useDom";
-import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
+import { useGetComponentInfo } from "@/components/editor/hooks/useGetComponentInfo";
 
 interface OverHighlightProps {
   dragInfo: DragInfo;
@@ -14,19 +14,16 @@ export const OverHighlightComp: FC<OverHighlightProps> = () => {
   const dragInfo = useDragInfo();
   const overInfo = useDragOverInfo();
   const { getDom } = useDom();
-  const { getComponentInfo } = useComponentInfo();
+  const { getComponentInfo } = useGetComponentInfo();
 
   const highlightDomId = useMemo(() => {
-    if (!dragInfo) {
+    if (!dragInfo || !overInfo) {
       return null;
     }
-    if (
-      dragInfo.from === DragOrigin.SORT ||
-      dragInfo.from === DragOrigin.MOVE
-    ) {
+    if ([DragOrigin.SORT, DragOrigin.MOVE].includes(dragInfo.from)) {
       const dragNodeSchema = getComponentInfo(dragInfo.id);
       return dragNodeSchema.parentId;
-    } else if (dragInfo.from === DragOrigin.SIDE_ADD && overInfo) {
+    } else if (dragInfo.from === DragOrigin.SIDE_ADD) {
       return overInfo.id;
     }
   }, [dragInfo, getComponentInfo, overInfo]);

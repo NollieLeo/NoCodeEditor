@@ -1,4 +1,4 @@
-import { FC, memo, PropsWithChildren, useRef } from "react";
+import { FC, memo, PropsWithChildren } from "react";
 import { observer } from "mobx-react-lite";
 import { Viewport } from "./components/Viewpot";
 import { Siderbar } from "./components/Siderbar";
@@ -6,29 +6,33 @@ import { DndMonitor } from "./components/DndMonitor";
 import { useEditorContext } from "./hooks/useEditorContext";
 import { DndDragOverlay } from "./components/DndDragOverlay";
 import { Tools } from "./components/Tools";
-import { useGenComponentsInfo } from "./hooks/ussGenComponentsInfo";
+import { useRegistryComponents } from "./hooks/useRegistryComponents";
 import { Frames } from "./components/Frames";
-
-import "./Content.scss";
 import { DndContextWrapper } from "./components/DndContextWrapper";
-import { useAsyncEffect } from "ahooks";
-import { useEventListeners } from "./hooks/useEventListeners";
+import { useAsyncEffect, useUpdateEffect } from "ahooks";
+import { toJS } from "mobx";
+import "./Content.scss";
 
 const ContentComp: FC<PropsWithChildren> = observer(() => {
-  const editorWrapRef = useRef<HTMLDivElement>(null);
-  const { isGenerating, genComponentsInfo } = useGenComponentsInfo();
+  const { isGenerating, registryComponents } = useRegistryComponents();
 
-  const { editorStore, metas } = useEditorContext();
+  const { editorStore } = useEditorContext();
 
   useAsyncEffect(async () => {
-    const res = await genComponentsInfo(metas);
+    const res = await registryComponents(editorStore.meta);
     editorStore.setComponentsInfo(res);
-  }, [metas]);
+  }, []);
 
-  useEventListeners(editorWrapRef);
+  useUpdateEffect(() => {
+    console.log("meta", toJS(editorStore.meta));
+  }, [toJS(editorStore.meta)]);
+
+  useUpdateEffect(() => {
+    console.log("componentsInfo", toJS(editorStore.componentsInfo));
+  }, [toJS(editorStore.componentsInfo)]);
 
   return (
-    <div ref={editorWrapRef} className="editor-wrapper">
+    <div className="editor-wrapper">
       <DndContextWrapper>
         {/* --------- Siderbar for editor --------- */}
         <Siderbar />

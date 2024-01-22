@@ -6,9 +6,13 @@ import {
   ComponentTypes,
   DragOrigin,
   DragInfoFromSideAdd,
+  ComponentPosition,
 } from "@/components/editor/types";
 
 import "./index.scss";
+import { Select } from "zui-pro";
+import { observer } from "mobx-react-lite";
+import { useEditorContext } from "../../hooks/useEditorContext";
 
 const PREFIX = "editor-siderbar";
 
@@ -45,11 +49,26 @@ export const SiderBarItem: FC<SiderBarItemProps> = (props) => {
   );
 };
 
-export const Siderbar = () => {
+export const Siderbar = observer(() => {
+  const {
+    editorStore: { positonMode },
+    editorStore,
+  } = useEditorContext();
+
+  const postionSelectOptions = useMemo(
+    () =>
+      map(ComponentPosition, (value) => ({
+        value,
+        label: value,
+      })),
+    []
+  );
+
   const components = useMemo(() => {
     const filteredComponents = filter(
       entries(COMPONENTS_INFO),
-      ([key]) => key !== ComponentTypes.PAGE
+      ([key]) =>
+        key !== ComponentTypes.PAGE && key !== ComponentTypes.BLANK_CONTAINER
     );
     return (
       <div className={`${PREFIX}-container`}>
@@ -60,5 +79,17 @@ export const Siderbar = () => {
     );
   }, []);
 
-  return <div className={PREFIX}>{components}</div>;
-};
+  return (
+    <div className={PREFIX}>
+      <div className={`${PREFIX}-mode`}>
+        <div>Position:</div>
+        <Select
+          value={positonMode}
+          options={postionSelectOptions}
+          onChange={(mode) => editorStore.setPositionMode(mode)}
+        />
+      </div>
+      {components}
+    </div>
+  );
+});

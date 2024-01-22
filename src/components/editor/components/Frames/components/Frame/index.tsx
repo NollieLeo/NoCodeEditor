@@ -8,7 +8,9 @@ export interface FrameProps {
 
 const FrameComp: FC<PropsWithChildren<FrameProps>> = observer(
   ({ children, scopeId }) => {
-    const { scope } = useEditorContext();
+    const {
+      editorStore: { scope },
+    } = useEditorContext();
 
     const title = useMemo(() => {
       const { width, height } = scope[scopeId];

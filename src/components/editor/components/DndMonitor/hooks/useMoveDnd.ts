@@ -2,10 +2,12 @@ import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { useDom } from "@/components/editor/hooks/useDom";
 import { DragInfo } from "@/components/editor/types";
 import { DragEndEvent } from "@dnd-kit/core";
+import { useSelectComponent } from "@/components/editor/hooks/useSelectComponent";
 
 export function useMoveDnd() {
   const { editorStore } = useEditorContext();
   const { getDom } = useDom();
+  const { onSelectComponent } = useSelectComponent();
 
   const onDragEnd = (e: DragEndEvent) => {
     const {
@@ -22,7 +24,7 @@ export function useMoveDnd() {
       left: computedLeft,
     };
     editorStore.updateNodeStyle(style, dragId);
-    editorStore.setFocusedInfo({ id: dragId });
+    onSelectComponent(dragId);
   };
 
   return { onDragEnd };

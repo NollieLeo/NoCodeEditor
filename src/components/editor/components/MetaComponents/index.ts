@@ -5,3 +5,4 @@ export { Textarea } from "./components/Textarea";
 export { Select } from "./components/Select";
 export { Text } from "./components/Text";
 export { ConditionalContainer } from "./components/ConditionalContainer";
+export { BlankContainer } from "./components/BlankContainer";

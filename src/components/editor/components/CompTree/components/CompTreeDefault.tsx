@@ -1,7 +1,7 @@
 import { Fragment, memo, useMemo } from "react";
 import { CompTreeProps } from "../types";
 import { COMPONENTS_INFO } from "@/components/editor/constants";
-import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
+import { useGetComponentInfo } from "@/components/editor/hooks/useGetComponentInfo";
 import { isNil, map } from "lodash-es";
 import { observer } from "mobx-react-lite";
 
@@ -11,7 +11,7 @@ const CompTreeDefaultComp = observer((props: Pick<CompTreeProps, "rootId">) => {
     throw new Error(`root id;${rootId} does not exist`);
   }
 
-  const { getComponentInfo } = useComponentInfo();
+  const { getComponentInfo } = useGetComponentInfo();
 
   const componentInfo = getComponentInfo(rootId);
 

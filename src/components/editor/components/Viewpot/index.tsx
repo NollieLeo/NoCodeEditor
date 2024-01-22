@@ -1,10 +1,11 @@
 import { observer } from "mobx-react-lite";
-import { FC, PropsWithChildren, memo } from "react";
+import { FC, PropsWithChildren, memo, useRef } from "react";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import InfiniteViewer, { ScrollCenterOptions } from "react-infinite-viewer";
 import { useViewerTriggers } from "./hooks/useViewTriggers";
 
 import "./index.scss";
+import { useEventListeners } from "./hooks/useEventListeners";
 
 export interface ViewportRefs {
   scrollCenter: (options?: ScrollCenterOptions | undefined) => boolean;
@@ -16,15 +17,14 @@ const ViewportComp: FC<PropsWithChildren> = observer((props) => {
     editorStore: { zoom },
   } = useEditorContext();
 
-  const { viewRef, onPinch, onScroll, onContextMenu, onClick } =
-    useViewerTriggers();
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const { viewRef, onPinch, onScroll } = useViewerTriggers();
+
+  useEventListeners(wrapperRef);
 
   return (
-    <div
-      className="editor-viewport"
-      onContextMenu={onContextMenu}
-      onClick={onClick}
-    >
+    <div className="editor-viewport" ref={wrapperRef}>
       <InfiniteViewer
         ref={viewRef}
         className="editor-viewport-infinity"

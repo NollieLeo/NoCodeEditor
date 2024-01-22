@@ -6,8 +6,8 @@ import { useDragInfo } from "./useDragInfo";
 import { useDragOverInfo } from "./useDragOverInfo";
 import { useDndContext } from "@dnd-kit/core";
 import { useDom } from "./useDom";
-import { useComponentInfo } from "./useComponentInfo";
-import { COMPONENTS_INFO } from "../constants";
+import { useGetComponentInfo } from "./useGetComponentInfo";
+import { useEditorContext } from "./useEditorContext";
 
 function genRectToDistance(pLeft: number, pTop: number, rect: DOMRect) {
   const { left: rLeft, width: rWidth, height: rHeight, top: rTop } = rect;
@@ -17,10 +17,14 @@ function genRectToDistance(pLeft: number, pTop: number, rect: DOMRect) {
 }
 
 export function useInsertTarget() {
+  const {
+    editorStore: { positonMode },
+  } = useEditorContext();
+
   const { active } = useDndContext();
   const dragInfo = useDragInfo();
   const overInfo = useDragOverInfo();
-  const { getComponentInfo } = useComponentInfo();
+  const { getComponentInfo } = useGetComponentInfo();
   const { getDom } = useDom();
 
   const getDragCenterRect = useCallback(() => {
@@ -68,11 +72,8 @@ export function useInsertTarget() {
     if (dragInfo?.from !== DragOrigin.SIDE_ADD || !overInfo) {
       return false;
     }
-    const {
-      attrs: { style },
-    } = COMPONENTS_INFO[dragInfo.type];
 
-    if (isAbsoluteOrFixed(style)) {
+    if (isAbsoluteOrFixed({ position: positonMode })) {
       return false;
     }
     return true;

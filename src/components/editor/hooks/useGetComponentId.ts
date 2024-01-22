@@ -1,11 +1,11 @@
 import { useCallback } from "react";
-import { useComponentInfo } from "./useComponentInfo";
+import { useGetComponentInfo } from "./useGetComponentInfo";
 import { filter, isNil } from "lodash-es";
 
-export const useComponentId = () => {
-  const { getComponentInfo, getNodeParentInfo } = useComponentInfo();
+export const useGetComponentId = () => {
+  const { getComponentInfo, getNodeParentInfo } = useGetComponentInfo();
 
-  const getNodeParentId = useCallback(
+  const getParentComponentId = useCallback(
     (targetId: string) => {
       const { parentId } = getComponentInfo(targetId);
       return parentId;
@@ -25,7 +25,7 @@ export const useComponentId = () => {
   );
 
   return {
-    getNodeParentId,
+    getParentComponentId,
     getSiblingIds,
   };
 };

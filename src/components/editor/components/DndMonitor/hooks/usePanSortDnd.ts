@@ -1,10 +1,12 @@
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
+import { useGetComponentInfo } from "@/components/editor/hooks/useGetComponentInfo";
+import { useSelectComponent } from "@/components/editor/hooks/useSelectComponent";
 import { DragInfoFromPanSort, DropInfo } from "@/components/editor/types";
 
 export function usePanSortDnd() {
   const { editorStore } = useEditorContext();
-  const { getNodeParentInfo } = useComponentInfo();
+  const { getNodeParentInfo } = useGetComponentInfo();
+  const { onSelectComponent } = useSelectComponent();
 
   const onDragOver = (
     dragInfo: DragInfoFromPanSort,
@@ -26,7 +28,7 @@ export function usePanSortDnd() {
 
   const onDragEnd = (dragInfo: DragInfoFromPanSort) => {
     const { id } = dragInfo;
-    editorStore.setFocusedInfo({ id });
+    onSelectComponent(id);
   };
 
   return {

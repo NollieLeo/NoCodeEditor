@@ -1,38 +1,30 @@
+import { DROPPABLE_COMPONENTS } from "@/components/editor/constants";
 import { useDragInfo } from "@/components/editor/hooks/useDragInfo";
-import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
-import {
-  DragOrigin,
-  ComponentTypes,
-  DropInfo,
-  ComponentInfo,
-} from "@/components/editor/types";
+import { useGetComponentInfo } from "@/components/editor/hooks/useGetComponentInfo";
+import { DragOrigin, DropInfo, ComponentInfo } from "@/components/editor/types";
 import { useMemo } from "react";
 
 export const useDroppableConfig = (componentInfo: ComponentInfo) => {
-  const { childsId, parentId, type, id } = componentInfo;
-  const { getComponentInfo } = useComponentInfo();
-
+  const { parentId, type, id } = componentInfo;
+  const { getComponentInfo } = useGetComponentInfo();
   const dragInfo = useDragInfo();
 
   const droppable = useMemo(() => {
-    if (!dragInfo) {
-      return false;
-    }
+    if (!dragInfo) return false;
     if (dragInfo?.from === DragOrigin.SIDE_ADD) {
-      return (
-        [ComponentTypes.PAGE, ComponentTypes.CONTAINER].includes(type) &&
-        !!childsId
-      );
+      const isAvaliable = DROPPABLE_COMPONENTS.includes(type);
+      return isAvaliable;
     }
     const dragSchema = getComponentInfo(dragInfo.id);
     return parentId === dragSchema.parentId;
-  }, [childsId, dragInfo, getComponentInfo, parentId, type]);
+  }, [dragInfo, getComponentInfo, parentId, type]);
 
-  const droppableData = useMemo<DropInfo>(() => {
-    return {
+  const droppableData = useMemo<DropInfo>(
+    () => ({
       id,
-    };
-  }, [id]);
+    }),
+    [id]
+  );
 
   return {
     droppableData,

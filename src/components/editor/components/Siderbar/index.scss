@@ -22,4 +22,10 @@
       justify-content: center;
     }
   }
+  .editor-siderbar-mode {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    justify-content: space-between;
+  }
 }

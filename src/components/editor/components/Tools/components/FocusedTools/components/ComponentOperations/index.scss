@@ -1,0 +1,16 @@
+.editor-focused-comp-operations {
+  position: absolute;
+  top: -30px;
+  background: #1450d9;
+  border-radius: 4px;
+  padding: 2px 4px;
+  color: white;
+  font-size: 12px;
+  white-space: nowrap;
+  font-weight: bold;
+  will-change: transform;
+  height: fit-content;
+  pointer-events: all;
+  display: flex;
+  align-items: center;
+}

@@ -6,11 +6,13 @@ import {
   Select,
   Text,
   ConditionalContainer,
+  BlankContainer,
 } from "../components/MetaComponents";
 import { ComponentTypes } from "../types";
 
 export const DATA_COMPONENT_ID = "data-component-id";
 export const DATA_COMPONENT_TYPE = "data-component-type";
+export const DATA_COMPONENT_OVERLAY_ID = "data-overlay-id";
 
 export const COMPONENTS_INFO = {
   [ComponentTypes.BUTTON]: {
@@ -90,9 +92,8 @@ export const COMPONENTS_INFO = {
       style: {
         width: 350,
         height: 200,
-        background: (function () {
-          return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-        })(),
+        background: "#b4b4b4",
+        position: "relative",
         display: "flex",
         overflow: "hidden",
         flexShrink: 0,
@@ -126,10 +127,39 @@ export const COMPONENTS_INFO = {
         background: "rgb(243, 243, 243)",
         display: "flex",
         flexShrink: 0,
-        position: "absolute",
-        top: 0,
-        left: 0,
+        overflow: "hidden",
+      },
+    },
+  },
+  [ComponentTypes.BLANK_CONTAINER]: {
+    name: "空容器",
+    render: BlankContainer,
+    type: ComponentTypes.BLANK_CONTAINER,
+    attrs: {
+      style: {
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexShrink: 0,
+        overflow: "hidden",
       },
     },
   },
 } as const;
+
+export const DRAGGABLE_COMPONENTS = [
+  ComponentTypes.BUTTON,
+  ComponentTypes.INPUT,
+  ComponentTypes.TEXTAREA,
+  ComponentTypes.TEXT,
+  ComponentTypes.SELECT,
+  ComponentTypes.INPUT,
+  ComponentTypes.CONTAINER,
+  ComponentTypes.CONDITIONAL_CONTAINER,
+];
+
+export const DROPPABLE_COMPONENTS = [
+  ComponentTypes.CONTAINER,
+  ComponentTypes.BLANK_CONTAINER,
+  ComponentTypes.PAGE,
+];

@@ -8,7 +8,7 @@ import Moveable, { ResizableOptions } from "react-moveable";
 import { useSnapPoints } from "@/components/editor/hooks/useSnapPoints";
 import { EditorState } from "@/components/editor/stores/EditorStore";
 import { SNAP_THRESHOLD } from "@/components/editor/constants";
-import { useComponentId } from "@/components/editor/hooks/useComponentId";
+import { useGetComponentId } from "@/components/editor/hooks/useGetComponentId";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 
 import "./index.scss";
@@ -27,7 +27,7 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
 
   const getSnapPoints = useSnapPoints();
 
-  const { getSiblingIds } = useComponentId();
+  const { getSiblingIds } = useGetComponentId();
 
   const { ables, props } = useResizeAbles();
   const { resizeKey, onResize, onResizeEnd } = useResizeTriggers(

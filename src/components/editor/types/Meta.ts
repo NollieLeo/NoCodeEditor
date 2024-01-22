@@ -1,4 +1,4 @@
-import { AnyObject } from "./AnyObject";
+import { CSSProperties } from "react";
 import { ComponentTypes } from "./Components";
 
 export interface MetaInfo {
@@ -7,5 +7,7 @@ export interface MetaInfo {
   name?: string;
   parentId?: string | null;
   childsId?: string[] | null;
-  attrs: AnyObject;
+  attrs: {
+    style: CSSProperties;
+  };
 }

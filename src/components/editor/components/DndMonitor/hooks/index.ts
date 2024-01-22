@@ -4,19 +4,18 @@ import type {
   DragOverEvent,
   DragStartEvent,
 } from "@dnd-kit/core";
-import { transaction } from "mobx";
-import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { DragOrigin, DragInfo, DropInfo } from "@/components/editor/types";
 import { useSideDnd } from "./useSideDnd";
 import { usePanSortDnd } from "./usePanSortDnd";
 import { useMoveDnd } from "./useMoveDnd";
+import { useSelectComponent } from "@/components/editor/hooks/useSelectComponent";
 
 export default function useEditorDnd() {
-  const { editorStore } = useEditorContext();
   const { onDragEnd: onSideDragEnd } = useSideDnd();
   const { onDragOver: onPanDragOver, onDragEnd: onPanSortEnd } =
     usePanSortDnd();
   const { onDragEnd: onPanMoveEnd } = useMoveDnd();
+  const { onSelectComponent } = useSelectComponent();
 
   const onDragStart = ({ active }: DragStartEvent) => {
     const { data } = active;
@@ -32,10 +31,7 @@ export default function useEditorDnd() {
       default:
         throw new Error(`unsupported drag origin`);
     }
-    transaction(() => {
-      editorStore.setHoverNodeId(null);
-      editorStore.setFocusedInfo(null);
-    });
+    onSelectComponent();
   };
 
   const onDragOver = ({ active, over }: DragOverEvent) => {

@@ -2,20 +2,22 @@ import { DragInfoFromSideAdd, DropInfo } from "@/components/editor/types";
 import { useInsertTarget } from "@/components/editor/hooks/useInsertTarget";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { DragEndEvent } from "@dnd-kit/core";
-import { genMeta } from "@/components/editor/utils/Meta";
-import { genComponentInfo } from "@/components/editor/utils/Components";
-import { useComponentInfo } from "@/components/editor/hooks/useComponentInfo";
-import { COMPONENTS_INFO } from "@/components/editor/constants";
+import { useGetComponentInfo } from "@/components/editor/hooks/useGetComponentInfo";
 import { isAbsoluteOrFixed } from "@/components/editor/utils/layout";
-import { getDomById } from "@/components/editor/utils/Dom";
+import { getDomById, getDomByOverlayId } from "@/components/editor/utils/Dom";
+import { useEditorTriggers } from "@/components/editor/hooks/useEditorTriggers";
+import { CSSProperties } from "react";
+import { isNil } from "lodash-es";
+import { useSelectComponent } from "@/components/editor/hooks/useSelectComponent";
 
 export function useSideDnd() {
   const {
-    editorStore,
-    editorStore: { zoom },
+    editorStore: { zoom, positonMode },
   } = useEditorContext();
   const getInsertInfo = useInsertTarget();
-  const { getComponentInfo } = useComponentInfo();
+  const { getComponentInfo } = useGetComponentInfo();
+  const { onAdd } = useEditorTriggers();
+  const { onSelectComponent } = useSelectComponent();
 
   const onDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
@@ -28,47 +30,38 @@ export function useSideDnd() {
     const { type } = newCompData.current as DragInfoFromSideAdd;
     const dropInfo = dropCompData.current! as DropInfo;
 
-    const { id: parentId, scopeId, meta } = getComponentInfo(dropInfo.id);
+    const { id: parentId, scopeId, metaId } = getComponentInfo(dropInfo.id);
 
-    const {
-      attrs: { style },
-    } = COMPONENTS_INFO[type];
-
-    if (isAbsoluteOrFixed(style)) {
-      const parentDom = getDomById(parentId)!;
-      const overlayDom = document.getElementById(String(active.id))!;
-
-      const parentRect = parentDom.getBoundingClientRect();
-      const overlayRect = overlayDom.getBoundingClientRect();
-
-      const newStyle = {
-        ...style,
+    let style: CSSProperties = {};
+    let insertIdx: number | undefined;
+    if (isAbsoluteOrFixed({ position: positonMode })) {
+      const parentRect = getDomById(parentId)!.getBoundingClientRect();
+      const overlayRect = getDomByOverlayId(active.id)!.getBoundingClientRect();
+      style = {
         left: Math.floor((overlayRect.left - parentRect.left) / zoom),
         top: Math.floor((overlayRect.top - parentRect.top) / zoom),
+        position: positonMode,
       };
-
-      const newMeta = genMeta({
-        type,
-        parentId: meta.id,
-        attrs: { style: { ...newStyle } },
-      });
-      const newComponent = genComponentInfo(newMeta, scopeId);
-
-      editorStore.addNode(newComponent, parentId);
-
-      requestIdleCallback(() => {
-        editorStore.setFocusedInfo({ id: newComponent.id });
-      });
     } else {
-      const newMeta = genMeta({ type, parentId: meta.id });
-      const newComponent = genComponentInfo(newMeta, scopeId);
       const insertInfo = getInsertInfo();
-      editorStore.addNode(newComponent, parentId, insertInfo?.insertIdx);
-
-      requestIdleCallback(() => {
-        editorStore.setFocusedInfo({ id: newComponent.id });
-      });
+      if (!isNil(insertInfo)) {
+        insertIdx = insertInfo.insertIdx;
+      }
     }
+
+    const {
+      components: [rootComponent],
+    } = onAdd(
+      {
+        type,
+        parentId: metaId,
+        attrs: { style },
+      },
+      scopeId,
+      insertIdx
+    );
+
+    onSelectComponent(rootComponent.id);
   };
 
   return {

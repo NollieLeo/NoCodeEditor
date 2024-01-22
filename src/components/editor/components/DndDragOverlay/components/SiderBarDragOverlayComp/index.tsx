@@ -1,6 +1,9 @@
 import { FC, memo, useMemo } from "react";
 import { DragOrigin } from "@/components/editor/types";
-import { COMPONENTS_INFO } from "@/components/editor/constants";
+import {
+  COMPONENTS_INFO,
+  DATA_COMPONENT_OVERLAY_ID,
+} from "@/components/editor/constants";
 import { useDragInfo } from "@/components/editor/hooks/useDragInfo";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { observer } from "mobx-react-lite";
@@ -29,6 +32,7 @@ const SiderBarDragOverlayTmpl: FC = observer(() => {
             transform: `scale(${zoom})`,
           }}
           id={id}
+          {...{ [DATA_COMPONENT_OVERLAY_ID]: id }}
         />
       );
     }
