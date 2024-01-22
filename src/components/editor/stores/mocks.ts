@@ -10,7 +10,7 @@ export const MOCK_METAS = {
         height: "1080px",
         background: "#fff",
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "column",
         flexShrink: 0,
         flexWrap: "wrap",
         position: "relative",

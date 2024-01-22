@@ -38,6 +38,7 @@ export const COMPONENTS_INFO = {
         display: "block",
         flexShrink: 0,
         height: "32px",
+        width: "120px",
       },
       children: "旋转跳跃我闭着眼",
     },
