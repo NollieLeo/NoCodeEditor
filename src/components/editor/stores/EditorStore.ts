@@ -1,6 +1,6 @@
 import { arrayMove } from "@dnd-kit/sortable";
 import { useLocalStore } from "mobx-react-lite";
-import { findIndex, forEach, isNil, isUndefined } from "lodash-es";
+import { findIndex, forEach, isNil, isObject, isUndefined } from "lodash-es";
 import { ComponentInfo, ComponentPosition } from "../types";
 import { CSSProperties } from "react";
 import { MetaInfo } from "../types/Meta";
@@ -36,11 +36,26 @@ export interface EditorAction {
   ): void;
   cleanUpHelperNode(): void;
 
+  /** add meta and components */
   addComponents(
     componentsInfo: [ComponentInfo, ComponentInfo[] | null],
     index?: number
   ): void;
   addMetas(metas: [MetaInfo, MetaInfo[] | null], index?: number): void;
+
+  /** update meta and components attrs */
+  updateMetaAttr<Key extends keyof MetaInfo["attrs"] = keyof MetaInfo["attrs"]>(
+    id: string,
+    attrName: Key,
+    value: MetaInfo["attrs"][Key]
+  ): void;
+  updateComponentAttr<
+    Key extends keyof ComponentInfo["attrs"] = keyof ComponentInfo["attrs"]
+  >(
+    id: string,
+    attrName: Key,
+    value: ComponentInfo["attrs"][Key]
+  ): void;
 
   // ----------- node operations -----------
   updateNodeStyle(
@@ -159,6 +174,34 @@ export const useEditorStore = ({
       const preStyle = targetComponent.attrs.style;
       const newStyle = typeof styles === "function" ? styles(preStyle) : styles;
       targetComponent.attrs.style = { ...preStyle, ...newStyle };
+    },
+
+    updateMetaAttr(id, attrName, value) {
+      const targetMeta = this.meta[id];
+      if (!targetMeta) {
+        throw new Error(`update attributes failed: meta ${id} does not exist`);
+      }
+      const targetAttr = targetMeta["attrs"][attrName];
+      if (isObject(targetAttr)) {
+        targetMeta["attrs"][attrName] = { ...targetAttr, ...value };
+      } else {
+        targetMeta["attrs"][attrName] = value;
+      }
+    },
+
+    updateComponentAttr(id, attrName, value) {
+      const targetComponent = this.componentsInfo[id];
+      if (!targetComponent) {
+        throw new Error(
+          `update attributes failed: component ${id} does not exist`
+        );
+      }
+      const targetAttr = targetComponent["attrs"][attrName];
+      if (isObject(targetAttr)) {
+        targetComponent["attrs"][attrName] = { ...targetAttr, ...value };
+      } else {
+        targetComponent["attrs"][attrName] = value;
+      }
     },
   }));
 };

@@ -1,8 +1,8 @@
-import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { useDom } from "@/components/editor/hooks/useDom";
 import { isNil, uniqueId } from "lodash-es";
 import { CSSProperties, useState } from "react";
 import type { OnResize, OnResizeEnd } from "react-moveable";
+import { useEditorTriggers } from "@/components/editor/hooks/useEditorTriggers";
 
 function isAbsoluteOrFixed(dom?: HTMLElement | null) {
   if (!isNil(dom)) {
@@ -12,8 +12,8 @@ function isAbsoluteOrFixed(dom?: HTMLElement | null) {
 }
 
 export default function useResizeTriggers(targetId?: string) {
-  const { editorStore } = useEditorContext();
   const [resizeKey, setResizeKey] = useState(uniqueId());
+  const { onUpdateAttrByCompId } = useEditorTriggers();
   const { getDom } = useDom();
 
   const forceResizeUpdate = () => {
@@ -59,7 +59,7 @@ export default function useResizeTriggers(targetId?: string) {
           : targetDom.offsetLeft;
     }
 
-    editorStore.updateNodeStyle(updatedStyle, targetId);
+    onUpdateAttrByCompId(targetId, "style", updatedStyle);
   };
 
   return {

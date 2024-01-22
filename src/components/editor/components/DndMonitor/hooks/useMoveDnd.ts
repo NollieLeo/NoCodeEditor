@@ -1,13 +1,13 @@
-import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { useDom } from "@/components/editor/hooks/useDom";
 import { DragInfo } from "@/components/editor/types";
 import { DragEndEvent } from "@dnd-kit/core";
 import { useSelectComponent } from "@/components/editor/hooks/useSelectComponent";
+import { useEditorTriggers } from "@/components/editor/hooks/useEditorTriggers";
 
 export function useMoveDnd() {
-  const { editorStore } = useEditorContext();
   const { getDom } = useDom();
   const { onSelectComponent } = useSelectComponent();
+  const { onUpdateAttrByCompId } = useEditorTriggers();
 
   const onDragEnd = (e: DragEndEvent) => {
     const {
@@ -23,7 +23,7 @@ export function useMoveDnd() {
       top: computedTop,
       left: computedLeft,
     };
-    editorStore.updateNodeStyle(style, dragId);
+    onUpdateAttrByCompId(dragId, "style", style);
     onSelectComponent(dragId);
   };
 
