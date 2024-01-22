@@ -1,15 +1,18 @@
 .editor-focused-comp-tag {
   position: absolute;
   left: 0;
-  top: -30px;
-  height: 20px;
+  height: fit-content;
   background: #1450d9;
   border-radius: 4px;
-  padding: 2px 4px;
+  padding: 4px 2px;
   color: white;
   font-size: 12px;
   white-space: nowrap;
   font-weight: bold;
   will-change: transform;
   z-index: 2;
+  writing-mode: vertical-rl;
+  letter-spacing: 2px;
+  text-align: center;
+  transform: translate(-50%, 0px);
 }

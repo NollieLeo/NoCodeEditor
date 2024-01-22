@@ -3,8 +3,13 @@ import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { observer } from "mobx-react-lite";
 import { FC, memo } from "react";
 import "./index.scss";
+import { RectInfo } from "react-moveable";
 
-const ComponentNameTagComp: FC = observer(() => {
+interface ComponentNameTagProps {
+  rect: RectInfo;
+}
+
+const ComponentNameTagComp: FC<ComponentNameTagProps> = observer(({ rect }) => {
   const {
     editorStore: { focusedInfo },
   } = useEditorContext();
@@ -14,7 +19,14 @@ const ComponentNameTagComp: FC = observer(() => {
   const componentInfo = getComponentInfo(focusedInfo!.id);
 
   return (
-    <div className="editor-focused-comp-tag" key="component-name-tag">
+    <div
+      className="editor-focused-comp-tag"
+      style={{
+        top: 0,
+        left: -20,
+      }}
+      key="component-name-tag"
+    >
       {componentInfo.name || componentInfo.type}
     </div>
   );

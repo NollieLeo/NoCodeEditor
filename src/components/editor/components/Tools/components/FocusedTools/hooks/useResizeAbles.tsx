@@ -1,4 +1,4 @@
-import type { MoveableManagerInterface } from "react-moveable";
+import type { Able, MoveableManagerInterface } from "react-moveable";
 import { ResizeDimensionViewable } from "../components/ResizeDimensionViewable";
 import { ComponentNameTag } from "../components/ComponentName";
 import { ComponentOperations } from "../components/ComponentOperations";
@@ -7,26 +7,27 @@ import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { getTypeByDomId } from "@/components/editor/utils/Dom";
 import { useMemo } from "react";
 
-const DimensionViewable = {
+const DimensionViewable: Able = {
   name: "dimensionViewable",
   props: [],
   events: [],
-  render(moveable: MoveableManagerInterface<unknown, unknown>) {
+  render(moveable) {
     const rect = moveable.getRect();
     return <ResizeDimensionViewable key={"dimensionViewable"} rect={rect} />;
   },
-} as const;
+};
 
-const ComponentNameTagView = {
+const ComponentNameTagView: Able = {
   name: "componentName",
   props: [],
   events: [],
-  render() {
-    return <ComponentNameTag key="componentName" />;
+  render(moveable) {
+    const rect = moveable.getRect();
+    return <ComponentNameTag key="componentName" rect={rect} />;
   },
 } as const;
 
-const ComponentOperationsView = {
+const ComponentOperationsView: Able = {
   name: "componentOperations",
   props: [],
   events: [],
@@ -34,7 +35,7 @@ const ComponentOperationsView = {
     const rect = moveable.getRect();
     return <ComponentOperations key="componentOperations" rect={rect} />;
   },
-} as const;
+};
 
 export default function useResizeAbles() {
   const {

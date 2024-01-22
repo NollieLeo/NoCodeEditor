@@ -143,6 +143,8 @@ export const COMPONENTS_INFO = {
         flexShrink: 0,
         position: "relative",
         overflow: "hidden",
+        flexFlow: "wrap",
+        placeContent: "baseline start",
       },
     },
   },

@@ -67,7 +67,7 @@ export const ConditionalOperations = observer(() => {
     handleSelectChange(root.id);
   };
 
-  const handleDeleteCondition = (e, index) => {
+  const handleDeleteCondition = (e: any, index: any) => {
     e.stopPropagation();
     const target = selectConditionOptions[index];
     const first = selectConditionOptions[0];
@@ -83,7 +83,7 @@ export const ConditionalOperations = observer(() => {
     <>
       <Select
         key={getSelectedChild()}
-        style={{ width: "100px" }}
+        style={{ width: "80px", background: "#1450d9" }}
         value={getSelectedChild()}
         onSelect={handleSelectChange}
         options={selectConditionOptions}
@@ -95,8 +95,11 @@ export const ConditionalOperations = observer(() => {
               justifyContent: "space-between",
             }}
           >
-            {label}
-            <DeleteOutline onClick={(e) => handleDeleteCondition(e, index)} />
+            <span>{label}</span>
+            <DeleteOutline
+              size={16}
+              onClick={(e) => handleDeleteCondition(e, index)}
+            />
           </div>
         )}
         size="small"
