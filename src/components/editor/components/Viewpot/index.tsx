@@ -6,7 +6,7 @@ import { useViewerTriggers } from "./hooks/useViewTriggers";
 
 import "./index.scss";
 import { useEventListeners } from "./hooks/useEventListeners";
-import { useSize, useUpdateLayoutEffect } from "ahooks";
+import { useSize, useUpdateEffect, useUpdateLayoutEffect } from "ahooks";
 
 export interface ViewportRefs {
   scrollCenter: (options?: ScrollCenterOptions | undefined) => boolean;
@@ -28,9 +28,12 @@ const ViewportComp: FC<PropsWithChildren> = observer((props) => {
 
   const size = useSize(containerRef);
 
-  useUpdateLayoutEffect(() => {
+  useUpdateEffect(() => {
+    viewRef.current?.setZoom(0.8)
     viewRef.current?.scrollCenter({ horizontal: true, vertical: true });
-    editorStore.setZoom(0.6);
+    requestAnimationFrame(() => {
+      editorStore.setZoom(0.8);
+    });
   }, [size?.width]);
 
   return (
@@ -43,7 +46,7 @@ const ViewportComp: FC<PropsWithChildren> = observer((props) => {
         useWheelScroll
         useAutoZoom={false}
         useMouseDrag={false}
-        pinchThreshold={50}
+        pinchThreshold={1}
         threshold={0}
         zoom={zoom}
         onPinch={onPinch}
