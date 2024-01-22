@@ -7,7 +7,7 @@ export function useDragOverInfo() {
 
   const overInfo = useMemo(() => {
     return over?.data.current as DropInfo | undefined;
-  }, [over?.data]);
+  }, [over?.data, over?.id]);
 
   return overInfo;
 }
