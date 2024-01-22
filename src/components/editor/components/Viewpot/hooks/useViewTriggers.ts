@@ -10,19 +10,19 @@ export function useViewerTriggers() {
 
   const onScroll = () => {
     clearTimeout(transformTimer.current);
-    editorStore.setPanIsTransforming(true);
     transformTimer.current = setTimeout(() => {
       editorStore.setPanIsTransforming(false);
-    }, 200);
+    }, 300);
+    editorStore.setPanIsTransforming(true);
   };
 
   const onPinch = (e: OnPinch) => {
     clearTimeout(transformTimer.current);
-    editorStore.setPanIsTransforming(true);
-    editorStore.setZoom(e.zoom);
     transformTimer.current = setTimeout(() => {
       editorStore.setPanIsTransforming(false);
-    }, 200);
+    }, 300);
+    editorStore.setPanIsTransforming(true);
+    editorStore.setZoom(e.zoom);
   };
 
   const onContextMenu: MouseEventHandler<HTMLDivElement> = (e) => {
