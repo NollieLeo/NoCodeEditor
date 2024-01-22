@@ -2,7 +2,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { useLocalStore } from "mobx-react-lite";
 import { findIndex, forEach, isNil, isObject, isUndefined } from "lodash-es";
 import { ComponentInfo, ComponentPosition } from "../types";
-import { CSSProperties } from "react";
+import { transaction } from "mobx";
 import { MetaInfo } from "../types/Meta";
 import { Scope } from "../types/Scope";
 
@@ -57,11 +57,11 @@ export interface EditorAction {
     value: ComponentInfo["attrs"][Key]
   ): void;
 
+  /** delete meta and component */
+  deleteMeta(id: MetaInfo["id"]): void;
+  deleteComponent(id: ComponentInfo["id"]): void;
+
   // ----------- node operations -----------
-  updateNodeStyle(
-    styles: CSSProperties | ((preStyles: CSSProperties) => CSSProperties),
-    target: string
-  ): void;
   movePos(parentId: string, from: string, to: string): void;
 }
 
@@ -121,9 +121,7 @@ export const useEditorStore = ({
         parentComponent.childsId = [];
       }
       const targetIdx =
-        isUndefined(idx) || idx === -1
-          ? parentComponent.childsId?.length - 1
-          : idx;
+        isUndefined(idx) || idx === -1 ? parentComponent.childsId?.length : idx;
       parentComponent.childsId.splice(targetIdx, 0, root.id);
     },
 
@@ -140,40 +138,36 @@ export const useEditorStore = ({
         parentMeta.childsId = [];
       }
       const targetIdx =
-        isUndefined(idx) || idx === -1 ? parentMeta.childsId?.length - 1 : idx;
+        isUndefined(idx) || idx === -1 ? parentMeta.childsId?.length : idx;
       parentMeta.childsId.splice(targetIdx, 0, root.id);
     },
 
-    /**
-     * @description move component in a sortable container
-     */
-    movePos(parentId: string, fromId: string, toId: string) {
-      const parentComp = this.componentsInfo[parentId];
-      if (!parent || !parentComp.childsId) {
-        throw new Error(`move failed: node ${parentId} does not exist`);
-      }
-      if (fromId === toId) {
-        return;
-      }
-      const { childsId } = parentComp;
-      const fromIdx = findIndex(childsId, (id) => id === fromId);
-      const toIdx = findIndex(childsId, (id) => id === toId);
-      if (fromIdx === -1 || toIdx === -1) {
-        return;
-      }
-      const newChildNodes = arrayMove(childsId, fromIdx, toIdx);
-      childsId.length = 0;
-      childsId.push(...newChildNodes);
+    deleteMeta(metaId) {
+      transaction(() => {
+        const { childsId, parentId } = this.meta[metaId];
+        if (parentId) {
+          const parent = this.meta[parentId];
+          parent.childsId?.splice(parent.childsId.indexOf(metaId), 1);
+        }
+        delete this.meta[metaId];
+        forEach(childsId, (childId) => {
+          delete this.meta[childId];
+        });
+      });
     },
 
-    updateNodeStyle(styles, targetId) {
-      const targetComponent = this.componentsInfo[targetId];
-      if (!targetComponent) {
-        throw new Error(`update failed: node ${targetId} does not exist`);
-      }
-      const preStyle = targetComponent.attrs.style;
-      const newStyle = typeof styles === "function" ? styles(preStyle) : styles;
-      targetComponent.attrs.style = { ...preStyle, ...newStyle };
+    deleteComponent(compId) {
+      transaction(() => {
+        const { childsId, parentId } = this.componentsInfo[compId];
+        if (parentId) {
+          const parent = this.componentsInfo[parentId];
+          parent.childsId?.splice(parent.childsId.indexOf(compId), 1);
+        }
+        delete this.componentsInfo[compId];
+        forEach(childsId, (childId) => {
+          delete this.componentsInfo[childId];
+        });
+      });
     },
 
     updateMetaAttr(id, attrName, value) {
@@ -202,6 +196,28 @@ export const useEditorStore = ({
       } else {
         targetComponent["attrs"][attrName] = value;
       }
+    },
+
+    /**
+     * @description move component in a sortable container
+     */
+    movePos(parentId: string, fromId: string, toId: string) {
+      const parentComp = this.componentsInfo[parentId];
+      if (!parent || !parentComp.childsId) {
+        throw new Error(`move failed: node ${parentId} does not exist`);
+      }
+      if (fromId === toId) {
+        return;
+      }
+      const { childsId } = parentComp;
+      const fromIdx = findIndex(childsId, (id) => id === fromId);
+      const toIdx = findIndex(childsId, (id) => id === toId);
+      if (fromIdx === -1 || toIdx === -1) {
+        return;
+      }
+      const newChildNodes = arrayMove(childsId, fromIdx, toIdx);
+      childsId.length = 0;
+      childsId.push(...newChildNodes);
     },
   }));
 };

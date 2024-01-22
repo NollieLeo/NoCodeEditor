@@ -5,6 +5,7 @@ import { GenComponentsReturns, useGenComponents } from "./useGenComponents";
 import { GenMetaReturns, useGenMeta } from "./useGenMeta";
 import { useGetMetaInfo } from "./useGetMetaInfo";
 import { useGetComponentInfo } from "./useGetComponentInfo";
+import { ComponentInfo } from "../types";
 
 export type OnAdd = (
   params: Required<Pick<MetaInfo, "parentId" | "type">> &
@@ -16,6 +17,8 @@ export type OnAdd = (
 export type onUpdateAttr<
   Key extends keyof MetaInfo["attrs"] = keyof MetaInfo["attrs"]
 > = (id: string, attrName: Key, value: MetaInfo["attrs"][Key]) => void;
+
+export type onDelete = (id: ComponentInfo["id"]) => void;
 
 export const useEditorTriggers = () => {
   const { editorStore } = useEditorContext();
@@ -49,8 +52,17 @@ export const useEditorTriggers = () => {
     });
   };
 
+  const onDeleteByCompId: onDelete = (compId) => {
+    const { metaId } = getComponentInfo(compId);
+    transaction(() => {
+      editorStore.deleteMeta(metaId);
+      editorStore.deleteComponent(compId);
+    });
+  };
+
   return {
     onAdd,
     onUpdateAttrByCompId,
+    onDeleteByCompId,
   };
 };

@@ -39,7 +39,7 @@ export const COMPONENTS_INFO = {
         flexShrink: 0,
         height: "32px",
       },
-      children: "Go fuck yourself",
+      children: "旋转跳跃我闭着眼",
     },
   },
   [ComponentTypes.INPUT]: {
@@ -141,6 +141,7 @@ export const COMPONENTS_INFO = {
         height: "100%",
         display: "flex",
         flexShrink: 0,
+        position: "relative",
         overflow: "hidden",
       },
     },

@@ -27,7 +27,7 @@ export function getDomsByIds(ids: string) {
 
 export function getTypeByDomId(id: number | string) {
   const dom = getDomById(id);
-  return getDomType(dom!);
+  return getDomType(dom!) as ComponentTypes;
 }
 
 export function getDomsByType(type: ComponentTypes) {

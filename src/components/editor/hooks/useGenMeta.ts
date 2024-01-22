@@ -31,16 +31,16 @@ export const useGenMeta = () => {
       const defaultChilds = [
         {
           type: ComponentTypes.BLANK_CONTAINER,
-          name: "条件1",
+          name: "Loading",
           parentId: rootMeta.id,
-          attrs: { style: { background: "red" } },
+          attrs: { style: { background: "#dddddd" } },
           childsId: [],
         },
         {
           type: ComponentTypes.BLANK_CONTAINER,
-          name: "Loading",
+          name: "条件1",
           parentId: rootMeta.id,
-          attrs: { style: { background: "blue" } },
+          attrs: { style: { background: "#aeeddcb3" } },
           childsId: [],
         },
       ];

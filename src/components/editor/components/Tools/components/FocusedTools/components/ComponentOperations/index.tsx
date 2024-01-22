@@ -5,7 +5,7 @@ import { SelectParentBtn } from "./components/SelectParentBtn";
 import { DeleteBtn } from "./components/DeleteBtn";
 
 import "./index.scss";
-import { ConditionalSelect } from "./components/ConditionalSelect";
+import { ConditionalOperations } from "./components/ConditionalOperations";
 
 interface ComponentOperationsProps {
   rect: RectInfo;
@@ -21,7 +21,7 @@ const ComponentOperationsComp = observer((props: ComponentOperationsProps) => {
         right: -rect.width,
       }}
     >
-      <ConditionalSelect />
+      <ConditionalOperations />
       <SelectParentBtn />
       <DeleteBtn />
     </div>

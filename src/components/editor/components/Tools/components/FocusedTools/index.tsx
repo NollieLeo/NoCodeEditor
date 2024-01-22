@@ -36,6 +36,8 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
 
   const { getDom } = useDom();
 
+  const targetDom = focusedInfo?.id ? getDom(focusedInfo?.id) : null;
+
   const snapPoints = useMemo(
     () => (focusedInfo?.id ? getSnapPoints(focusedInfo?.id) : null),
     [focusedInfo?.id, getSnapPoints]
@@ -63,7 +65,7 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
     return snapPoints ? snapPoints.xPoints : [];
   }, [snapPoints]);
 
-  if (!focusedInfo?.id) {
+  if (!focusedInfo?.id || !targetDom) {
     return <></>;
   }
 
@@ -72,7 +74,7 @@ const FocusedToolsComp: FC<FocusedToolsProps> = observer(() => {
       <Moveable
         ref={moveableRef}
         key={resizeKey}
-        target={getDom(focusedInfo?.id)}
+        target={targetDom}
         resizable={resizableOptions}
         props={props}
         ables={ables}
