@@ -211,6 +211,7 @@ export const MOCK_METAS = {
     type: "page",
     id: "page-1",
     parentId: null,
+    name: "页面",
     attrs: {
       style: {
         width: "1440px",

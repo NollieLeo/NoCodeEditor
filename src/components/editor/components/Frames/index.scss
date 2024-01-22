@@ -15,12 +15,14 @@
       background-color: rgba(0, 153, 255, 0.15);
       width: 100%;
       margin-bottom: 20px;
-      height: 50px;
-      line-height: 50px;
-      padding: 2px 4px;
+      padding: 6px 10px;
       border-radius: 14px;
-      font-size: 20px;
+      font-size: 16px;
       text-align: center;
+      display: flex;
+      align-items: center;
+      box-sizing: border-box;
+      justify-content: space-between;
     }
   }
   .editor-frame + .editor-frame {
