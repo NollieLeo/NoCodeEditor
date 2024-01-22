@@ -1,12 +1,12 @@
 import { observer } from "mobx-react-lite";
-import { FC, PropsWithChildren, memo, useRef } from "react";
+import { CSSProperties, FC, PropsWithChildren, memo, useMemo, useRef, useState } from "react";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import InfiniteViewer, { ScrollCenterOptions } from "react-infinite-viewer";
 import { useViewerTriggers } from "./hooks/useViewTriggers";
 
 import "./index.scss";
 import { useEventListeners } from "./hooks/useEventListeners";
-import { useSize, useUpdateEffect, useUpdateLayoutEffect } from "ahooks";
+import { useSize, useUpdateEffect } from "ahooks";
 
 export interface ViewportRefs {
   scrollCenter: (options?: ScrollCenterOptions | undefined) => boolean;
@@ -21,6 +21,7 @@ const ViewportComp: FC<PropsWithChildren> = observer((props) => {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
 
   const { viewRef, onPinch, onScroll } = useViewerTriggers();
 
@@ -28,12 +29,18 @@ const ViewportComp: FC<PropsWithChildren> = observer((props) => {
 
   const size = useSize(containerRef);
 
+  const containerStyle = useMemo<CSSProperties>(
+    () => ({
+      visibility: visible ? "visible" : "hidden",
+    }),
+    [visible]
+  );
+
   useUpdateEffect(() => {
-    viewRef.current?.setZoom(0.8)
+    viewRef.current?.setZoom(0.8);
     viewRef.current?.scrollCenter({ horizontal: true, vertical: true });
-    requestAnimationFrame(() => {
-      editorStore.setZoom(0.8);
-    });
+    editorStore.setZoom(0.8);
+    setVisible(true);
   }, [size?.width]);
 
   return (
@@ -54,7 +61,11 @@ const ViewportComp: FC<PropsWithChildren> = observer((props) => {
         useOverflowScroll={false}
         useResizeObserver
       >
-        <div className="editor-viewport-container" ref={containerRef}>
+        <div
+          className="editor-viewport-container"
+          ref={containerRef}
+          style={containerStyle}
+        >
           {children}
         </div>
       </InfiniteViewer>
