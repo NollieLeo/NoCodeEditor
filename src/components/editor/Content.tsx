@@ -27,10 +27,6 @@ const ContentComp: FC<PropsWithChildren> = observer(() => {
     console.log("meta", toJS(editorStore.meta));
   }, [toJS(editorStore.meta)]);
 
-  useUpdateEffect(() => {
-    console.log("componentsInfo", toJS(editorStore.componentsInfo));
-  }, [toJS(editorStore.componentsInfo)]);
-
   return (
     <div className="editor-wrapper">
       <DndContextWrapper>

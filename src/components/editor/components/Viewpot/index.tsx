@@ -6,6 +6,7 @@ import { useViewerTriggers } from "./hooks/useViewTriggers";
 
 import "./index.scss";
 import { useEventListeners } from "./hooks/useEventListeners";
+import { useSize, useUpdateLayoutEffect } from "ahooks";
 
 export interface ViewportRefs {
   scrollCenter: (options?: ScrollCenterOptions | undefined) => boolean;
@@ -15,13 +16,22 @@ const ViewportComp: FC<PropsWithChildren> = observer((props) => {
   const { children } = props;
   const {
     editorStore: { zoom },
+    editorStore,
   } = useEditorContext();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const { viewRef, onPinch, onScroll } = useViewerTriggers();
 
   useEventListeners(wrapperRef);
+
+  const size = useSize(containerRef);
+
+  useUpdateLayoutEffect(() => {
+    viewRef.current?.scrollCenter({ horizontal: true, vertical: true });
+    editorStore.setZoom(0.6);
+  }, [size?.width]);
 
   return (
     <div className="editor-viewport" ref={wrapperRef}>
@@ -41,7 +51,9 @@ const ViewportComp: FC<PropsWithChildren> = observer((props) => {
         useOverflowScroll={false}
         useResizeObserver
       >
-        <div className="editor-viewport-container">{children}</div>
+        <div className="editor-viewport-container" ref={containerRef}>
+          {children}
+        </div>
       </InfiniteViewer>
     </div>
   );

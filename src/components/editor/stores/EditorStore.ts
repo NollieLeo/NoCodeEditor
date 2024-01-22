@@ -80,7 +80,7 @@ export const useEditorStore = ({
     componentsInfo: {},
     focusedInfo: null,
     hoveredNodeId: null,
-    zoom: 1,
+    zoom: 0.6,
     isPanTransforming: false,
     positonMode: ComponentPosition.RELATIVE,
 
