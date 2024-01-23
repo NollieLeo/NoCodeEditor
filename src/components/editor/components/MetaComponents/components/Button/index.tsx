@@ -1,6 +1,6 @@
 import { ComponentRenderData } from "@/components/editor/types";
 import { forwardRef } from "react";
-import { Button as ZButton } from "zui-pro";
+import { Button as ZButton } from "antd";
 
 export const Button = forwardRef<any, ComponentRenderData>((props, ref) => {
   return (
