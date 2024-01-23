@@ -10,7 +10,7 @@ import {
 } from "@/components/editor/types";
 
 import "./index.scss";
-import { Select } from "zui-pro";
+import { Select } from "antd";
 import { observer } from "mobx-react-lite";
 import { useEditorContext } from "../../hooks/useEditorContext";
 

@@ -1,6 +1,6 @@
 import { ComponentRenderData } from "@/components/editor/types";
 import { forwardRef } from "react";
-import { Select as ZSelect } from "zui-pro";
+import { Select as ZSelect } from "antd";
 
 export const Select = forwardRef<any, ComponentRenderData>((props, ref) => {
   const { style } = props;

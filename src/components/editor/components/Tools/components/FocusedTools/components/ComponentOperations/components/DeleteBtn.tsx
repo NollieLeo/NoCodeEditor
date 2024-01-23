@@ -1,5 +1,5 @@
-import { Button } from "zui-pro";
-import { DeleteOutline } from "@zui-pro/icons";
+import { Button } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { useEditorTriggers } from "@/components/editor/hooks/useEditorTriggers";
@@ -19,7 +19,7 @@ export const DeleteBtn = observer(() => {
         onDeleteByCompId(focusedInfo!.id);
       }}
       type="text"
-      icon={<DeleteOutline size={16} />}
+      icon={<DeleteOutlined size={16} />}
     />
   );
 });
