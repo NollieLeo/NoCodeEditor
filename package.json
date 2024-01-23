@@ -15,8 +15,8 @@
     "@dnd-kit/modifiers": "^7.0.0",
     "@dnd-kit/sortable": "^8.0.0",
     "@dnd-kit/utilities": "^3.2.2",
-    "@zui-pro/icons": "^1.0.1",
     "ahooks": "^3.7.8",
+    "antd": "^5.13.2",
     "classnames": "^2.3.2",
     "lodash-es": "^4.17.21",
     "mobx": "5.15.7",
@@ -25,8 +25,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-infinite-viewer": "^0.28.1",
-    "react-moveable": "^0.56.0",
-    "zui-pro": "1.0.0-alpha.0.20"
+    "react-moveable": "^0.56.0"
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.12",

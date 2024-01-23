@@ -7,8 +7,8 @@ import { genComponentId } from "@/components/editor/utils/Components";
 import { find, forEach, map } from "lodash-es";
 import { transaction } from "mobx";
 import { observer } from "mobx-react-lite";
-import { Button, Select, Tooltip } from "zui-pro";
-import { DeleteOutline, AddOutline } from "@zui-pro/icons";
+import { Button, Select, Tooltip } from "antd";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 
 export const ConditionalOperations = observer(() => {
   const {
@@ -83,7 +83,7 @@ export const ConditionalOperations = observer(() => {
     <>
       <Select
         key={getSelectedChild()}
-        style={{ width: "80px", background: "#1450d9" }}
+        style={{ width: "100px", background: "#1450d9" }}
         value={getSelectedChild()}
         onSelect={handleSelectChange}
         options={selectConditionOptions}
@@ -96,7 +96,7 @@ export const ConditionalOperations = observer(() => {
             }}
           >
             <span>{label}</span>
-            <DeleteOutline
+            <DeleteOutlined
               size={16}
               onClick={(e) => handleDeleteCondition(e, index)}
             />
@@ -109,7 +109,7 @@ export const ConditionalOperations = observer(() => {
           size="small"
           onClick={handleAddCondition}
           type="text"
-          icon={<AddOutline size={16} />}
+          icon={<PlusOutlined size={16} />}
         />
       </Tooltip>
     </>
