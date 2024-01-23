@@ -1,4 +1,61 @@
 export const MOCK_METAS = {
+  "58": {
+    id: "58",
+    type: "conditional-container",
+    name: "条件容器",
+    attrs: {
+      style: {
+        width: 400,
+        height: 200,
+        background: "rgb(243, 243, 243)",
+        display: "flex",
+        flexShrink: 0,
+        overflow: "hidden",
+      },
+    },
+    parentId: "page-1",
+    childsId: ["59", "60"],
+  },
+  "59": {
+    id: "59",
+    type: "blank-container",
+    name: "Loading",
+    attrs: {
+      style: {
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexShrink: 0,
+        position: "relative",
+        overflow: "hidden",
+        flexFlow: "wrap",
+        placeContent: "baseline start",
+        background: "#dddddd",
+      },
+    },
+    parentId: "58",
+    childsId: [],
+  },
+  "60": {
+    id: "60",
+    type: "blank-container",
+    name: "条件1",
+    attrs: {
+      style: {
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexShrink: 0,
+        position: "relative",
+        overflow: "hidden",
+        flexFlow: "wrap",
+        placeContent: "baseline start",
+        background: "#aeeddcb3",
+      },
+    },
+    parentId: "58",
+    childsId: [],
+  },
   "page-1": {
     type: "page",
     id: "page-1",
@@ -18,7 +75,7 @@ export const MOCK_METAS = {
         placeContent: "baseline",
       },
     },
-    childsId: [],
+    childsId: ["58"],
   },
 } as any;
 

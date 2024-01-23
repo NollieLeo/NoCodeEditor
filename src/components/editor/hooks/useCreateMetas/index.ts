@@ -1,14 +1,14 @@
 import { useCallback } from "react";
-import { MetaInfo } from "../types/Meta";
-import { ComponentTypes } from "../types";
-import { COMPONENTS_INFO } from "../constants";
 import { assign, map, uniqueId } from "lodash-es";
+import { COMPONENTS_INFO } from "../../constants";
+import { ComponentTypes } from "@/components/editor/types";
+import { MetaInfo } from "@/components/editor/types/Meta";
 
 export type GenMetaParams = Pick<MetaInfo, "type"> & Partial<MetaInfo>;
 export type GenMetaReturns = [MetaInfo, MetaInfo[] | null];
 
-export const useGenMeta = () => {
-  const genDefaultMeta = useCallback((params: GenMetaParams): MetaInfo => {
+export const useCreateMetas = () => {
+  const createDefaultMeta = useCallback((params: GenMetaParams): MetaInfo => {
     const { attrs: defaultAttrs, name: defaultName } =
       COMPONENTS_INFO[params.type];
     return {
@@ -25,9 +25,9 @@ export const useGenMeta = () => {
     };
   }, []);
 
-  const genConditionalContainerMetas = useCallback(
+  const createConditionalMetas = useCallback(
     (params: GenMetaParams): GenMetaReturns => {
-      const rootMeta = genDefaultMeta(params);
+      const rootMeta = createDefaultMeta(params);
       const defaultChilds = [
         {
           type: ComponentTypes.BLANK_CONTAINER,
@@ -44,39 +44,39 @@ export const useGenMeta = () => {
           childsId: [],
         },
       ];
-      const childMetas = map(defaultChilds, (value) => genDefaultMeta(value));
+      const childMetas = map(defaultChilds, (value) => createDefaultMeta(value));
       rootMeta.childsId = map(childMetas, (value) => value.id);
       return [rootMeta, childMetas];
     },
-    [genDefaultMeta]
+    [createDefaultMeta]
   );
 
-  const genContainerMetas = useCallback(
+  const createContainerMetas = useCallback(
     (params: GenMetaParams): GenMetaReturns => {
-      const rootMeta = genDefaultMeta(params);
+      const rootMeta = createDefaultMeta(params);
       rootMeta.childsId = [];
       return [rootMeta, null];
     },
-    [genDefaultMeta]
+    [createDefaultMeta]
   );
 
-  const genMetas = useCallback(
+  const createMetas = useCallback(
     (params: GenMetaParams): GenMetaReturns => {
       const { type } = params;
       switch (type) {
         case ComponentTypes.CONDITIONAL_CONTAINER:
-          return genConditionalContainerMetas(params);
+          return createConditionalMetas(params);
         case ComponentTypes.CONTAINER:
         case ComponentTypes.BLANK_CONTAINER:
-          return genContainerMetas(params);
+          return createContainerMetas(params);
         default:
-          return [genDefaultMeta(params), null];
+          return [createDefaultMeta(params), null];
       }
     },
-    [genConditionalContainerMetas, genContainerMetas, genDefaultMeta]
+    [createConditionalMetas, createContainerMetas, createDefaultMeta]
   );
 
   return {
-    genMetas,
+    createMetas,
   };
 };

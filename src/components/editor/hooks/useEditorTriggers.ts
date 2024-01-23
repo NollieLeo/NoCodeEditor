@@ -1,8 +1,8 @@
 import { transaction } from "mobx";
 import { MetaInfo } from "../types/Meta";
 import { useEditorContext } from "./useEditorContext";
-import { GenComponentsReturns, useGenComponents } from "./useGenComponents";
-import { GenMetaReturns, useGenMeta } from "./useGenMeta";
+import { GenComponentsReturns, useCreateComponents } from "./useCreateComponents";
+import { GenMetaReturns, useCreateMetas } from "./useCreateMetas";
 import { useGetMetaInfo } from "./useGetMetaInfo";
 import { useGetComponentInfo } from "./useGetComponentInfo";
 import { ComponentInfo } from "../types";
@@ -30,12 +30,12 @@ export const useEditorTriggers = () => {
   const { getMetaInfo } = useGetMetaInfo();
   const { getComponentInfo, getCompentParentInfo } = useGetComponentInfo();
 
-  const { genMetas } = useGenMeta();
-  const { genComponents } = useGenComponents();
+  const { createMetas } = useCreateMetas();
+  const { createComponents } = useCreateComponents();
 
   const onAdd: OnAdd = (params, scopeId, index) => {
-    const metas = genMetas(params);
-    const components = genComponents({ metas, scopeId });
+    const metas = createMetas(params);
+    const components = createComponents({ metas, scopeId });
 
     transaction(() => {
       editorStore.addMetas(metas, index);

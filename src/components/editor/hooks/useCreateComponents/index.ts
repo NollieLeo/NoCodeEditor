@@ -1,8 +1,8 @@
 import { isNil, map } from "lodash-es";
-import { genComponentId } from "../utils/Components";
-import { GenMetaReturns } from "./useGenMeta";
-import { ComponentInfo, ComponentTypes } from "../types";
-import { MetaInfo } from "../types/Meta";
+import { ComponentInfo, ComponentTypes } from "@/components/editor/types";
+import { MetaInfo } from "@/components/editor/types/Meta";
+import { genComponentId } from "@/components/editor/utils/Components";
+import { GenMetaReturns } from "../useCreateMetas";
 
 export type GenComponentsParams = {
   metas: GenMetaReturns;
@@ -11,7 +11,7 @@ export type GenComponentsParams = {
 
 export type GenComponentsReturns = [ComponentInfo, ComponentInfo[] | null];
 
-export const useGenComponents = () => {
+export const useCreateComponents = () => {
   const createComponentInfo = (meta: MetaInfo, scopeId: string) => {
     return {
       name: meta.name ?? meta.type,
@@ -27,7 +27,7 @@ export const useGenComponents = () => {
     };
   };
 
-  const genDefaultComponents = (
+  const createDefaultComps = (
     params: GenComponentsParams
   ): GenComponentsReturns => {
     const {
@@ -44,10 +44,10 @@ export const useGenComponents = () => {
     return [rootComponent, childComponents];
   };
 
-  const genConditionalContainerComponent = (
+  const createConditonalComps = (
     params: GenComponentsParams
   ): GenComponentsReturns => {
-    const [rootComponent, childComponents] = genDefaultComponents(params);
+    const [rootComponent, childComponents] = createDefaultComps(params);
 
     const tempChildComponents = map(
       childComponents,
@@ -70,20 +70,20 @@ export const useGenComponents = () => {
     return [rootComponent, tempChildComponents];
   };
 
-  const genComponents = (params: GenComponentsParams): GenComponentsReturns => {
+  const createComponents = (params: GenComponentsParams): GenComponentsReturns => {
     const {
       metas: [rootMeta],
     } = params;
 
     switch (rootMeta.type) {
       case ComponentTypes.CONDITIONAL_CONTAINER:
-        return genConditionalContainerComponent(params);
+        return createConditonalComps(params);
       default:
-        return genDefaultComponents(params);
+        return createDefaultComps(params);
     }
   };
 
   return {
-    genComponents,
+    createComponents,
   };
 };
