@@ -4,7 +4,6 @@ export default function useDndSensors() {
   const mouseSensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 4,
-      delay: 300,
     },
   });
 
