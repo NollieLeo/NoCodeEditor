@@ -29,6 +29,7 @@ const SiderBarDragOverlayTmpl: FC = observer(() => {
           {...attrs}
           style={{
             ...attrs.style,
+            opacity: 0.8,
             transform: `scale(${zoom})`,
           }}
           id={id}

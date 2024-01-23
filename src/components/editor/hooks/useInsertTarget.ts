@@ -5,9 +5,9 @@ import { getFlexLayoutDirection, isAbsoluteOrFixed } from "../utils/layout";
 import { useDragInfo } from "./useDragInfo";
 import { useDragOverInfo } from "./useDragOverInfo";
 import { useDndContext } from "@dnd-kit/core";
-import { useDom } from "./useDom";
 import { useGetComponentInfo } from "./useGetComponentInfo";
 import { useEditorContext } from "./useEditorContext";
+import { getDomById } from "../utils/Dom";
 
 function genRectToDistance(pLeft: number, pTop: number, rect: DOMRect) {
   const { left: rLeft, width: rWidth, height: rHeight, top: rTop } = rect;
@@ -21,11 +21,10 @@ export function useInsertTarget() {
     editorStore: { positonMode },
   } = useEditorContext();
 
-  const { active } = useDndContext();
   const dragInfo = useDragInfo();
   const overInfo = useDragOverInfo();
+  const { active } = useDndContext();
   const { getComponentInfo } = useGetComponentInfo();
-  const { getDom } = useDom();
 
   const getDragCenterRect = useCallback(() => {
     if (!active?.rect.current.translated) {
@@ -46,11 +45,8 @@ export function useInsertTarget() {
       const overNodeSchema = getComponentInfo(overInfo.id);
       const childNodesInfo: { rect: DOMRect; index: number }[] = [];
       forEach(overNodeSchema.childsId, (id, index) => {
-        const dom = getDom(id);
-        if (
-          dom.style.position !== "absolute" &&
-          dom.style.position !== "fixed"
-        ) {
+        const dom = getDomById(id);
+        if (dom?.checkVisibility() && !isAbsoluteOrFixed(dom.style)) {
           childNodesInfo.push({
             rect: dom.getBoundingClientRect(),
             index,
@@ -65,7 +61,7 @@ export function useInsertTarget() {
       const idx = indexOf(distances, minDis);
       return childNodesInfo[idx] || null;
     },
-    [getDom, getComponentInfo, overInfo?.id]
+    [getComponentInfo, overInfo?.id]
   );
 
   const checkIsInsertable = () => {
@@ -106,7 +102,7 @@ export function useInsertTarget() {
     const targetCenterTop = insertTop + insertHeight / 2;
     const targetCenterLeft = insertLeft + insertWdith / 2;
 
-    const direction = getFlexLayoutDirection(getDom(overInfo!.id));
+    const direction = getFlexLayoutDirection(getDomById(overInfo!.id));
 
     if (direction === "vertical") {
       const isNearTop = centerTop > targetCenterTop;
