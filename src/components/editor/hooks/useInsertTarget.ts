@@ -94,7 +94,7 @@ export function useInsertTarget() {
 
   const getInsertInfo = useCallback(() => {
     const dragCenter = getDragCenterRect();
-    if (isNil(insertable) || isNil(dragCenter)) {
+    if (!insertable || isNil(dragCenter)) {
       return;
     }
     const insetTargetInfo = getClosestCompInfo(dragCenter.left, dragCenter.top);
