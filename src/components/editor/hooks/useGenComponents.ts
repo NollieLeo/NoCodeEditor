@@ -52,10 +52,17 @@ export const useGenComponents = () => {
     const tempChildComponents = map(
       childComponents,
       ({ attrs, ...res }, index) => {
-        attrs.style.display = index === 0 ? attrs.style.display : "none";
+        const display = index === 0 ? attrs.style.display : "none";
+        const style = {
+          ...attrs.style,
+          display,
+        };
         return {
           ...res,
-          attrs,
+          attrs: {
+            ...attrs,
+            style,
+          },
         };
       }
     );
