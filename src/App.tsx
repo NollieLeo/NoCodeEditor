@@ -1,5 +1,5 @@
 import { Editor } from "./components/editor";
-import { ConfigProvider } from "zui-pro";
+import { ConfigProvider } from "antd";
 import "./App.scss";
 
 function App() {
