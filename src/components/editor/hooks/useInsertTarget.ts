@@ -103,28 +103,28 @@ export function useInsertTarget() {
     }
     const { left: centerLeft, top: centerTop } = dragCenter;
 
-    const { rect, index: targetIdx } = insetTargetInfo;
+    const { rect, index } = insetTargetInfo;
     const { top, height, left, width, bottom, right } = rect;
 
     const targetCenterTop = top + height / 2;
     const targetCenterLeft = left + width / 2;
 
     const insertRect = { ...rect };
-    let insertIdx = targetIdx;
+    let insertIdx = index;
 
     if (direction === "vertical") {
       insertRect.left = targetCenterLeft;
       insertRect.top = top;
       if (centerTop > targetCenterTop) {
         insertRect.top = bottom;
-        insertIdx = targetIdx + 1;
+        insertIdx = index + 1;
       }
     } else if (direction === "horizontal") {
       insertRect.top = targetCenterTop;
       insertRect.left = left;
       if (centerLeft > targetCenterLeft) {
         insertRect.left = right;
-        insertIdx = targetIdx + 1;
+        insertIdx = index + 1;
       }
     }
 
