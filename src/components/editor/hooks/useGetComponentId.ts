@@ -3,7 +3,7 @@ import { useGetComponentInfo } from "./useGetComponentInfo";
 import { filter, isNil } from "lodash-es";
 
 export const useGetComponentId = () => {
-  const { getComponentInfo, getNodeParentInfo } = useGetComponentInfo();
+  const { getComponentInfo, getCompentParentInfo } = useGetComponentInfo();
 
   const getParentComponentId = useCallback(
     (targetId: string) => {
@@ -15,13 +15,13 @@ export const useGetComponentId = () => {
 
   const getSiblingIds = useCallback(
     (targetId: string) => {
-      const parentInfo = getNodeParentInfo(targetId);
+      const parentInfo = getCompentParentInfo(targetId);
       if (isNil(parentInfo)) {
         return [];
       }
       return filter(parentInfo.childsId, (id) => id !== targetId);
     },
-    [getNodeParentInfo]
+    [getCompentParentInfo]
   );
 
   return {

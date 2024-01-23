@@ -1,38 +1,22 @@
-import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
-import { useGetComponentInfo } from "@/components/editor/hooks/useGetComponentInfo";
-import { useSelectComponent } from "@/components/editor/hooks/useSelectComponent";
+import { useEditorTriggers } from "@/components/editor/hooks/useEditorTriggers";
 import { DragInfoFromPanSort, DropInfo } from "@/components/editor/types";
 
 export function usePanSortDnd() {
-  const { editorStore } = useEditorContext();
-  const { getNodeParentInfo } = useGetComponentInfo();
-  const { onSelectComponent } = useSelectComponent();
+  const { onMoveChildPosByCompId } = useEditorTriggers();
 
   const onDragOver = (
     dragInfo: DragInfoFromPanSort,
     overInfo?: DropInfo | null
   ) => {
-    if (!overInfo || dragInfo.id === overInfo.id) {
+    if (!overInfo) {
       return;
     }
     const { id: fromId } = dragInfo;
     const { id: toId } = overInfo;
-    const dragParent = getNodeParentInfo(fromId);
-    const dropParent = getNodeParentInfo(toId);
-    // 确保其为同层级拖拽排序
-    if (!dragParent || !dropParent || dragParent.id !== dropParent?.id) {
-      return;
-    }
-    editorStore.movePos(dropParent.id, fromId, toId);
-  };
-
-  const onDragEnd = (dragInfo: DragInfoFromPanSort) => {
-    const { id } = dragInfo;
-    onSelectComponent(id);
+    onMoveChildPosByCompId(fromId, toId);
   };
 
   return {
     onDragOver,
-    onDragEnd,
   };
 }

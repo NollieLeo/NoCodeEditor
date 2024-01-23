@@ -9,6 +9,19 @@ export const useSelectComponent = () => {
   const { editorStore } = useEditorContext();
   const { getParentComponentId } = useGetComponentId();
 
+  const getSelectId = useCallback((compId: string) => {
+    let selectedId = compId;
+    const type = getTypeByDomId(compId);
+    switch (type) {
+      case ComponentTypes.BLANK_CONTAINER:
+        selectedId = getParentComponentId(compId)!;
+        break;
+      default:
+        break;
+    }
+    return selectedId;
+  }, [getParentComponentId]);
+
   const onSelectComponent = useCallback(
     (id?: ComponentInfo["id"]) => {
       if (isNil(id)) {
@@ -16,17 +29,12 @@ export const useSelectComponent = () => {
         return;
       }
       requestAnimationFrame(() => {
-        const type = getTypeByDomId(id);
-        let selectId = id;
-        if (type === ComponentTypes.BLANK_CONTAINER) {
-          selectId = getParentComponentId(id)!;
-        }
         editorStore.setFocusedInfo({
-          id: selectId,
+          id: getSelectId(id),
         });
       });
     },
-    [editorStore, getParentComponentId]
+    [editorStore, getSelectId]
   );
 
   return {

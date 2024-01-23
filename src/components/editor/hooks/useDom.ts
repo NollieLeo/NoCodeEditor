@@ -5,7 +5,7 @@ import { isNil, map } from "lodash-es";
 import { getDomById } from "../utils/Dom";
 
 export const useDom = () => {
-  const { getComponentInfo, getNodeParentInfo } = useGetComponentInfo();
+  const { getComponentInfo, getCompentParentInfo } = useGetComponentInfo();
   const { getSiblingIds } = useGetComponentId();
 
   // TODO(wkm) 获取真实dom的方法不仅限于id，后续可能会带更多标识
@@ -23,13 +23,13 @@ export const useDom = () => {
 
   const getParentDom = useCallback(
     (targetId: string) => {
-      const parentInfo = getNodeParentInfo(targetId);
+      const parentInfo = getCompentParentInfo(targetId);
       if (isNil(parentInfo)) {
         return null;
       }
       return getDom(parentInfo.id);
     },
-    [getDom, getNodeParentInfo]
+    [getDom, getCompentParentInfo]
   );
 
   const getSiblingDoms = useCallback(

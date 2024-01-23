@@ -12,8 +12,7 @@ import { useSelectComponent } from "@/components/editor/hooks/useSelectComponent
 
 export default function useEditorDnd() {
   const { onDragEnd: onSideDragEnd } = useSideDnd();
-  const { onDragOver: onPanDragOver, onDragEnd: onPanSortEnd } =
-    usePanSortDnd();
+  const { onDragOver: onPanDragOver } = usePanSortDnd();
   const { onDragEnd: onPanMoveEnd } = useMoveDnd();
   const { onSelectComponent } = useSelectComponent();
 
@@ -82,7 +81,6 @@ export default function useEditorDnd() {
 
     switch (dragInfo.from) {
       case DragOrigin.SORT:
-        onPanSortEnd(dragInfo);
         break;
       case DragOrigin.SIDE_ADD:
         onSideDragEnd(e);

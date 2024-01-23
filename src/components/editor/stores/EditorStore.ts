@@ -61,8 +61,17 @@ export interface EditorAction {
   deleteMeta(id: MetaInfo["id"]): void;
   deleteComponent(id: ComponentInfo["id"]): void;
 
-  // ----------- node operations -----------
-  movePos(parentId: string, from: string, to: string): void;
+  /** childs pos move */
+  moveCompChildsPos(
+    parentCompId: string,
+    fromCompId: string,
+    toCompId: string
+  ): void;
+  moveMetaChildsPos(
+    parentMetaId: string,
+    fromMetaId: string,
+    toMetaId: string
+  ): void;
 }
 
 export type EditorStore = EditorState & EditorAction;
@@ -198,20 +207,48 @@ export const useEditorStore = ({
       }
     },
 
-    /**
-     * @description move component in a sortable container
-     */
-    movePos(parentId: string, fromId: string, toId: string) {
-      const parentComp = this.componentsInfo[parentId];
+    moveCompChildsPos(
+      parentCompId: string,
+      fromCompId: string,
+      toCompId: string
+    ) {
+      const parentComp = this.componentsInfo[parentCompId];
       if (!parent || !parentComp.childsId) {
-        throw new Error(`move failed: node ${parentId} does not exist`);
+        throw new Error(
+          `move failed: parent component: ${parentCompId} does not exist`
+        );
       }
-      if (fromId === toId) {
+      if (fromCompId === toCompId) {
         return;
       }
       const { childsId } = parentComp;
-      const fromIdx = findIndex(childsId, (id) => id === fromId);
-      const toIdx = findIndex(childsId, (id) => id === toId);
+      const fromIdx = findIndex(childsId, (id) => id === fromCompId);
+      const toIdx = findIndex(childsId, (id) => id === toCompId);
+      if (fromIdx === -1 || toIdx === -1) {
+        return;
+      }
+      const newChildNodes = arrayMove(childsId, fromIdx, toIdx);
+      childsId.length = 0;
+      childsId.push(...newChildNodes);
+    },
+
+    moveMetaChildsPos(
+      parentMetaId: string,
+      fromMetaId: string,
+      toMetaId: string
+    ) {
+      const parentMeta = this.meta[parentMetaId];
+      if (!parent || !parentMeta.childsId) {
+        throw new Error(
+          `move failed: parent meta: ${parentMetaId} does not exist`
+        );
+      }
+      if (fromMetaId === toMetaId) {
+        return;
+      }
+      const { childsId } = parentMeta;
+      const fromIdx = findIndex(childsId, (id) => id === fromMetaId);
+      const toIdx = findIndex(childsId, (id) => id === toMetaId);
       if (fromIdx === -1 || toIdx === -1) {
         return;
       }

@@ -20,10 +20,15 @@ export type onUpdateAttr<
 
 export type onDelete = (id: ComponentInfo["id"]) => void;
 
+export type OnChildPosMove = (
+  fromCompId: ComponentInfo["id"],
+  toCompId: ComponentInfo["id"]
+) => void;
+
 export const useEditorTriggers = () => {
   const { editorStore } = useEditorContext();
   const { getMetaInfo } = useGetMetaInfo();
-  const { getComponentInfo } = useGetComponentInfo();
+  const { getComponentInfo, getCompentParentInfo } = useGetComponentInfo();
 
   const { genMetas } = useGenMeta();
   const { genComponents } = useGenComponents();
@@ -60,9 +65,30 @@ export const useEditorTriggers = () => {
     });
   };
 
+  const onMoveChildPosByCompId: OnChildPosMove = (fromCompId, toCompId) => {
+    const { metaId: fromMetaId, parentId: fromParentCompId } =
+      getComponentInfo(fromCompId);
+    const { metaId: toMetaId, parentId: toParentCompId } =
+      getComponentInfo(toCompId);
+    if (!fromParentCompId || !toParentCompId || fromCompId === toCompId) {
+      return;
+    }
+    const { metaId: fromParentMetaId } = getCompentParentInfo(fromCompId)!;
+    const { metaId: toParentMetaId } = getCompentParentInfo(toCompId)!;
+    // 确保其为同层级拖拽排序
+    if (fromParentMetaId !== toParentMetaId) {
+      return;
+    }
+    transaction(() => {
+      editorStore.moveCompChildsPos(fromParentCompId, fromCompId, toCompId);
+      editorStore.moveMetaChildsPos(toParentMetaId, fromMetaId, toMetaId);
+    });
+  };
+
   return {
     onAdd,
     onUpdateAttrByCompId,
     onDeleteByCompId,
+    onMoveChildPosByCompId,
   };
 };

@@ -19,7 +19,7 @@ export const useGetComponentInfo = () => {
     [componentsInfo]
   );
 
-  const getNodeParentInfo = useCallback(
+  const getCompentParentInfo = useCallback(
     (targetId: ComponentInfo["id"]) => {
       const target = getComponentInfo(targetId);
       const { parentId } = target;
@@ -31,7 +31,7 @@ export const useGetComponentInfo = () => {
     [getComponentInfo]
   );
 
-  const getNodeSiblingsInfo = useCallback(
+  const getComponentSiblingsInfo = useCallback(
     (targetId: ComponentInfo["id"]) => {
       const target = getComponentInfo(targetId);
       const { childsId } = target;
@@ -44,8 +44,8 @@ export const useGetComponentInfo = () => {
   );
 
   return {
-    getNodeSiblingsInfo,
-    getNodeParentInfo,
+    getComponentSiblingsInfo,
+    getCompentParentInfo,
     getComponentInfo,
   };
 };
