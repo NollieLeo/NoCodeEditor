@@ -1,8 +1,19 @@
 import { observer } from "mobx-react-lite";
 import { isNil } from "lodash-es";
 import { useInsertTarget } from "@/components/editor/hooks/useInsertTarget";
-import { CSSProperties, memo } from "react";
+import { memo } from "react";
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
+import "./index.scss";
+
+const LINE_VERTICAL_SIZE = {
+  width: 100,
+  height: 2,
+} as const;
+
+const LINE_HORIZONTAL_SIZE = {
+  width: 2,
+  height: 60,
+} as const;
 
 const InsertHighlightComp = observer(() => {
   const {
@@ -10,34 +21,28 @@ const InsertHighlightComp = observer(() => {
   } = useEditorContext();
 
   const getInsertInfo = useInsertTarget();
+
   const insertInfo = getInsertInfo();
 
   if (isNil(insertInfo)) {
     return <></>;
   }
 
-  const {
-    insertRect: { top: insertTop, left: insertLeft },
-    direction,
-  } = insertInfo;
+  const { insertRect, direction } = insertInfo;
 
-  const width = direction === "vertical" ? 100 : 2;
-  const height = direction === "vertical" ? 2 : 60;
-  const top = direction === "vertical" ? insertTop - 1 : insertTop - 30;
-  const left = direction === "vertical" ? insertLeft - 50 : insertLeft - 1;
+  const size =
+    direction === "vertical" ? LINE_VERTICAL_SIZE : LINE_HORIZONTAL_SIZE;
+  const top = insertRect.top - size.height / 2;
+  const left = insertRect.left - size.width / 2;
 
-  const style: CSSProperties = {
-    width,
-    height,
+  const style = {
+    ...size,
     top,
-    zIndex: 4,
     left,
-    position: "absolute",
-    background: "red",
     transform: `scale(${zoom})`,
   };
 
-  return <div style={style} />;
+  return <div className="editor-insert-highlight" style={style} />;
 });
 
 export const InsertHighlight = memo(InsertHighlightComp);

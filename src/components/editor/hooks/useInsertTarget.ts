@@ -92,7 +92,7 @@ export function useInsertTarget() {
     [overCompChildInfo]
   );
 
-  const getInsertInfo = () => {
+  const getInsertInfo = useCallback(() => {
     const dragCenter = getDragCenterRect();
     if (isNil(insertable) || isNil(dragCenter)) {
       return;
@@ -133,7 +133,7 @@ export function useInsertTarget() {
       direction,
       insertRect,
     };
-  };
+  }, [direction, getClosestCompInfo, getDragCenterRect, insertable]);
 
   return getInsertInfo;
 }
