@@ -2,4 +2,44 @@
   z-index: 4;
   position: absolute;
   background: #1450d9;
+  &::after {
+    content: "";
+    border-radius: 50%;
+    height: 8px;
+    width: 8px;
+    background-color: #fff;
+    border: 1px solid #1450d9;
+    display: block;
+    position: absolute;
+    margin: auto;
+    inset: 0;
+  }
+  &::before {
+    content: "";
+    border-radius: 50%;
+    height: 8px;
+    width: 8px;
+    background-color: #fff;
+    border: 1px solid #1450d9;
+    display: block;
+    position: absolute;
+    margin: auto;
+    inset: 0;
+  }
+  &.vertical {
+    &::after {
+      right: -100%;
+    }
+    &::before {
+      left: -100%;
+    }
+  }
+  &.horizontal {
+    &::after {
+      bottom: -100%;
+    }
+    &::before {
+      top: -100%;
+    }
+  }
 }

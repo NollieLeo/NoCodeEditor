@@ -1294,7 +1294,7 @@ packages:
       react: 16.14.0
       react-dom: 16.14.0(react@16.14.0)
       sanitize-filename: 1.6.3
-      styled-components: 5.3.11(@babel/core@7.23.6)(react-dom@16.14.0)(react-is@18.2.0)(react@16.14.0)
+      styled-components: 5.3.11(@babel/core@7.23.6)(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)
     transitivePeerDependencies:
       - '@babel/core'
       - debug
@@ -1470,7 +1470,7 @@ packages:
       '@babel/plugin-syntax-jsx': 7.23.3(@babel/core@7.23.6)
       lodash: 4.17.21
       picomatch: 2.3.1
-      styled-components: 5.3.11(@babel/core@7.23.6)(react-dom@16.14.0)(react-is@18.2.0)(react@16.14.0)
+      styled-components: 5.3.11(@babel/core@7.23.6)(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)
     transitivePeerDependencies:
       - '@babel/core'
     dev: false
@@ -2183,7 +2183,7 @@ packages:
       react: 16.14.0
       react-dom: 16.14.0(react@16.14.0)
       sanitize-filename: 1.6.3
-      styled-components: 5.3.11(@babel/core@7.23.6)(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)
+      styled-components: 5.3.11(@babel/core@7.23.6)(react-dom@16.14.0)(react-is@18.2.0)(react@16.14.0)
     transitivePeerDependencies:
       - '@babel/core'
       - debug
