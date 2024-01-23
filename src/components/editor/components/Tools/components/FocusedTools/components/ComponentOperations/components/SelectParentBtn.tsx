@@ -1,6 +1,6 @@
 import { useEditorContext } from "@/components/editor/hooks/useEditorContext";
 import { useGetComponentInfo } from "@/components/editor/hooks/useGetComponentInfo";
-import { Tooltip, Button } from "zui-pro";
+import { Tooltip, Button } from "antd";
 import { VerticalAlignTopOutlined } from "@ant-design/icons";
 import { useSelectComponent } from "@/components/editor/hooks/useSelectComponent";
 
