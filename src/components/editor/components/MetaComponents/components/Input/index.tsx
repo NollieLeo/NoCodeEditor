@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { ComponentRenderData } from "@/components/editor/types";
-import { Input as ZInput } from "zui-pro";
+import { Input as ZInput } from "antd";
 
 export const Input = forwardRef<any, ComponentRenderData>((props, ref) => {
   return (
