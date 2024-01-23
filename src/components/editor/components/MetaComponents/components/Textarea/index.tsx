@@ -1,6 +1,6 @@
 import { ComponentRenderData } from "@/components/editor/types";
 import { forwardRef } from "react";
-import { Input } from "zui-pro";
+import { Input } from "antd";
 
 export const Textarea = forwardRef<any, ComponentRenderData>((props, ref) => {
   return (
