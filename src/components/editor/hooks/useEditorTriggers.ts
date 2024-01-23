@@ -14,11 +14,11 @@ export type OnAdd = (
   index?: number
 ) => { metas: GenMetaReturns; components: GenComponentsReturns };
 
-export type onUpdateAttr<
+export type OnUpdateAttr<
   Key extends keyof MetaInfo["attrs"] = keyof MetaInfo["attrs"]
 > = (id: string, attrName: Key, value: MetaInfo["attrs"][Key]) => void;
 
-export type onDelete = (id: ComponentInfo["id"]) => void;
+export type OnDelete = (id: ComponentInfo["id"]) => void;
 
 export type OnChildPosMove = (
   fromCompId: ComponentInfo["id"],
@@ -48,7 +48,7 @@ export const useEditorTriggers = () => {
     };
   };
 
-  const onUpdateAttrByCompId: onUpdateAttr = (compId, attrName, value) => {
+  const onUpdateAttrByCompId: OnUpdateAttr = (compId, attrName, value) => {
     const componentInfo = getComponentInfo(compId);
     const meta = getMetaInfo(componentInfo.metaId);
     transaction(() => {
@@ -57,7 +57,7 @@ export const useEditorTriggers = () => {
     });
   };
 
-  const onDeleteByCompId: onDelete = (compId) => {
+  const onDeleteByCompId: OnDelete = (compId) => {
     const { metaId } = getComponentInfo(compId);
     transaction(() => {
       editorStore.deleteMeta(metaId);
